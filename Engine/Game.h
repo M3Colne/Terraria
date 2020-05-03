@@ -22,7 +22,7 @@
 
 #include "Keyboard.h"
 #include "Mouse.h"
-#include "Graphics.h"
+#include "Grid.h"
 
 class Game
 {
@@ -36,11 +36,19 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+    void CreateGrid(int _width, int _height);
+    void SaveGrid(char* fileName);
+    void LoadGrid(char* fileName);
+    void DeleteGrid();
 	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+    Grid* pGrid = nullptr;
+    bool hasStarted = false;
+    Vei2 cameraPos;
+    int cameraSpeed = 1;
 	/********************************/
 };

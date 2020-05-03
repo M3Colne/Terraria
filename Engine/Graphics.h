@@ -57,6 +57,48 @@ public:
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
 	void PutPixel( int x,int y,Color c );
+	void DrawLine(int x0, int y0, int x1, int y1, Color c)
+	{
+		float m = 0.0f;
+		if (x1 != x0)
+		{
+			m = float((y1 - y0) / (x1 - x0));
+		}
+
+		if (x1 != x0 && std::abs(m) <= 1.0f)
+		{
+			if (x0 > x1)
+			{
+				std::swap(x0, x1);
+				std::swap(y0, y1);
+			}
+
+			const float b = y0 - m * x0;
+
+			for (int x = (int)x0; x < (int)x1; x++)
+			{
+				const float y = m * (float)x + b;
+				PutPixel(x, (int)y, c);
+			}
+		}
+		else
+		{
+			if (y0 > y1)
+			{
+				std::swap(x0, x1);
+				std::swap(y0, y1);
+			}
+
+			const float w = float((x1 - x0) / (y1 - y0));
+			const float p = x0 - w * y0;
+
+			for (int y = (int)y0; y < (int)y1; y++)
+			{
+				const float x = w * (float)y + p;
+				PutPixel((int)x, y, c);
+			}
+		}
+	}
 	void DrawLine(Vec2 p0, Vec2 p1, Color c)
 	{
 		float m = 0.0f;
@@ -94,6 +136,50 @@ public:
 			{
 				const float x = w * (float)y + p;
 				PutPixel((int)x, y, c);
+			}
+		}
+	}
+	void DrawRectangle(int x0, int y0, int x1, int y1, Color c)
+	{
+		if (x0 > x1)
+		{
+			std::swap(x0, x1);
+		}
+		if (y0 > y1)
+		{
+			std::swap(y0, y1);
+		}
+
+		for (int j = y0; j < y1; j++)
+		{
+			for (int i = x0; i < x1; i++)
+			{
+				if (i >= 0 && i < ScreenWidth && j >= 0 && j < ScreenHeight)
+				{
+					PutPixel(i, j, c);
+				}
+			}
+		}
+	}
+	void DrawRectangle(Vec2 p0, Vec2 p1, Color c)
+	{
+		if (p0.x > p1.x)
+		{
+			std::swap(p0, p1);
+		}
+		if (p0.y > p1.y)
+		{
+			std::swap(p0, p1);
+		}
+
+		for (int j = int(p0.y); j < int(p1.y); j++)
+		{
+			for (int i = int(p0.x); i < int(p1.x); i++)
+			{
+				if (i >= 0 && i < ScreenWidth && j >= 0 && j < ScreenHeight)
+				{
+					PutPixel(i, j, c);
+				}
 			}
 		}
 	}
