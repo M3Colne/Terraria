@@ -1,4 +1,6 @@
 #include "Grid.h"
+#include <random>
+#include "PerlinNoise.h"
 
 Grid::Grid(int width, int height)
 	:
@@ -13,6 +15,9 @@ Grid::Grid(int width, int height)
 	{
 		blocks[i] = Block(Block::Type::Air);
 	}
+
+	GenerateSurface();
+	FillUnderground();
 }
 
 Grid::~Grid()
@@ -78,6 +83,24 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 			DrawCell(gfx, i * cellWidth, j * cellHeight, blocks[GetId(i, j)].type);
 		}
 	}
+}
+
+void Grid::GenerateSurface()
+{
+	std::uniform_real_distribution<float> seedDist(0.0f, 1000000.0f); //You can change the maximum value to whatever you want
+	seed = seedDist(std::mt19937(std::random_device{}()));
+
+	for (int i = 0; i < Grid::Width; i++, seed += 0.0800000f) //If you change 0.2f with bigger numbers, it will get suddenly random
+	{
+		float j = Noise::PerlinNoise_1D(seed, 2.7182818f, 6.2831853f, 1);
+		j += float(Grid::Height / 2 - 1);
+
+		blocks[GetId(i, int(j))].type = Block::Type::Grass;
+	}
+}
+
+void Grid::FillUnderground()
+{
 }
 
 void Grid::DrawCell(Graphics& gfx, int x, int y, unsigned char r, unsigned char g, unsigned char b)

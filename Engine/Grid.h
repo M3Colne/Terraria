@@ -16,12 +16,18 @@ public:
 	//Functions
 	Grid() = default;
 	Grid(int width, int height);
+	Grid(const Grid& other) = delete;
+	Grid& operator=(const Grid& other) = delete;
 	~Grid();
 	void SaveWorld(char* fileName);
 	void LoadWorld(char* fileName);
 	void DrawBlocks(Graphics& gfx, int x, int y);
+	void GenerateSurface();
+	void FillUnderground();
+	void GenerateOres();
 private:
 	//Variables
+	float seed;
 	Block* blocks = nullptr;
 	int Width = 0; //In blocks
 	int Height = 0; //In blocks

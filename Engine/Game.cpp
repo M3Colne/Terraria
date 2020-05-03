@@ -26,7 +26,8 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-    cameraPos(0, 0)
+    pGrid(nullptr),
+    cameraPos(0,0)
 {
 }
 

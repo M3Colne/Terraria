@@ -46,7 +46,7 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-    Grid* pGrid = nullptr;
+    Grid* pGrid;
     bool hasStarted = false;
     Vei2 cameraPos;
     int cameraSpeed = 1;
