@@ -16,6 +16,7 @@ Grid::Grid(int width, int height)
 		blocks[i] = Block(Block::Type::Air);
 	}
 
+
 	GenerateSurface();
 	FillUnderground();
 }
@@ -93,9 +94,8 @@ void Grid::GenerateSurface()
 	for (int i = 0; i < Grid::Width; i++, seed += 0.0800000f) //If you change 0.2f with bigger numbers, it will get suddenly random
 	{
 		float j = Noise::PerlinNoise_1D(seed, 2.7182818f, 6.2831853f, 1);
-		j += float(Grid::Height / 2 - 1);
-
-		blocks[GetId(i, int(j))].type = Block::Type::Grass;
+		//j = 10 * (j * 2 - 1); //j is between 0-1 but after this calculation it will be between -10 and +10
+		blocks[GetId(i, j * 10)].type = Block::Type::Grass;
 	}
 }
 
