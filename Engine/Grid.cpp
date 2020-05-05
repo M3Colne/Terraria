@@ -72,16 +72,38 @@ void Grid::LoadWorld(char* fileName)
 
 void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 {
-	//Find the block that contains that point and then calculate how many blocks I will draw in the horizontal and vertical direction.BOOM EZ!
+	////Find the block that contains that point and then calculate how many blocks I will draw in the horizontal and vertical direction.BOOM EZ!
 
-	const int X = int(x / cellWidth);
-	const int Y = int(y / cellHeight);
+	//const int X = int(x / cellWidth);
+	//const int Y = int(y / cellHeight);
 
-	for (int j = Y; j < Y + cellsV; j++)
+	//////Findig dx,dy
+	////const int dx = x - X * cellWidth;
+	////const int dy = y - Y * cellHeight;
+
+	//////Draw corners
+	//////Top-left
+	////DrawCell();
+	//////Bottom-left
+
+	//////Top-right
+	////
+	//////Bottom-right
+
+	//////Draw edges
+	////for ();
+	////for ();
+	////for ();
+	////for ();
+
+	//////Draw inside
+	////for ();
+
+	for (int j = 0; j < Graphics::ScreenHeight; j += cellHeight)
 	{
-		for (int i = X; i < X + cellsH; i++)
+		for (int i = 0; i < Graphics::ScreenWidth; i += cellWidth)
 		{
-			DrawCell(gfx, i * cellWidth, j * cellHeight, blocks[GetId(i, j)].type);
+			DrawCell(gfx, i, j, blocks[GetId(i / cellWidth, j / cellHeight)].type);
 		}
 	}
 }
@@ -95,17 +117,12 @@ void Grid::GenerateSurface()
 	{
 		float j = Noise::PerlinNoise_1D(seed, 2.7182818f, 6.2831853f, 1);
 		//j = 10 * (j * 2 - 1); //j is between 0-1 but after this calculation it will be between -10 and +10
-		blocks[GetId(i, j * 10)].type = Block::Type::Grass;
+		blocks[GetId(i, int(j * 10))].type = Block::Type::Grass;
 	}
 }
 
 void Grid::FillUnderground()
 {
-}
-
-void Grid::DrawCell(Graphics& gfx, int x, int y, unsigned char r, unsigned char g, unsigned char b)
-{
-	gfx.DrawRectangle(x, y, x + cellWidth, y + cellHeight, Colors::MakeRGB(r, g, b));
 }
 
 void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
@@ -114,22 +131,22 @@ void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
 	{
 	case Block::Type::Air:
 	{
-		DrawCell(gfx, x, y, 230, 255, 255);
+		gfx.DrawTexture(x, y, Texture2D("./Assets/air.bmp"));
 		break;
 	}
 	case Block::Type::Dirt:
 	{
-		DrawCell(gfx, x, y, 191, 128, 64);
+		gfx.DrawTexture(x, y, Texture2D("./Assets/dirt.bmp"));
 		break;
 	}
 	case Block::Type::Grass:
 	{
-		DrawCell(gfx, x, y, 0, 102, 34);
+		gfx.DrawTexture(x, y, Texture2D("./Assets/grass.bmp"));
 		break;
 	}
 	case Block::Type::Stone:
 	{
-		DrawCell(gfx, x, y, 163, 163, 117);
+		gfx.DrawTexture(x, y, Texture2D("./Assets/stone.bmp"));
 		break;
 	}
 	}

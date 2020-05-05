@@ -20,6 +20,8 @@ public:
 	Texture2D(const char* fileName)
 	{
 		std::ifstream bmpStream(fileName, std::ios::binary);
+		
+		assert(bmpStream); //The is a problem with the file
 
 		BITMAPFILEHEADER bmpFileHeader;
 
@@ -65,18 +67,21 @@ public:
 	}
 	Texture2D& operator=(const Texture2D& other)
 	{
-		delete[] pixels;
-		pixels = nullptr;
-	
-		this->width = other.width;
-		this->height = other.height;
-
-		const int size = width * height;
-		this->pixels = new Color[size];
-
-		for (int i = 0; i < size; i++)
+		if (&other != this)
 		{
-			pixels[i] = other.pixels[i];
+			delete[] pixels;
+			pixels = nullptr;
+
+			this->width = other.width;
+			this->height = other.height;
+
+			const int size = width * height;
+			this->pixels = new Color[size];
+
+			for (int i = 0; i < size; i++)
+			{
+				pixels[i] = other.pixels[i];
+			}
 		}
 
 		return *this;

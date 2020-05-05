@@ -27,13 +27,12 @@ public:
 	void GenerateOres();
 private:
 	//Variables
-	float seed;
+	float seed = 0;
 	Block* blocks = nullptr;
 	int Width = 0; //In blocks
 	int Height = 0; //In blocks
 private:
 	//Functions
-	void DrawCell(Graphics& gfx, int x, int y, unsigned char r, unsigned char g, unsigned char b);
 	void DrawCell(Graphics& gfx, int x, int y, Block::Type type);
 	int GetId(int x, int y) const;
 	int GetPosX(int id) const;
