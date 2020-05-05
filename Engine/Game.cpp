@@ -73,7 +73,7 @@ void Game::UpdateModel()
         LoadGrid("./Worlds/world1.txt");
     }
 
-    if (wnd.kbd.KeyIsPressed('W') && cameraPos.y >= 1)
+    if (wnd.kbd.KeyIsPressed('W') && cameraPos.y >= cameraSpeed)
     {
         cameraPos.y -= cameraSpeed;
     }
@@ -81,7 +81,7 @@ void Game::UpdateModel()
     {
         cameraPos.y += cameraSpeed;
     }
-    if (wnd.kbd.KeyIsPressed('A') && cameraPos.x >= 1)
+    if (wnd.kbd.KeyIsPressed('A') && cameraPos.x >= cameraSpeed)
     {
         cameraPos.x -= cameraSpeed;
     }
