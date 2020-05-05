@@ -24,6 +24,7 @@
 #include "ChiliException.h"
 #include "Colors.h"
 #include "Vec2.h"
+#include "Texture2D.h"
 
 class Graphics
 {
@@ -180,6 +181,16 @@ public:
 				{
 					PutPixel(i, j, c);
 				}
+			}
+		}
+	}
+	void DrawTexture(int x, int y, const Texture2D& t)
+	{
+		for (int j = 0; j < t.GetHeight(); j++)
+		{
+			for (int i = 0; i < t.GetWidth(); i++)
+			{
+				PutPixel(i + x, j + y, t.GetPixel(i, j));
 			}
 		}
 	}
