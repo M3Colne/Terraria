@@ -2,6 +2,7 @@
 
 #include "Colors.h"
 #include <assert.h>
+#include <fstream>
 
 struct Texture2D
 {
@@ -16,6 +17,41 @@ public:
 	//Variables
 public:
 	//Functions
+	Texture2D(const char* fileName)
+	{
+		std::ifstream bmpStream(fileName, std::ios::binary);
+
+		BITMAPFILEHEADER bmpFileHeader;
+
+		bmpStream.read(reinterpret_cast<char*>(&bmpFileHeader), sizeof(bmpFileHeader));
+
+		BITMAPINFOHEADER bmpInfoHeader;
+
+		bmpStream.read(reinterpret_cast<char*>(&bmpInfoHeader), sizeof(bmpInfoHeader));
+
+		assert(bmpInfoHeader.biBitCount == 24);
+		assert(bmpInfoHeader.biCompression == BI_RGB);
+
+		this->width = bmpInfoHeader.biWidth;
+		this->height = bmpInfoHeader.biHeight;
+		this->pixels = new Color[width * height];
+
+		bmpStream.seekg(bmpFileHeader.bfOffBits, std::ios::beg);
+		const int padding = (4 - (width * 3) % 4) % 4;
+
+		for (int j = height - 1; j >= 0; j--)
+		{
+			for (int i = 0; i < width; i++)
+			{
+				SetPixel(i, j, Color( bmpStream.get(), bmpStream.get(),bmpStream.get() ));
+			}
+			bmpStream.seekg(padding, std::ios::cur);
+		}
+	}
+	Texture2D(const std::string fileName)
+	{
+		*this = Texture2D(fileName.c_str());
+	}
 	Texture2D(int width, int height)
 		:
 		width(width),
