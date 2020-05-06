@@ -20,7 +20,7 @@ public:
 	Texture2D(const char* fileName)
 	{
 		std::ifstream bmpStream(fileName, std::ios::binary);
-		
+
 		assert(bmpStream); //The is a problem with the file
 
 		BITMAPFILEHEADER bmpFileHeader;
@@ -31,23 +31,41 @@ public:
 
 		bmpStream.read(reinterpret_cast<char*>(&bmpInfoHeader), sizeof(bmpInfoHeader));
 
-		assert(bmpInfoHeader.biBitCount == 24);
+		assert(bmpInfoHeader.biBitCount == 24 || bmpInfoHeader.biBitCount == 32);
 		assert(bmpInfoHeader.biCompression == BI_RGB);
+
+		const bool is32 = bmpInfoHeader.biBitCount == 32;
 
 		this->width = bmpInfoHeader.biWidth;
 		this->height = bmpInfoHeader.biHeight;
+		//this is for the case that the height is negative
+		int s = height - 1, e = -1, c = -1;;
+		if (height < 0)
+		{
+			height = -height;
+			s = 0;
+			e = height;
+			c = 1;
+		}
 		this->pixels = new Color[width * height];
 
 		bmpStream.seekg(bmpFileHeader.bfOffBits, std::ios::beg);
 		const int padding = (4 - (width * 3) % 4) % 4;
 
-		for (int j = height - 1; j >= 0; j--)
+		for (int j = s; j != e; j += c)
 		{
 			for (int i = 0; i < width; i++)
 			{
-				SetPixel(i, j, Color( bmpStream.get(), bmpStream.get(),bmpStream.get() ));
+				SetPixel(i, j, Color(bmpStream.get(), bmpStream.get(), bmpStream.get()));
+				if (is32)
+				{
+					bmpStream.seekg(1, std::ios::cur);
+				}
 			}
-			bmpStream.seekg(padding, std::ios::cur);
+			if (!is32)
+			{
+				bmpStream.seekg(padding, std::ios::cur);
+			}
 		}
 	}
 	Texture2D(const std::string fileName)
