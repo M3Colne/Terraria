@@ -186,13 +186,88 @@ public:
 	}
 	void DrawTexture(int x, int y, const Texture2D& t)
 	{
-		for (int j = 0; j < t.GetHeight(); j++)
+		DrawTexture(x, y, 0, 0, t.GetWidth(), t.GetHeight(), t);
+	}
+	void DrawTexture(int x, int y, int x0, int y0, int x1, int y1, const Texture2D& t)
+	{
+		assert(x0 >= 0);
+		assert(x1 <= t.GetWidth());
+		assert(y0 >= 0);
+		assert(y1 <= t.GetHeight());
+
+		for (int j = y0; j < y1; j++)
 		{
-			for (int i = 0; i < t.GetWidth(); i++)
+			for (int i = x0; i < x1; i++)
 			{
-				PutPixel(i + x, j + y, t.GetPixel(i, j));
+				PutPixel(i + x - x0, j + y - y0, t.GetPixel(i, j));
 			}
 		}
+	}
+	void DrawTexture(int x, int y, int x0, int y0, int x1, int y1, int cx0, int cy0, int cx1, int cy1, const Texture2D& t)
+	{
+		if (x < cx0)
+		{
+			x0 += cx0 - x;
+			x = cx0;
+		}
+		if (y < cy0)
+		{
+			y0 += cy0 - y;
+			y = cy0;
+		}
+		if (x + x1 - x0 > cx1)
+		{
+			x1 -= x + x1 - x0 - cx1;
+		}
+		if (y + y1 - y0 > cy1)
+		{
+			y1 -= y + y1 - y0 - cy1;
+		}
+		DrawTexture(x, y, x0, y0, x1, y1, t);
+	}
+	void DrawTextureChroma(int x, int y, const Texture2D& t, Color chroma)
+	{
+		DrawTextureChroma(x, y, 0, 0, t.GetWidth(), t.GetHeight(), t, chroma);
+	}
+	void DrawTextureChroma(int x, int y, int x0, int y0, int x1, int y1, const Texture2D& t, Color chroma)
+	{
+		assert(x0 >= 0);
+		assert(x1 <= t.GetWidth());
+		assert(y0 >= 0);
+		assert(y1 <= t.GetHeight());
+
+		for (int j = y0; j < y1; j++)
+		{
+			for (int i = x0; i < x1; i++)
+			{
+				if (t.GetPixel(i, j) != chroma)
+				{
+					PutPixel(i + x - x0, j + y - y0, t.GetPixel(i, j));
+				}
+			}
+		}
+	}
+	void DrawTextureChroma(int x, int y, int x0, int y0, int x1, int y1, int cx0, int cy0, int cx1, int cy1, const Texture2D& t, Color chroma)
+	{
+		if (x < cx0)
+		{
+			x0 += cx0 - x;
+			x = cx0;
+		}
+		if (y < cy0)
+		{
+			y0 += cy0 - y;
+			y = cy0;
+		}
+		if (x + x1 - x0 > cx1)
+		{
+			x1 -= x + x1 - x0 - cx1;
+		}
+		if (y + y1 - y0 > cy1)
+		{
+			y1 -= y + y1 - y0 - cy1;
+		}
+		DrawTextureChroma(x, y, x0, y0, x1, y1, t, chroma);
 	}
 	~Graphics();
 private:
