@@ -159,7 +159,7 @@ int Grid::GetId(int x, int y) const
 
 int Grid::GetPosX(int id) const
 {
-	return id - GetPosY(id);
+	return id % Width;
 }
 
 int Grid::GetPosY(int id) const
