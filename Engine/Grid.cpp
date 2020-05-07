@@ -78,9 +78,9 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 	const int X = int(x / cellWidth);
 	const int Y = int(y / cellHeight);
 
-	for (int j = 0; j < cellsV; j++)
+	for (int j = 0; j <= cellsV; j++)
 	{
-		for (int i = 0; i < cellsH; i++)
+		for (int i = 0; i <= cellsH; i++)
 		{
 			DrawCell(gfx, (X + i) * cellWidth - x, (Y + j) * cellHeight - y, blocks[GetId(X + i, Y + j)].type);
 		}
