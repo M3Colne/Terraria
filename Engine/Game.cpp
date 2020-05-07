@@ -106,8 +106,7 @@ void Game::SaveGrid(char* fileName)
 void Game::LoadGrid(char* fileName)
 {
     assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
-    pGrid = new Grid();
-    pGrid->LoadWorld(fileName);
+    pGrid = new Grid(fileName);
 }
 
 void Game::DeleteGrid()
