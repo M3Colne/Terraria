@@ -62,12 +62,12 @@ void Game::UpdateModel()
         hasStarted = false;
         DeleteGrid();
     }
-    else if (wnd.kbd.KeyIsPressed('S')) //Saving
+    else if (wnd.kbd.KeyIsPressed('5')) //Saving
     {
         hasStarted = false;
         SaveGrid("./Worlds/world1.txt");
     }
-    else if (wnd.kbd.KeyIsPressed('L')) //Loading
+    else if (wnd.kbd.KeyIsPressed('6')) //Loading
     {
         hasStarted = true;
         LoadGrid("./Worlds/world1.txt");
