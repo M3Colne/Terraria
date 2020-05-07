@@ -1,4 +1,5 @@
 //http://www.arendpeter.com/Perlin_Noise.html
+//https://www.youtube.com/watch?v=Aga0TBJkchM
 #pragma once
 
 #include <cmath>
@@ -43,6 +44,20 @@ public:
 
 		return total / denominator;
 	}
+	static float PerlinNoise_3D(float x, float y, float z)
+	{
+		float AB = PerlinNoise_2D(x, y);
+		float BC = PerlinNoise_2D(y, z);
+		float AC = PerlinNoise_2D(x, z);
+
+		float BA = PerlinNoise_2D(y, x);
+		float CB = PerlinNoise_2D(z, y);
+		float CA = PerlinNoise_2D(z, x);
+
+		float ABC = AB + BC + AC + BA + CB + CA;
+
+		return ABC / 6.0f;
+	}
 	static float PerlinNoise_1D(float x, float freq, float ampl, int nOctaves) //This is customazible perlin noise
 	{
 		float total = 0.0f;
@@ -75,19 +90,23 @@ public:
 
 		return total / denominator;
 	}
-	static float PerlinNoise_3D(float x, float y, float z)
+	static float PerlinNoise_3D(float x, float y, float z, float freq, float ampl, int nOctaves)
 	{
-		float AB = PerlinNoise_2D(x, y);
-		float BC = PerlinNoise_2D(y, z);
-		float AC = PerlinNoise_2D(x, z);
+		float AB = PerlinNoise_2D(x, y, freq, ampl, nOctaves);
+		float BC = PerlinNoise_2D(y, z, freq, ampl, nOctaves);
+		float AC = PerlinNoise_2D(x, z, freq, ampl, nOctaves);
 
-		float BA = PerlinNoise_2D(y, x);
-		float CB = PerlinNoise_2D(z, y);
-		float CA = PerlinNoise_2D(z, x);
+		float BA = PerlinNoise_2D(y, x, freq, ampl, nOctaves);
+		float CB = PerlinNoise_2D(z, y, freq, ampl, nOctaves);
+		float CA = PerlinNoise_2D(z, x, freq, ampl, nOctaves);
 
 		float ABC = AB + BC + AC + BA + CB + CA;
 
 		return ABC / 6.0f;
+	}
+	static float Transform01toN1P1(float x)
+	{
+		return 2 * x - 1;
 	}
 private:
 	//Noise
