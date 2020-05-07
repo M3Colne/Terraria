@@ -82,28 +82,6 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 			DrawCell(gfx, (X + i) * cellWidth - x, (Y + j) * cellHeight - y, blocks[GetId(X + i, Y + j)].type);
 		}
 	}
-
-	//////Findig dx,dy
-	////const int dx = x - X * cellWidth;
-	////const int dy = y - Y * cellHeight;
-
-	//////Draw corners
-	//////Top-left
-	////DrawCell();
-	//////Bottom-left
-
-	//////Top-right
-	////
-	//////Bottom-right
-
-	//////Draw edges
-	////for ();
-	////for ();
-	////for ();
-	////for ();
-
-	//////Draw inside
-	////for ();
 }
 
 void Grid::GenerateSurface()

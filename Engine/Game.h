@@ -48,7 +48,7 @@ private:
 	/*  User Variables              */
     Grid* pGrid;
     bool hasStarted = false;
-    Vei2 cameraPos;
-    int cameraSpeed = 10;
+    Vec2 cameraPos;
+    float cameraSpeed = 2.5f;
 	/********************************/
 };

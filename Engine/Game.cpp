@@ -27,7 +27,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
     pGrid(nullptr),
-    cameraPos(0,0)
+    cameraPos(0.0f, 0.0f)
 {
 }
 
@@ -120,6 +120,6 @@ void Game::ComposeFrame()
 {
     if (hasStarted)
     {
-        pGrid->DrawBlocks(gfx, cameraPos.x, cameraPos.y);
+        pGrid->DrawBlocks(gfx, int(cameraPos.x), int(cameraPos.y));
     }
 }

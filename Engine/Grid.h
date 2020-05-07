@@ -8,8 +8,8 @@ class Grid
 {
 public:
 	//Variables
-	static constexpr int cellsH = 100;
-	static constexpr int cellsV = 100;
+	static constexpr int cellsH = 40;
+	static constexpr int cellsV = 30;
 	static constexpr int cellWidth = Graphics::ScreenWidth / cellsH;
 	static constexpr int cellHeight = Graphics::ScreenHeight / cellsV;
 public:
