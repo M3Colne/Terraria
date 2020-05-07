@@ -6,7 +6,7 @@ Grid::Grid(int width, int height)
 	:
 	Width(width),
 	Height(height),
-	blockSprites("./Assets/blockSpriteSheet20x20.bmp")
+	blockSpriteSheet("./Assets/blockSpriteSheet20x20.bmp")
 {
 	//Assigning the blocks pointer to an array on the heap
 	blocks = new Block[Width * Height];
@@ -24,7 +24,7 @@ Grid::Grid(int width, int height)
 
 Grid::Grid(char* fileName)
 	:
-	blockSprites("./Assets/blockSpriteSheet20x20.bmp")
+	blockSpriteSheet("./Assets/blockSpriteSheet20x20.bmp")
 {
 	std::ifstream loadingStream(fileName, std::ios_base::binary);
 
@@ -106,28 +106,29 @@ void Grid::FillUnderground()
 
 void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
 {
-	Texture2D blockTexture("./Assets/air.bmp");
 	switch (type)
 	{
+	case Block::Type::Air:
+	{
+		gfx.DrawTexture(x, y, 0, 0, 20, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		break;
+	}
 	case Block::Type::Dirt:
 	{
-		blockTexture = Texture2D("./Assets/dirt.bmp");
+		gfx.DrawTexture(x, y, 21, 0, 41, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
 		break;
 	}
 	case Block::Type::Grass:
 	{
-		blockTexture = Texture2D("./Assets/grass.bmp");
+		gfx.DrawTexture(x, y, 42, 0, 62, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
 		break;
 	}
 	case Block::Type::Stone:
 	{
-		blockTexture = Texture2D("./Assets/stone.bmp");
+		gfx.DrawTexture(x, y, 63, 0, 83, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
 		break;
 	}
 	}
-
-	gfx.DrawTexture(x, y, 0, 0, blockTexture.GetWidth(), blockTexture.GetHeight(),
-		0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockTexture);
 }
 
 int Grid::GetId(int x, int y) const

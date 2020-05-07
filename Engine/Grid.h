@@ -26,6 +26,7 @@ public:
 	void GenerateOres();
 private:
 	//Variables
+	Texture2D blockSpriteSheet;
 	float seed = 0;
 	Block* blocks = nullptr;
 	int Width = 0; //In blocks
