@@ -72,10 +72,16 @@ void Grid::LoadWorld(char* fileName)
 
 void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 {
-	////Find the block that contains that point and then calculate how many blocks I will draw in the horizontal and vertical direction.BOOM EZ!
+	const int X = int(x / cellWidth);
+	const int Y = int(y / cellHeight);
 
-	//const int X = int(x / cellWidth);
-	//const int Y = int(y / cellHeight);
+	for (int j = 0; j < cellsV; j++)
+	{
+		for (int i = 0; i < cellsH; i++)
+		{
+			DrawCell(gfx, (X + i) * cellWidth - x, (Y + j) * cellHeight - y, blocks[GetId(X + i, Y + j)].type);
+		}
+	}
 
 	//////Findig dx,dy
 	////const int dx = x - X * cellWidth;
@@ -98,14 +104,6 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 
 	//////Draw inside
 	////for ();
-
-	for (int j = 0; j < Graphics::ScreenHeight; j += cellHeight)
-	{
-		for (int i = 0; i < Graphics::ScreenWidth; i += cellWidth)
-		{
-			DrawCell(gfx, i, j, blocks[GetId(i / cellWidth, j / cellHeight)].type);
-		}
-	}
 }
 
 void Grid::GenerateSurface()
@@ -127,29 +125,28 @@ void Grid::FillUnderground()
 
 void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
 {
+	Texture2D blockTexture("./Assets/air.bmp");
 	switch (type)
 	{
-	case Block::Type::Air:
-	{
-		gfx.DrawTexture(x, y, Texture2D("./Assets/air.bmp"));
-		break;
-	}
 	case Block::Type::Dirt:
 	{
-		gfx.DrawTexture(x, y, Texture2D("./Assets/dirt.bmp"));
+		blockTexture = Texture2D("./Assets/dirt.bmp");
 		break;
 	}
 	case Block::Type::Grass:
 	{
-		gfx.DrawTexture(x, y, Texture2D("./Assets/grass.bmp"));
+		blockTexture = Texture2D("./Assets/grass.bmp");
 		break;
 	}
 	case Block::Type::Stone:
 	{
-		gfx.DrawTexture(x, y, Texture2D("./Assets/stone.bmp"));
+		blockTexture = Texture2D("./Assets/stone.bmp");
 		break;
 	}
 	}
+
+	gfx.DrawTexture(x, y, 0, 0, blockTexture.GetWidth(), blockTexture.GetHeight(),
+					0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockTexture);
 }
 
 int Grid::GetId(int x, int y) const

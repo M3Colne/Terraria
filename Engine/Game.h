@@ -49,6 +49,6 @@ private:
     Grid* pGrid;
     bool hasStarted = false;
     Vei2 cameraPos;
-    int cameraSpeed = 1;
+    int cameraSpeed = 10;
 	/********************************/
 };
