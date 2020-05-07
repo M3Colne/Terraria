@@ -14,13 +14,12 @@ public:
 	static constexpr int cellHeight = Graphics::ScreenHeight / cellsV;
 public:
 	//Functions
-	Grid() = default;
 	Grid(int width, int height);
+	Grid(char* fileName);
 	Grid(const Grid& other) = delete;
 	Grid& operator=(const Grid& other) = delete;
 	~Grid();
 	void SaveWorld(char* fileName);
-	void LoadWorld(char* fileName);
 	void DrawBlocks(Graphics& gfx, int x, int y);
 	void GenerateSurface();
 	void FillUnderground();

@@ -5,7 +5,8 @@
 Grid::Grid(int width, int height)
 	:
 	Width(width),
-	Height(height)
+	Height(height),
+	blockSprites("./Assets/blockSpriteSheet20x20.bmp")
 {
 	//Assigning the blocks pointer to an array on the heap
 	blocks = new Block[Width * Height];
@@ -19,6 +20,31 @@ Grid::Grid(int width, int height)
 
 	GenerateSurface();
 	FillUnderground();
+}
+
+Grid::Grid(char* fileName)
+	:
+	blockSprites("./Assets/blockSpriteSheet20x20.bmp")
+{
+	std::ifstream loadingStream(fileName, std::ios_base::binary);
+
+	if (loadingStream.good())
+	{
+		//Reading the width and the height of the world
+		loadingStream.read(reinterpret_cast<char*>(&Width), sizeof(Width));
+		loadingStream.read(reinterpret_cast<char*>(&Height), sizeof(Height));
+
+		//Assigning the blocks pointer to an array on the heap
+		blocks = new Block[Width * Height];
+
+		//Reading the blocks data
+		for (int i = 0; i < Width * Height; i++)
+		{
+			loadingStream.read(reinterpret_cast<char*>(&blocks[i].type), sizeof(Block::Type));
+		}
+
+		//Player location or other things will go after this comment
+	}
 }
 
 Grid::~Grid()
@@ -41,29 +67,6 @@ void Grid::SaveWorld(char* fileName)
 		{
 			savingStream.write(reinterpret_cast<char*>(&blocks[i].type), sizeof(blocks[i].type));
 			//Other data will be written here
-		}
-
-		//Player location or other things will go after this comment
-	}
-}
-
-void Grid::LoadWorld(char* fileName)
-{
-	std::ifstream loadingStream(fileName, std::ios_base::binary);
-
-	if (loadingStream.good())
-	{
-		//Reading the width and the height of the world
-		loadingStream.read(reinterpret_cast<char*>(&Width), sizeof(Width));
-		loadingStream.read(reinterpret_cast<char*>(&Height), sizeof(Height));
-
-		//Assigning the blocks pointer to an array on the heap
-		blocks = new Block[Width * Height];
-
-		//Reading the blocks data
-		for (int i = 0; i < Width * Height; i++)
-		{
-			loadingStream.read(reinterpret_cast<char*>(&blocks[i].type), sizeof(Block::Type));
 		}
 
 		//Player location or other things will go after this comment
@@ -124,7 +127,7 @@ void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
 	}
 
 	gfx.DrawTexture(x, y, 0, 0, blockTexture.GetWidth(), blockTexture.GetHeight(),
-					0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockTexture);
+		0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockTexture);
 }
 
 int Grid::GetId(int x, int y) const
