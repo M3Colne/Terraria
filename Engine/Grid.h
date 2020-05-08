@@ -25,7 +25,7 @@ public:
 private:
 	//Variables
 	Texture2D blockSpriteSheet;
-	float seed = 0;
+	int seed = 0;
 	Block* blocks = nullptr;
 	int Width = 0; //In blocks
 	int Height = 0; //In blocks
@@ -35,7 +35,7 @@ private:
 	int GetId(int x, int y) const;
 	int GetPosX(int id) const;
 	int GetPosY(int id) const;
-	void GenerateSeed(std::mt19937 rng ,float min, float max);
-	void GenerateGround(std::mt19937 rng, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer);
-	void GenerateOres();
+	void GenerateSeed(int min, int max);
+	void GenerateGround(int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer);
+	void GenerateOres(float chanceOfSpawn, float chanceOfCluster, float chanceDivisor, int minLevel, int maxLevel, Block::Type bType);
 };

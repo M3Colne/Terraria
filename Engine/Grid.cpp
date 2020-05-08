@@ -16,9 +16,9 @@ Grid::Grid(int width, int height, int surfaceLevel, int surfaceLevelOffset, int 
 		blocks[i] = Block(Block::Type::Air);
 	}
 
-	std::mt19937 rng(std::random_device{}());
-	GenerateSeed(rng, 0.0f, 1000000.0f);
-	GenerateGround(rng, 40, 30, 3);
+	GenerateSeed(0, 1000000);
+	GenerateGround(40, 30, 3, 6);
+	GenerateOres()
 }
 
 Grid::Grid(char* fileName)
@@ -86,16 +86,15 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 	}
 }
 
-void Grid::GenerateGround(std::mt19937 rng, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer)
+void Grid::GenerateGround(int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer)
 {
-	float s = seed;
-	for (int i = 0; i < Grid::Width; i++, s += 0.04000f)
+	float tempS = float(seed);
+	for (int i = 0; i < Grid::Width; i++, tempS += 0.0180f)
 	{
 		//Setting the grass
-		const int grassOffSet = int(surfaceLevelOffset * Noise::Transform01toN1P1(Noise::PerlinNoise_1D(s, 2.7182818f, 6.2831853f, 1)));
+		const int grassOffSet = int(surfaceLevelOffset * Noise::Transform01toN1P1(Noise::PerlinNoise_1D(tempS, 2.7182818f, 6.2831853f, 1)));
 		blocks[GetId(i, grassOffSet + surfaceLevel)].type = Block::Type::Grass;
-		std::uniform_int_distribution<int> dirtDistribution(0, maxDirtLayer);
-		const int dirtLayers = dirtDistribution(rng);
+		const int dirtLayers = Noise::RandomInt(tempS, minDirtLayer, maxDirtLayer);
 
 		//Dirt layer
 		for (int d = 0; d < dirtLayers; d++)
@@ -105,12 +104,71 @@ void Grid::GenerateGround(std::mt19937 rng, int surfaceLevel, int surfaceLevelOf
 
 		//Here I just fill ALL the underground with stone, but later this should be changed with an cave generation algorithm
 		//so this is just temporary
-		int s = grassOffSet + surfaceLevel + 1 + dirtLayers;
-		while (s != Height)
+		int st = grassOffSet + surfaceLevel + 1 + dirtLayers;
+		while (st != Height)
 		{
-			blocks[GetId(i, s)].type = Block::Type::Stone;
-			s++;
+			blocks[GetId(i, st)].type = Block::Type::Stone;
+			st++;
 		}
+	}
+
+	GenerateOres(0.0015f, 80.0f, 10.0f, grassOffSet + surfaceLevel + 1 + dirtLayers + 10, 
+		grassOffSet + surfaceLevel + 1 + dirtLayers + 80, Block::Type::Dirt);
+}
+
+void Grid::GenerateOres(float chanceOfSpawn, float chanceOfCluster, float chanceDivisor, int minLevel, int maxLevel, Block::Type bType)
+{
+	std::vector<int> oresId;
+
+	float tempS = seed;
+	for (int j = minLevel; j < maxLevel; j++)
+	{
+		for (int i = 0; i < Width; i++, tempS++)
+		{
+			const int blockId = GetId(i, j);
+			if (blocks[blockId].type == Block::Type::Stone && Noise::RandomInt(tempS, 0, 100) < chanceOfSpawn)
+			{
+				oresId.push_back(blockId);
+			}
+		}
+	}
+
+	std::vector<int> branchId(oresId.size());
+
+	for (int source = 0; source < oresId.size(); source++)
+	{
+		for (int branch = 0; branch < branchId.size(); branch++, tempS++)
+		{
+			const int s = branchId[branch];
+			const int t = s - Width;
+			const int b = s + Width;
+			const int l = s - 1;
+			const int r = s + 1;
+
+			if (t >= 0 && blocks[t].type == Block::Type::Stone && Noise::RandomInt(tempS, 0, 100) <= chanceOfCluster)
+			{
+				blocks[t].type = bType;
+				branchId.push_back(t);
+			}
+			else if (b < Height && blocks[b].type == Block::Type::Stone && Noise::RandomInt(tempS, 0, 100) <= chanceOfCluster)
+			{
+				blocks[b].type = bType;
+				branchId.push_back(b);
+			}
+			else if (l >= 0 && blocks[l].type == Block::Type::Stone && Noise::RandomInt(tempS, 0, 100) <= chanceOfCluster)
+			{
+				blocks[l].type = bType;
+				branchId.push_back(l);
+			}
+			else if (r < Width && blocks[r].type == Block::Type::Stone && Noise::RandomInt(tempS, 0, 100) <= chanceOfCluster)
+			{
+				blocks[t].type = bType;
+				branchId.push_back(l);
+			}
+
+			chanceOfCluster /= chanceDivisor;
+		}
+		branchId.clear();
 	}
 }
 
@@ -156,8 +214,9 @@ int Grid::GetPosY(int id) const
 	return int(id / Width);
 }
 
-void Grid::GenerateSeed(std::mt19937 rng, float min, float max)
+void Grid::GenerateSeed(int min, int max)
 {
-	std::uniform_real_distribution<float> seedDist(min, max);
+	std::mt19937 rng(std::random_device{}());
+	std::uniform_int_distribution<int> seedDist(min, max);
 	seed = seedDist(rng);
 }
