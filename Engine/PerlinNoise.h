@@ -108,6 +108,11 @@ public:
 	{
 		return 2 * x - 1;
 	}
+	//Random Noise
+	static int RandomInt(int s, int min, int max)
+	{
+		return (int(IntNoise(s)) % (max + 1 - min)) + min;
+	}
 private:
 	//Noise
 	static float IntNoise(int x)
