@@ -148,6 +148,7 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="Vec2.h" />

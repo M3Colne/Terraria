@@ -36,7 +36,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-    void CreateGrid(int _width, int _height);
+    void CreateGrid(int _width, int _height, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer);
     void SaveGrid(char* fileName);
     void LoadGrid(char* fileName);
     void DeleteGrid();
@@ -49,6 +49,6 @@ private:
     Grid* pGrid;
     bool hasStarted = false;
     Vec2 cameraPos;
-    float cameraSpeed = 2.5f;
+    float cameraSpeed = 50.0f;
 	/********************************/
 };

@@ -3,6 +3,7 @@
 #include "Graphics.h"
 #include "Block.h"
 #include <fstream>
+#include <random>
 
 class Grid
 {
@@ -14,16 +15,13 @@ public:
 	static constexpr int cellHeight = Graphics::ScreenHeight / cellsV;
 public:
 	//Functions
-	Grid(int width, int height);
+	Grid(int width, int height, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer);
 	Grid(char* fileName);
 	Grid(const Grid& other) = delete;
 	Grid& operator=(const Grid& other) = delete;
 	~Grid();
 	void SaveWorld(char* fileName);
 	void DrawBlocks(Graphics& gfx, int x, int y);
-	void GenerateSurface();
-	void FillUnderground();
-	void GenerateOres();
 private:
 	//Variables
 	Texture2D blockSpriteSheet;
@@ -37,4 +35,7 @@ private:
 	int GetId(int x, int y) const;
 	int GetPosX(int id) const;
 	int GetPosY(int id) const;
+	void GenerateSeed(std::mt19937 rng ,float min, float max);
+	void GenerateGround(std::mt19937 rng, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer);
+	void GenerateOres();
 };

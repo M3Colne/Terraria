@@ -1,8 +1,7 @@
 #include "Grid.h"
-#include <random>
 #include "PerlinNoise.h"
 
-Grid::Grid(int width, int height)
+Grid::Grid(int width, int height, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer)
 	:
 	Width(width),
 	Height(height),
@@ -17,9 +16,9 @@ Grid::Grid(int width, int height)
 		blocks[i] = Block(Block::Type::Air);
 	}
 
-
-	GenerateSurface();
-	FillUnderground();
+	std::mt19937 rng(std::random_device{}());
+	GenerateSeed(rng, 0.0f, 1000000.0f);
+	GenerateGround(rng, 40, 30, 3);
 }
 
 Grid::Grid(char* fileName)
@@ -87,21 +86,32 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 	}
 }
 
-void Grid::GenerateSurface()
+void Grid::GenerateGround(std::mt19937 rng, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer)
 {
-	std::uniform_real_distribution<float> seedDist(0.0f, 1000000.0f); //You can change the maximum value to whatever you want
-	seed = seedDist(std::mt19937(std::random_device{}()));
-
-	for (int i = 0; i < Grid::Width; i++, seed += 0.0800000f) //If you change 0.2f with bigger numbers, it will get suddenly random
+	float s = seed;
+	for (int i = 0; i < Grid::Width; i++, s += 0.04000f)
 	{
-		float j = Noise::PerlinNoise_1D(seed, 2.7182818f, 6.2831853f, 1);
-		//j = 10 * (j * 2 - 1); //j is between 0-1 but after this calculation it will be between -10 and +10
-		blocks[GetId(i, int(j * 10))].type = Block::Type::Grass;
-	}
-}
+		//Setting the grass
+		const int grassOffSet = int(surfaceLevelOffset * Noise::Transform01toN1P1(Noise::PerlinNoise_1D(s, 2.7182818f, 6.2831853f, 1)));
+		blocks[GetId(i, grassOffSet + surfaceLevel)].type = Block::Type::Grass;
+		std::uniform_int_distribution<int> dirtDistribution(0, maxDirtLayer);
+		const int dirtLayers = dirtDistribution(rng);
 
-void Grid::FillUnderground()
-{
+		//Dirt layer
+		for (int d = 0; d < dirtLayers; d++)
+		{
+			blocks[GetId(i, grassOffSet + surfaceLevel + 1 + d)].type = Block::Type::Dirt;
+		}
+
+		//Here I just fill ALL the underground with stone, but later this should be changed with an cave generation algorithm
+		//so this is just temporary
+		int s = grassOffSet + surfaceLevel + 1 + dirtLayers;
+		while (s != Height)
+		{
+			blocks[GetId(i, s)].type = Block::Type::Stone;
+			s++;
+		}
+	}
 }
 
 void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
@@ -144,4 +154,10 @@ int Grid::GetPosX(int id) const
 int Grid::GetPosY(int id) const
 {
 	return int(id / Width);
+}
+
+void Grid::GenerateSeed(std::mt19937 rng, float min, float max)
+{
+	std::uniform_real_distribution<float> seedDist(min, max);
+	seed = seedDist(rng);
 }
