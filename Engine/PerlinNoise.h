@@ -71,7 +71,7 @@ public:
 
 		return ABC / 6.0f;
 	}
-	static float PerlinNoise_1D(float x, float freq, float ampl, int nOctaves) //This is customazible perlin noise
+	static float PerlinNoise_1D(float x, float freq, float ampl, int nOctaves, bool n) //This is customazible perlin noise
 	{
 		float total = 0.0f;
 
@@ -82,9 +82,14 @@ public:
 			ampl /= 2;
 		}
 
+		if (n)
+		{
+			return Transform0MtoNMo2PMo2(total, 2 * ampl);
+		}
+
 		return total;
 	}
-	static float PerlinNoise_2D(float x, float y, float freq, float ampl, int nOctaves) //This is customazible perlin noise
+	static float PerlinNoise_2D(float x, float y, float freq, float ampl, int nOctaves, bool n) //This is customazible perlin noise
 	{
 		float total = 0.0f;
 
@@ -95,17 +100,22 @@ public:
 			ampl /= 2;
 		}
 
+		if (n)
+		{
+			return Transform0MtoNMo2PMo2(total, 2 * ampl);
+		}
+
 		return total;
 	}
-	static float PerlinNoise_3D(float x, float y, float z, float freq, float ampl, int nOctaves)
+	static float PerlinNoise_3D(float x, float y, float z, float freq, float ampl, int nOctaves, bool n)
 	{
-		float AB = PerlinNoise_2D(x, y, freq, ampl, nOctaves);
-		float BC = PerlinNoise_2D(y, z, freq, ampl, nOctaves);
-		float AC = PerlinNoise_2D(x, z, freq, ampl, nOctaves);
+		float AB = PerlinNoise_2D(x, y, freq, ampl, nOctaves, n);
+		float BC = PerlinNoise_2D(y, z, freq, ampl, nOctaves, n);
+		float AC = PerlinNoise_2D(x, z, freq, ampl, nOctaves, n);
 
-		float BA = PerlinNoise_2D(y, x, freq, ampl, nOctaves);
-		float CB = PerlinNoise_2D(z, y, freq, ampl, nOctaves);
-		float CA = PerlinNoise_2D(z, x, freq, ampl, nOctaves);
+		float BA = PerlinNoise_2D(y, x, freq, ampl, nOctaves, n);
+		float CB = PerlinNoise_2D(z, y, freq, ampl, nOctaves, n);
+		float CA = PerlinNoise_2D(z, x, freq, ampl, nOctaves, n);
 
 		float ABC = AB + BC + AC + BA + CB + CA;
 
@@ -116,6 +126,10 @@ private:
 	static float Transform01toN1P1(float x)
 	{
 		return 2 * x - 1;
+	}
+	static float Transform0MtoNMo2PMo2(float x, float m)
+	{
+		return x - m / 2;
 	}
 	//Noise
 	static float IntNoise(int x)
