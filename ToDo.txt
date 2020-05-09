@@ -6,6 +6,7 @@ Player(+ Collision)
 |  Maybe use chunks?
 |  Inventory
 |_ Animations
+Caves generation?
 Flora?
 |- Networking? (I need to learn a lot... but would be worth it)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
 |
