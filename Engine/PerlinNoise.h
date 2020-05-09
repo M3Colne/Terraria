@@ -4,11 +4,16 @@
 
 #include <cmath>
 
+//Function explanations:
+//1D, 2D, 3D are self explanatory.
+//The functions that take a 'n' boolean argument will return values between 0 and 1 if is set to false
+//but if the boolean argument is true then it will return values between -1 and +1
+
 class Noise
 {
 public:
 	//Perlin Noise
-	static float PerlinNoise_1D(float x) //This is a default perlin noise
+	static float PerlinNoise_1D(float x, bool n) //This is a default perlin noise
 	{
 		float total = 0.0f;
 		float denominator = 0.0f;
@@ -23,11 +28,14 @@ public:
 			ampl /= 2;
 		}
 
-		//It gives values between 0 and a big number
+		if (n)
+		{
+			return Transform01toN1P1(total / denominator);
+		}
 
-		return total / denominator; //Now it gives values between 0 and 1
+		return total / denominator;
 	}
-	static float PerlinNoise_2D(float x, float y) //This is a default perlin noise
+	static float PerlinNoise_2D(float x, float y, bool n) //This is a default perlin noise
 	{
 		float total = 0.0f;
 		float denominator = 0.0f;
@@ -42,17 +50,22 @@ public:
 			ampl /= 2;
 		}
 
+		if (n)
+		{
+			return Transform01toN1P1(total / denominator);
+		}
+
 		return total / denominator;
 	}
-	static float PerlinNoise_3D(float x, float y, float z)
+	static float PerlinNoise_3D(float x, float y, float z, bool n)
 	{
-		float AB = PerlinNoise_2D(x, y);
-		float BC = PerlinNoise_2D(y, z);
-		float AC = PerlinNoise_2D(x, z);
+		float AB = PerlinNoise_2D(x, y, n);
+		float BC = PerlinNoise_2D(y, z, n);
+		float AC = PerlinNoise_2D(x, z, n);
 
-		float BA = PerlinNoise_2D(y, x);
-		float CB = PerlinNoise_2D(z, y);
-		float CA = PerlinNoise_2D(z, x);
+		float BA = PerlinNoise_2D(y, x, n);
+		float CB = PerlinNoise_2D(z, y, n);
+		float CA = PerlinNoise_2D(z, x, n);
 
 		float ABC = AB + BC + AC + BA + CB + CA;
 
@@ -61,34 +74,28 @@ public:
 	static float PerlinNoise_1D(float x, float freq, float ampl, int nOctaves) //This is customazible perlin noise
 	{
 		float total = 0.0f;
-		float denominator = 0.0f;
 
 		for (int i = 0; i < nOctaves; i++)
 		{
 			total += InterpolatedNoise(x * freq) * ampl;
-			denominator += 2 * ampl;
 			freq *= 2;
 			ampl /= 2;
 		}
 
-		//It gives values between 0 and a big number
-
-		return total / denominator; //Now it gives values between 0 and 1
+		return total;
 	}
 	static float PerlinNoise_2D(float x, float y, float freq, float ampl, int nOctaves) //This is customazible perlin noise
 	{
 		float total = 0.0f;
-		float denominator = 0.0f;
 
 		for (int i = 0; i < nOctaves; i++)
 		{
 			total += InterpolatedNoise(x * freq, y * freq) * ampl;
-			denominator += 2 * ampl;
 			freq *= 2;
 			ampl /= 2;
 		}
 
-		return total / denominator;
+		return total;
 	}
 	static float PerlinNoise_3D(float x, float y, float z, float freq, float ampl, int nOctaves)
 	{
@@ -104,11 +111,12 @@ public:
 
 		return ABC / 6.0f;
 	}
+private:
+	//Others
 	static float Transform01toN1P1(float x)
 	{
 		return 2 * x - 1;
 	}
-private:
 	//Noise
 	static float IntNoise(int x)
 	{
