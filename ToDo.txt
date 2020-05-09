@@ -1,0 +1,15 @@
+Finish a basic world generation
+Menu
+Player(+ Collision)
+|-  Sound?
+|  Make a compression and uncompression algorith for the world saving and loading like the one the OneHopson used for the chunck compression
+|  Maybe use chunks?
+|  Inventory
+|_ Animations
+Flora?
+|- Networking? (I need to learn a lot... but would be worth it)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
+|
+|_ Biomes?
+
+
+Send to friends to play with and get their feedback
