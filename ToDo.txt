@@ -11,6 +11,7 @@ Flora?
 |- Networking? (I need to learn a lot... but would be worth it)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
 |
 |_ Biomes?
+Light? (Dynamic light even a more maybe)
 
 
 Send to friends to play with and get their feedback
