@@ -36,6 +36,6 @@ private:
 	int GetPosX(int id) const;
 	int GetPosY(int id) const;
 	void GenerateSeed(int min, int max);
-	void GenerateGround(int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer);
-	void GenerateOres(float chanceOfSpawn, float chanceOfCluster, float chanceDivisor, int minLevel, int maxLevel, Block::Type bType);
+	void GenerateGround(std::mt19937& r, int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer);
+	void GenerateOres(std::mt19937& r, float chanceOfSpawn, float chanceOfCluster, float chanceDivisor, int minLevel, int maxLevel, Block::Type bType);
 };
