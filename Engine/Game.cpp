@@ -99,6 +99,11 @@ void Game::UpdateModel()
                 hasStarted = true;
                 CreateGrid(8400, 2400, 40, 20, 7, 10);
             }
+            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 319 && y - menuY <= 363)
+            {
+                hasStarted = true;
+                LoadGrid("./Worlds/world1.txt");
+            }
         }
     }
 }
