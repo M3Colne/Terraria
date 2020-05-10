@@ -15,7 +15,7 @@ public:
 	static constexpr int cellHeight = Graphics::ScreenHeight / cellsV;
 public:
 	//Functions
-	Grid(int width, int height, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer);
+	Grid(int width, int height, const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer);
 	Grid(char* fileName);
 	Grid(const Grid& other) = delete;
 	Grid& operator=(const Grid& other) = delete;
@@ -36,6 +36,7 @@ private:
 	int GetPosX(int id) const;
 	int GetPosY(int id) const;
 	void GenerateSeed(int min, int max);
-	void GenerateGround(std::mt19937& r, int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer);
-	void GenerateOres(std::mt19937& r, float chanceOfSpawn, float chanceOfCluster, float chanceDivisor, int minLevel, int maxLevel, Block::Type bType);
+	void GenerateGround(const int surfaceLevel, const int surfaceLevelOffset,const int minDirtLayer, const int maxDirtLayer);
+	void GenerateOres(const float chanceOfSpawn, const float chanceOfCluster, const float chanceDivisor, const int minLevel,
+		const int maxLevel, const Block::Type bType);
 };

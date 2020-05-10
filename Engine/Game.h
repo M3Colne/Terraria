@@ -36,7 +36,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-    void CreateGrid(int _width, int _height, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer);
+    void CreateGrid(int _width, int _height, int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer);
     void SaveGrid(char* fileName);
     void LoadGrid(char* fileName);
     void DeleteGrid();

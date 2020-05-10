@@ -1,7 +1,7 @@
 #include "Grid.h"
 #include "PerlinNoise.h"
 
-Grid::Grid(int width, int height, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer)
+Grid::Grid(int width, int height, const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer)
 	:
 	Width(width),
 	Height(height),
@@ -16,10 +16,11 @@ Grid::Grid(int width, int height, int surfaceLevel, int surfaceLevelOffset, int 
 		blocks[i] = Block(Block::Type::Air);
 	}
 
-	GenerateSeed(0, 1000000);
+	GenerateSeed(0, 100000);
 	//Generate the world based on this seed
-	//std::mt19937 rng(seed);
-	//GenerateGround(rng, 40, 15, 3, 6);
+	GenerateGround(surfaceLevel, surfaceLevelOffset, minDirtLayer, maxDirtLayer);
+	GenerateOres(0.11f, 300.0f, 1.14f, surfaceLevel+surfaceLevelOffset + maxDirtLayer,
+		surfaceLevel + surfaceLevelOffset + maxDirtLayer + 150, Block::Type::Grass);
 }
 
 Grid::Grid(char* fileName)
@@ -87,18 +88,19 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 	}
 }
 
-void Grid::GenerateGround(std::mt19937& r, int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer)
+void Grid::GenerateGround(const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer)
 {
+	std::mt19937 rng(seed);
 	float tempS = float(seed);
 	std::uniform_int_distribution<int> dirtLayerDist(minDirtLayer, maxDirtLayer);
 	for (int i = 0; i < Grid::Width; i++, tempS += 0.0180f)
 	{
 		//Setting the grass
-		const int grassOffSet = int(Noise::PerlinNoise_1D(tempS, 2.7182818f, surfaceLevelOffset, 1, true));
+		const int grassOffSet = int(Noise::PerlinNoise_1D(tempS, 2.7182818f, float(surfaceLevelOffset), 1, true));
 		blocks[GetId(i, grassOffSet + surfaceLevel)].type = Block::Type::Grass;
-		const int dirtLayers = dirtLayerDist(r);
 
 		//Dirt layer
+		const int dirtLayers = dirtLayerDist(rng);
 		for (int d = 0; d < dirtLayers; d++)
 		{
 			blocks[GetId(i, grassOffSet + surfaceLevel + 1 + d)].type = Block::Type::Dirt;
@@ -113,12 +115,12 @@ void Grid::GenerateGround(std::mt19937& r, int surfaceLevel, int surfaceLevelOff
 			st++;
 		}
 	}
-
-	GenerateOres(r, 0.0015f, 80.0f, 2.0f, 0, surfaceLevel + surfaceLevelOffset + maxDirtLayer + 45, Block::Type::Grass);
 }
 
-void Grid::GenerateOres(std::mt19937& r, float chanceOfSpawn, float chanceOfCluster, float chanceDivisor, int minLevel, int maxLevel, Block::Type bType)
+void Grid::GenerateOres(const float chanceOfSpawn, const float chanceOfCluster, const float chanceDivisor, const int minLevel,
+	const int maxLevel, const Block::Type bType)
 {
+	std::mt19937 rng(seed);
 	std::vector<int> oresId;
 	std::uniform_real_distribution<float> chanceDist(0.0f, 100.0f);
 	for (int j = minLevel; j < maxLevel; j++)
@@ -126,46 +128,49 @@ void Grid::GenerateOres(std::mt19937& r, float chanceOfSpawn, float chanceOfClus
 		for (int i = 0; i < Width; i++)
 		{
 			const int blockId = GetId(i, j);
-			if (blocks[blockId].type == Block::Type::Stone && chanceDist(r) < chanceOfSpawn)
+			if (blocks[blockId].type == Block::Type::Stone && chanceDist(rng) < chanceOfSpawn)
 			{
 				oresId.push_back(blockId);
 			}
 		}
 	}
 
-	std::vector<int> branchId(oresId.size());
-	for (int source = 0; source < oresId.size(); source++)
+	std::vector<int> branchId;
+	for (unsigned int source = 0; source < oresId.size(); source++)
 	{
-		for (int branch = 0; branch < branchId.size(); branch++)
+		branchId.push_back(oresId[source]);
+		float c = chanceOfCluster;
+
+		for (unsigned int branch = 0; branch < branchId.size(); branch++)
 		{
-			const int s = branchId[branch];
-			const int t = s - Width;
-			const int b = s + Width;
-			const int l = s - 1;
-			const int r = s + 1;
+			const int so = branchId[branch];
+			const int top = so - Width;
+			const int bot = so + Width;
+			const int left = so - 1;
+			const int right = so + 1;
 
-			if (t >= 0 && blocks[t].type == Block::Type::Stone && chanceDist(r) <= chanceOfCluster)
+			if (top >= 0 && blocks[top].type == Block::Type::Stone && chanceDist(rng) <= c)
 			{
-				blocks[t].type = bType;
-				branchId.push_back(t);
+				blocks[top].type = bType;
+				branchId.push_back(top);
 			}
-			else if (b < Height && blocks[b].type == Block::Type::Stone && chanceDist(r) <= chanceOfCluster)
+			if (GetPosY(bot) < Height && blocks[bot].type == Block::Type::Stone && chanceDist(rng) <= c)
 			{
-				blocks[b].type = bType;
-				branchId.push_back(b);
+				blocks[bot].type = bType;
+				branchId.push_back(bot);
 			}
-			else if (l >= 0 && blocks[l].type == Block::Type::Stone && chanceDist(r) <= chanceOfCluster)
+			if (left >= 0 && blocks[left].type == Block::Type::Stone && chanceDist(rng) <= c)
 			{
-				blocks[l].type = bType;
-				branchId.push_back(l);
+				blocks[left].type = bType;
+				branchId.push_back(left);
 			}
-			else if (r < Width && blocks[r].type == Block::Type::Stone && chanceDist(r) <= chanceOfCluster)
+			if (GetPosX(right) < Width && blocks[right].type == Block::Type::Stone && chanceDist(rng) <= c)
 			{
-				blocks[t].type = bType;
-				branchId.push_back(l);
+				blocks[right].type = bType;
+				branchId.push_back(right);
 			}
 
-			chanceOfCluster /= chanceDivisor;
+			c /= chanceDivisor;
 		}
 		branchId.clear();
 	}

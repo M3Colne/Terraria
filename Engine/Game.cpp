@@ -45,17 +45,17 @@ void Game::UpdateModel()
     if (wnd.kbd.KeyIsPressed('1'))
     {
         hasStarted = true;
-        CreateGrid(4200, 1200, 100, 20, 8);
+        CreateGrid(4200, 1200, 40, 20, 7, 10);
     }
     else  if (wnd.kbd.KeyIsPressed('2'))
     {
         hasStarted = true;
-        CreateGrid(6400, 1800, 100, 20, 8);
+        CreateGrid(6400, 1800, 40, 20, 7, 10);
     }
     else  if (wnd.kbd.KeyIsPressed('3'))
     {
         hasStarted = true;
-        CreateGrid(8400, 2400, 100, 20, 8);
+        CreateGrid(8400, 2400, 40, 20, 7, 10);
     }
     else if (wnd.kbd.KeyIsPressed('4')) //Reseting
     {
@@ -91,10 +91,10 @@ void Game::UpdateModel()
     }
 }
 
-void Game::CreateGrid(int _width, int _height, int surfaceLevel, int surfaceLevelOffset, int maxDirtLayer)
+void Game::CreateGrid(int _width, int _height, int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer)
 {
     assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
-    pGrid = new Grid(_width, _height, surfaceLevel, surfaceLevelOffset, maxDirtLayer);
+    pGrid = new Grid(_width, _height, surfaceLevel, surfaceLevelOffset, minDirtLayer, maxDirtLayer);
 }
 
 void Game::SaveGrid(char* fileName)
