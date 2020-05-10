@@ -33,16 +33,26 @@ Grid::Grid(char* fileName)
 	if (loadingStream.good())
 	{
 		//Reading the width and the height of the world
+		loadingStream.read(reinterpret_cast<char*>(&seed), sizeof(seed));
 		loadingStream.read(reinterpret_cast<char*>(&Width), sizeof(Width));
 		loadingStream.read(reinterpret_cast<char*>(&Height), sizeof(Height));
 
 		//Assigning the blocks pointer to an array on the heap
 		blocks = new Block[Width * Height];
 
-		//Reading the blocks data
-		for (int i = 0; i < Width * Height; i++)
+		//Reading the compressed blocks data
+		int lastI = 0;
+		while(!loadingStream.eof())
 		{
-			loadingStream.read(reinterpret_cast<char*>(&blocks[i].type), sizeof(Block::Type));
+			int n = 1;
+			Block::Type t;
+			loadingStream.read(reinterpret_cast<char*>(&n), sizeof(n));
+			loadingStream.read(reinterpret_cast<char*>(&t), sizeof(t));
+			for (int i = lastI; i < lastI + n; i++)
+			{
+				blocks[i].type = t;
+			}
+			lastI += n;
 		}
 
 		//Player location or other things will go after this comment
