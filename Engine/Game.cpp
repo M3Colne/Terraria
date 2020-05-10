@@ -113,6 +113,7 @@ void Game::SaveGrid(char* fileName)
 {
     assert(pGrid != nullptr); //You can't save what doesn't exist, dummy
     pGrid->SaveWorld(fileName);
+    DeleteGrid();
 }
 
 void Game::LoadGrid(char* fileName)
