@@ -63,6 +63,7 @@ void Grid::SaveWorld(char* fileName)
 	if (savingStream.good())
 	{
 		//Writing the width and the height of the world
+		savingStream.write(reinterpret_cast<char*>(&seed), sizeof(seed));
 		savingStream.write(reinterpret_cast<char*>(&Width), sizeof(Width));
 		savingStream.write(reinterpret_cast<char*>(&Height), sizeof(Height));
 		//Writing compressed block data
