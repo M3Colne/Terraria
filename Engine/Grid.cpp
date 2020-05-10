@@ -57,6 +57,7 @@ Grid::~Grid()
 
 void Grid::SaveWorld(char* fileName)
 {
+	//Row compression method
 	std::ofstream savingStream(fileName, std::ios_base::binary);
 
 	if (savingStream.good())
@@ -64,14 +65,29 @@ void Grid::SaveWorld(char* fileName)
 		//Writing the width and the height of the world
 		savingStream.write(reinterpret_cast<char*>(&Width), sizeof(Width));
 		savingStream.write(reinterpret_cast<char*>(&Height), sizeof(Height));
-		//Writing the blocks data
-		for (int i = 0; i < Width * Height; i++)
+		//Writing compressed block data
+		int n = 0;
+		const int size = Width * Height - 1;
+		for (int i = 0; i < size; i++)
 		{
-			savingStream.write(reinterpret_cast<char*>(&blocks[i].type), sizeof(blocks[i].type));
-			//Other data will be written here
+			if (blocks[i + 1].type == blocks[i].type)
+			{
+				n++;
+			}
+			else
+			{
+				savingStream.write(reinterpret_cast<char*>(&n), sizeof(n));
+				savingStream.write(reinterpret_cast<char*>(&blocks[i].type), sizeof(blocks[i].type));
+				n = 1;
+			}
 		}
+		n = 1;
+		//Write the last block manually because the algorithm doesn't work with the last i
+		savingStream.write(reinterpret_cast<char*>(&n), sizeof(n));
+		savingStream.write(reinterpret_cast<char*>(&blocks[size].type), sizeof(blocks[size].type));
 
-		//Player location or other things will go after this comment
+		//Any other data like the player or time or space or anything goes below this comment
+		//If it's a repetitive data like the block types then you should the same algorithm
 	}
 }
 
