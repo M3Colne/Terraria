@@ -1,5 +1,3 @@
-Finish a basic world generation
-Menu
 Player(+ Collision)
 |-  Sound?
 |  Make a compression and uncompression algorith for the world saving and loading like the one the OneHopson used for the chunck compression

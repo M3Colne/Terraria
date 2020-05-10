@@ -26,6 +26,7 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
+    menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
     cameraPos(0.0f, 0.0f)
 {
@@ -41,53 +42,64 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-    //Testing
-    if (wnd.kbd.KeyIsPressed('1'))
+    if (hasStarted)
     {
-        hasStarted = true;
-        CreateGrid(4200, 1200, 40, 20, 7, 10);
-    }
-    else  if (wnd.kbd.KeyIsPressed('2'))
-    {
-        hasStarted = true;
-        CreateGrid(6400, 1800, 40, 20, 7, 10);
-    }
-    else  if (wnd.kbd.KeyIsPressed('3'))
-    {
-        hasStarted = true;
-        CreateGrid(8400, 2400, 40, 20, 7, 10);
-    }
-    else if (wnd.kbd.KeyIsPressed('4')) //Reseting
-    {
-        hasStarted = false;
-        DeleteGrid();
-    }
-    else if (wnd.kbd.KeyIsPressed('5')) //Saving
-    {
-        hasStarted = false;
-        SaveGrid("./Worlds/world1.txt");
-    }
-    else if (wnd.kbd.KeyIsPressed('6')) //Loading
-    {
-        hasStarted = true;
-        LoadGrid("./Worlds/world1.txt");
-    }
+        //Testing
+        if (wnd.kbd.KeyIsPressed('4')) //Reseting
+        {
+            hasStarted = false;
+            DeleteGrid();
+        }
+        else if (wnd.kbd.KeyIsPressed('5')) //Saving
+        {
+            hasStarted = false;
+            SaveGrid("./Worlds/world1.txt");
+        }
+        else if (wnd.kbd.KeyIsPressed('6')) //Loading
+        {
+            hasStarted = true;
+            LoadGrid("./Worlds/world1.txt");
+        }
 
-    if (wnd.kbd.KeyIsPressed('W') && cameraPos.y >= cameraSpeed)
-    {
-        cameraPos.y -= cameraSpeed;
+        if (wnd.kbd.KeyIsPressed('W') && cameraPos.y >= cameraSpeed)
+        {
+            cameraPos.y -= cameraSpeed;
+        }
+        if (wnd.kbd.KeyIsPressed('S') && cameraPos.y < 10000)
+        {
+            cameraPos.y += cameraSpeed;
+        }
+        if (wnd.kbd.KeyIsPressed('A') && cameraPos.x >= cameraSpeed)
+        {
+            cameraPos.x -= cameraSpeed;
+        }
+        if (wnd.kbd.KeyIsPressed('D') && cameraPos.x < 10000)
+        {
+            cameraPos.x += cameraSpeed;
+        }
     }
-    if (wnd.kbd.KeyIsPressed('S') && cameraPos.y < 10000)
+    else
     {
-        cameraPos.y += cameraSpeed;
-    }
-    if (wnd.kbd.KeyIsPressed('A') && cameraPos.x >= cameraSpeed)
-    {
-        cameraPos.x -= cameraSpeed;
-    }
-    if (wnd.kbd.KeyIsPressed('D') && cameraPos.x < 10000)
-    {
-        cameraPos.x += cameraSpeed;
+        if (wnd.mouse.LeftIsPressed())
+        {
+            const int x = wnd.mouse.GetPosX();
+            const int y = wnd.mouse.GetPosY();
+            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 154 && y - menuY <= 207)
+            {
+                hasStarted = true;
+                CreateGrid(4200, 1200, 40, 20, 7, 10);
+            }
+            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 208 && y - menuY <= 271)
+            {
+                hasStarted = true;
+                CreateGrid(6400, 1800, 40, 20, 7, 10);
+            }
+            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 272 && y - menuY <= 318)
+            {
+                hasStarted = true;
+                CreateGrid(8400, 2400, 40, 20, 7, 10);
+            }
+        }
     }
 }
 
@@ -120,5 +132,9 @@ void Game::ComposeFrame()
     if (hasStarted)
     {
         pGrid->DrawBlocks(gfx, int(cameraPos.x), int(cameraPos.y));
+    }
+    else
+    {
+        gfx.DrawTexture(80, 80, menuScreen);
     }
 }

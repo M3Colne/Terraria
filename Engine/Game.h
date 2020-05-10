@@ -46,6 +46,9 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+    Texture2D menuScreen;
+    const int menuX = 80;
+    const int menuY = 80;
     Grid* pGrid;
     bool hasStarted = false;
     Vec2 cameraPos;
