@@ -55,11 +55,6 @@ void Game::UpdateModel()
             hasStarted = false;
             SaveGrid("./Worlds/world1.txt");
         }
-        else if (wnd.kbd.KeyIsPressed('6')) //Loading
-        {
-            hasStarted = true;
-            LoadGrid("./Worlds/world1.txt");
-        }
 
         if (wnd.kbd.KeyIsPressed('W') && cameraPos.y >= cameraSpeed)
         {
