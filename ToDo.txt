@@ -6,11 +6,11 @@ Player(+ Collision)
 |_ Animations
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter
 Caves generation?
+Biomes
 Flora?
-|- Networking? (I need to learn a lot... but would be worth it)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
-|
-|_ Biomes?
+Mobs
 Light? (Dynamic light even a more maybe)
+Networking? (I need to learn a lot... but would be worth it)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
 
 
 Send to friends to play with and get their feedback
