@@ -23,7 +23,7 @@ public:
 	void DrawBlocks(Graphics& gfx, int x, int y);
 private:
 	//Variables
-	Texture2D blockSpriteSheet;
+	const Texture2D blockSpriteSheet;
 	int seed = 0;
 	Block* blocks = nullptr;
 	int Width = 0; //In blocks
