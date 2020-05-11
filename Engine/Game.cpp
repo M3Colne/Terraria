@@ -60,7 +60,7 @@ void Game::UpdateModel()
         {
             cameraPos.y -= cameraSpeed;
         }
-        if (wnd.kbd.KeyIsPressed('S') && cameraPos.y < 10000)
+        if (wnd.kbd.KeyIsPressed('S'))
         {
             cameraPos.y += cameraSpeed;
         }
@@ -68,7 +68,7 @@ void Game::UpdateModel()
         {
             cameraPos.x -= cameraSpeed;
         }
-        if (wnd.kbd.KeyIsPressed('D') && cameraPos.x < 10000)
+        if (wnd.kbd.KeyIsPressed('D'))
         {
             cameraPos.x += cameraSpeed;
         }
