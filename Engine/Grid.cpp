@@ -20,7 +20,7 @@ Grid::Grid(int width, int height, const int surfaceLevel, const int surfaceLevel
 	GenerateSeed(0, 100000);
 	//Generate the world based on this seed
 	GenerateGround(surfaceLevel, surfaceLevelOffset, minDirtLayer, maxDirtLayer);
-	GenerateOres(0.11f, 300.0f, 1.14f, surfaceLevel+surfaceLevelOffset + maxDirtLayer,
+	GenerateOres(0.05f, 300.0f, 1.14f, surfaceLevel+surfaceLevelOffset + maxDirtLayer,
 		surfaceLevel + surfaceLevelOffset + maxDirtLayer + 150, Block::Type::Grass);
 }
 
