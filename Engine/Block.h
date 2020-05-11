@@ -13,7 +13,13 @@ public:
 		Air,
 		Dirt,
 		Grass,
-		Stone
+		Stone,
+		Tin,
+		Copper,
+		Iron,
+		Lead,
+		Gold,
+		Platinum
 	};
 	Type type;
 public:
