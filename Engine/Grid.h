@@ -21,6 +21,8 @@ public:
 	~Grid();
 	void SaveWorld(char* fileName);
 	void DrawBlocks(Graphics& gfx, int x, int y);
+	int GetHeight();
+	int GetWidth();
 private:
 	//Variables
 	const Texture2D blockSpriteSheet;

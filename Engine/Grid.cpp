@@ -138,6 +138,16 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 	}
 }
 
+int Grid::GetHeight()
+{
+	return Height;
+}
+
+int Grid::GetWidth()
+{
+	return Width;
+}
+
 void Grid::GenerateGround(const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer)
 {
 	std::mt19937 rng(seed);
