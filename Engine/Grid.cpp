@@ -21,7 +21,7 @@ Grid::Grid(int width, int height, const int surfaceLevel, const int surfaceLevel
 	//Generate the world based on this seed
 	GenerateGround(surfaceLevel, surfaceLevelOffset, minDirtLayer, maxDirtLayer);
 	GenerateOres(0.05f, 300.0f, 1.14f, surfaceLevel+surfaceLevelOffset + maxDirtLayer,
-		surfaceLevel + surfaceLevelOffset + maxDirtLayer + 150, Block::Type::Grass);
+		surfaceLevel + surfaceLevelOffset + maxDirtLayer + 150, Block::Type::Copper);
 }
 
 Grid::Grid(char* fileName)
@@ -237,17 +237,22 @@ void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
 	}
 	case Block::Type::Dirt:
 	{
-		gfx.DrawTexture(x, y, 21, 0, 41, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 20, 0, 40, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
 		break;
 	}
 	case Block::Type::Grass:
 	{
-		gfx.DrawTexture(x, y, 42, 0, 62, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 40, 0, 60, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
 		break;
 	}
 	case Block::Type::Stone:
 	{
-		gfx.DrawTexture(x, y, 63, 0, 83, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 60, 0, 80, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		break;
+	}
+	case Block::Type::Copper:
+	{
+		gfx.DrawTexture(x, y, 80, 0, 100, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
 		break;
 	}
 	}
