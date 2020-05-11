@@ -1,8 +1,7 @@
 Player(+ Collision)
-|-  Sound?
-|  Maybe use chunks?
-|  Inventory
-|_ Animations
+Sound?
+Maybe use chunks?
+Inventory
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter
 Caves generation?
 Biomes
@@ -10,6 +9,7 @@ Flora?
 Mobs
 Light? (Dynamic light even a more maybe)
 Networking? (I need to learn a lot... but would be worth it)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
-
+Background
+Improve sprites / Animation
 
 Send to friends to play with and get their feedback
