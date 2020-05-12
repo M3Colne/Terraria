@@ -14,6 +14,7 @@ public:
 	static constexpr int cellHeight = Graphics::ScreenHeight / cellsV;
 public:
 	//Functions
+	Grid() = default;
 	Grid(int width, int height, const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer);
 	Grid(char* fileName);
 	Grid(const Grid& other) = delete;
