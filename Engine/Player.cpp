@@ -1,17 +1,5 @@
 #include "Player.h"
 
-void Player::ChangePosition(const float _x, const float _y)
-{
-	//Update the player position
-	position.x += _x;
-	position.y += _y;
-}
-
-void Player::ChangePosition(const Vec2& v)
-{
-	ChangePosition(v.x, v.y);
-}
-
 void Player::ChangePositionAndCam(const float _x, const float _y)
 {
 	//Update the player position
