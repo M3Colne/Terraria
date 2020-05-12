@@ -8,7 +8,7 @@ private:
 	//Variables
 	const Texture2D playerTexture;
 	Vec2 position;
-	float speed = 1.0f;
+	float speed = 15.0f;
 
 	//Constants
 	const int dx = Graphics::ScreenWidth / 2 - playerTexture.GetWidth() / 2;

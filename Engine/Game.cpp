@@ -28,7 +28,7 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
     menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
-    player(400, 400)
+    player(800, 800)
 {
 }
 
@@ -57,9 +57,9 @@ void Game::UpdateModel()
         }
 
         //Player
-        /*player.Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'), 
+        player.Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'), 
                       wnd.kbd.KeyIsPressed('A'), wnd.kbd.KeyIsPressed('D'),
-                      pGrid->GetWidth(), pGrid->GetHeight(), 1.0f);*/
+                      1.0f);
     }
     else
     {
