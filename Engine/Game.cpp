@@ -28,7 +28,7 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
     menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
-    cameraPos(0.0f, 0.0f)
+    player(400, 400)
 {
 }
 
@@ -44,7 +44,7 @@ void Game::UpdateModel()
 {
     if (hasStarted)
     {
-        //Testing
+        //World commands
         if (wnd.kbd.KeyIsPressed('4')) //Reseting
         {
             hasStarted = false;
@@ -56,22 +56,10 @@ void Game::UpdateModel()
             SaveGrid("./Worlds/world1.txt");
         }
 
-        if (wnd.kbd.KeyIsPressed('W') && cameraPos.y >= cameraSpeed)
-        {
-            cameraPos.y -= cameraSpeed;
-        }
-        if (wnd.kbd.KeyIsPressed('S'))
-        {
-            cameraPos.y += cameraSpeed;
-        }
-        if (wnd.kbd.KeyIsPressed('A') && cameraPos.x >= cameraSpeed)
-        {
-            cameraPos.x -= cameraSpeed;
-        }
-        if (wnd.kbd.KeyIsPressed('D'))
-        {
-            cameraPos.x += cameraSpeed;
-        }
+        //Player
+        /*player.Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'), 
+                      wnd.kbd.KeyIsPressed('A'), wnd.kbd.KeyIsPressed('D'),
+                      pGrid->GetWidth(), pGrid->GetHeight(), 1.0f);*/
     }
     else
     {
@@ -132,7 +120,8 @@ void Game::ComposeFrame()
 {
     if (hasStarted)
     {
-        pGrid->DrawBlocks(gfx, int(cameraPos.x), int(cameraPos.y));
+        pGrid->DrawBlocks(gfx, int(player.GetCamera().x), int(player.GetCamera().y));
+        player.Draw(gfx);
     }
     else
     {

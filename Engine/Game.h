@@ -23,6 +23,7 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Grid.h"
+#include "Player.h"
 
 class Game
 {
@@ -50,8 +51,8 @@ private:
     const int menuX = 80;
     const int menuY = 80;
     Grid* pGrid;
+    Player player;
     bool hasStarted = false;
-    Vec2 cameraPos;
-    float cameraSpeed = 50.0f;
+    const int playerSpeed = 25;
 	/********************************/
 };

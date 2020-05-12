@@ -1,20 +1,18 @@
 #include "Player.h"
 
-Player::Player(const Vei2 pos)
+Player::Player(const float x, const float y)
 	:
-	position(pos),
-	playerTexture("./Assets/playerTextureSheet20x40.bmp")
-{
-}
-
-Player::Player(const int x, const int y)
-	:
-	position(Vei2(x, y)),
+	position(x, y),
 	playerTexture("./Assets/playerTextureSheet20x40.bmp")
 {
 }
 
 void Player::Draw(Graphics& gfx)
 {
-	gfx.DrawTextureChroma(position.x, position.y, 0, 0, 20, 40, playerTexture, Colors::Magenta);
+	gfx.DrawTextureChroma(dx, dy, 0, 0, playerTexture.GetWidth(), playerTexture.GetHeight(), playerTexture, Colors::Magenta);
+}
+
+Vec2 Player::GetCamera() const
+{
+	return position - Vec2(float(dx), float(dy)); //This returns cworld
 }
