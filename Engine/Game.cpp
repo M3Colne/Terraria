@@ -44,6 +44,11 @@ void Game::UpdateModel()
 {
     if (hasStarted)
     {
+        //Player
+        player.Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'),
+            wnd.kbd.KeyIsPressed('A'), wnd.kbd.KeyIsPressed('D'),
+            pGrid->GetWidth() * Grid::cellWidth, pGrid->GetHeight() * Grid::cellHeight, 1.0f);
+
         //World commands
         if (wnd.kbd.KeyIsPressed('4')) //Reseting
         {
@@ -55,11 +60,6 @@ void Game::UpdateModel()
             hasStarted = false;
             SaveGrid("./Worlds/world1.txt");
         }
-
-        //Player
-        player.Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'), 
-                      wnd.kbd.KeyIsPressed('A'), wnd.kbd.KeyIsPressed('D'),
-                      pGrid->GetWidth() * Grid::cellWidth, pGrid->GetHeight() * Grid::cellHeight, 1.0f);
     }
     else
     {
