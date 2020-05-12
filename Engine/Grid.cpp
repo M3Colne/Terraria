@@ -128,6 +128,10 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 {
 	const int X = int(x / cellWidth);
 	const int Y = int(y / cellHeight);
+	assert(X >= 0);
+	assert(X < Width);
+	assert(Y >= 0);
+	assert(Y < Height);
 
 	for (int j = 0; j <= cellsV; j++)
 	{
