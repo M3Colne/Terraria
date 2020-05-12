@@ -7,14 +7,14 @@ class Player
 private:
 	//Variables
 	const Texture2D playerTexture;
-	Vec2 position;
-	float speed = 15.0f;
-
-	//Constants
 	const int dx = Graphics::ScreenWidth / 2 - playerTexture.GetWidth() / 2;
 	const int dy = Graphics::ScreenHeight / 2 - playerTexture.GetHeight() / 2;
+	Vec2 position;
+	Vec2 camera;
+	float speed = 15.0f;
 private:
 	//Functions
+	void ChangePositionAndCam(const float _x, const float _y);
 public:
 	//Variables
 public:
