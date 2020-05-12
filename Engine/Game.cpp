@@ -120,7 +120,7 @@ void Game::ComposeFrame()
 {
     if (hasStarted)
     {
-        pGrid->DrawBlocks(gfx, int(player.GetCamera().x), int(player.GetCamera().y));
+        pGrid->DrawBlocks(gfx, player.GetCamera());
         player.Draw(gfx);
     }
     else
