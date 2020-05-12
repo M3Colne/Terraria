@@ -59,7 +59,7 @@ void Game::UpdateModel()
         //Player
         player.Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'), 
                       wnd.kbd.KeyIsPressed('A'), wnd.kbd.KeyIsPressed('D'),
-                      1.0f);
+                      pGrid->GetWidth() * Grid::cellWidth, pGrid->GetHeight() * Grid::cellHeight, 1.0f);
     }
     else
     {
