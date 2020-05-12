@@ -53,6 +53,5 @@ private:
     Grid* pGrid;
     Player player;
     bool hasStarted = false;
-    const int playerSpeed = 25;
 	/********************************/
 };
