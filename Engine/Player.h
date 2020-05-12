@@ -14,10 +14,7 @@ private:
 	float speed = 10.0f;
 private:
 	//Functions
-	void ChangePositionAndCam(const float _x, const float _y);
-	void ChangePositionAndCam(const Vec2& v);
-	void PlayerFixToWorld(const int W, const int H);
-	void CameraFixToWorld(const int W, const int H);
+	void ChangePositionAndCam(const float _x, const float _y, const int W, const int H);
 public:
 	//Variables
 public:

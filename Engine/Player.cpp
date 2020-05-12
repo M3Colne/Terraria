@@ -1,22 +1,11 @@
 #include "Player.h"
 
-void Player::ChangePositionAndCam(const float _x, const float _y)
+void Player::ChangePositionAndCam(const float _x, const float _y, const int W, const int H)
 {
 	//Update the player position
 	position.x += _x;
 	position.y += _y;
-	//Update the camera by the player position
-	camera.x += _x;
-	camera.y += _y;
-}
-
-void Player::ChangePositionAndCam(const Vec2& v)
-{
-	ChangePositionAndCam(v.x, v.y);
-}
-
-void Player::PlayerFixToWorld(const int W, const int H)
-{
+	//Fix player to world
 	if (position.x < 0)
 	{
 		position.x = 0;
@@ -29,29 +18,36 @@ void Player::PlayerFixToWorld(const int W, const int H)
 	{
 		position.y = 0;
 	}
-	else if (position.y + playerTexture. GetHeight() > H)
+	else if (position.y + playerTexture.GetHeight() > H)
 	{
 		position.y = float(H - playerTexture.GetHeight());
 	}
-}
 
-void Player::CameraFixToWorld(const int W, const int H)
-{
-	if (camera.x < 0)
+	//Fix camera to world
+	if (position.x <= dx)
 	{
-		camera.x = 0;
+		camera.x = 0.0f;
 	}
-	else if (camera.x + Graphics::ScreenWidth > W)
+	else if (position.x >= W - playerTexture.GetWidth() - dx)
 	{
 		camera.x = float(W - Graphics::ScreenWidth);
 	}
-	if (camera.y < 0)
+	else
 	{
-		camera.y = 0;
+		camera.x += _x;
 	}
-	else if (camera.y + Graphics::ScreenHeight > H)
+
+	if (position.y <= dy)
+	{
+		camera.y = 0.0f;
+	}
+	else if (position.y >= H - playerTexture.GetHeight() - dy)
 	{
 		camera.y = float(H - Graphics::ScreenHeight);
+	}
+	else
+	{
+		camera.y += _y;
 	}
 }
 
@@ -73,23 +69,20 @@ void Player::Update(bool wP, bool sP, bool aP, bool dP, const int W, const int H
 {
 	if (wP)
 	{
-		ChangePositionAndCam(0.0f, -speed * dt);
+		ChangePositionAndCam(0.0f, -speed * dt, W, H);
 	}
 	if (sP)
 	{
-		ChangePositionAndCam(0.0f, speed * dt);
+		ChangePositionAndCam(0.0f, speed * dt, W, H);
 	}
 	if (aP)
 	{
-		ChangePositionAndCam(-speed * dt, 0.0f);
+		ChangePositionAndCam(-speed * dt, 0.0f, W, H);
 	}
 	if (dP)
 	{
-		ChangePositionAndCam(speed * dt, 0.0f);
+		ChangePositionAndCam(speed * dt, 0.0f, W, H);
 	}
-
-	PlayerFixToWorld(W, H);
-	CameraFixToWorld(W, H);
 }
 
 Vec2 Player::GetCamera() const
