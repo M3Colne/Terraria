@@ -8,7 +8,7 @@ Biomes
 Flora?
 Mobs
 Light? (Dynamic light even a more maybe)
-Networking? (I need to learn a lot... but would be worth it)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
+Networking? (I need to learn a lot... but would be worth it) (LUA)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
 Background
 Improve sprites / Animation
 
