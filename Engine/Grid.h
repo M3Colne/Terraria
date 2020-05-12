@@ -21,6 +21,7 @@ public:
 	~Grid();
 	void SaveWorld(char* fileName);
 	void DrawBlocks(Graphics& gfx, int x, int y);
+	void DrawBlocks(Graphics& gfx, const Vec2& gPos);
 	int GetHeight();
 	int GetWidth();
 private:

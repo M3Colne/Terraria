@@ -138,6 +138,11 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 	}
 }
 
+void Grid::DrawBlocks(Graphics& gfx, const Vec2& gPos)
+{
+	DrawBlocks(gfx, int(gPos.x), int(gPos.y));
+}
+
 int Grid::GetHeight()
 {
 	return Height;
