@@ -41,6 +41,8 @@ private:
     void SaveGrid(char* fileName);
     void LoadGrid(char* fileName);
     void DeleteGrid();
+    void CreatePlayer(const int sX);
+    void DeletePlayer();
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -51,7 +53,7 @@ private:
     const int menuX = 80;
     const int menuY = 80;
     Grid* pGrid;
-    Player player;
+    Player* pPlayer;
     bool hasStarted = false;
 	/********************************/
 };

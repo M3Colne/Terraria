@@ -28,7 +28,7 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
     menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
-    player(800, 800)
+    pPlayer(nullptr)
 {
 }
 
@@ -45,7 +45,7 @@ void Game::UpdateModel()
     if (hasStarted)
     {
         //Player
-        player.Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'),
+        pPlayer->Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'),
             wnd.kbd.KeyIsPressed('A'), wnd.kbd.KeyIsPressed('D'),
             pGrid->GetWidth() * Grid::cellWidth, pGrid->GetHeight() * Grid::cellHeight, 1.0f);
 
@@ -54,11 +54,14 @@ void Game::UpdateModel()
         {
             hasStarted = false;
             DeleteGrid();
+            DeletePlayer();
         }
         else if (wnd.kbd.KeyIsPressed('5')) //Saving
         {
             hasStarted = false;
             SaveGrid("./Worlds/world1.txt");
+            DeleteGrid();
+            DeletePlayer();
         }
     }
     else
@@ -71,21 +74,25 @@ void Game::UpdateModel()
             {
                 hasStarted = true;
                 CreateGrid(4200, 1200, 40, 20, 7, 10);
+                CreatePlayer(pGrid->GetWidth() / 2);
             }
             if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 208 && y - menuY <= 271)
             {
                 hasStarted = true;
                 CreateGrid(6400, 1800, 40, 20, 7, 10);
+                CreatePlayer(pGrid->GetWidth() / 2);
             }
             if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 272 && y - menuY <= 318)
             {
                 hasStarted = true;
                 CreateGrid(8400, 2400, 40, 20, 7, 10);
+                CreatePlayer(pGrid->GetWidth() / 2);
             }
             if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 319 && y - menuY <= 363)
             {
                 hasStarted = true;
                 LoadGrid("./Worlds/world1.txt");
+                CreatePlayer(pGrid->GetWidth() / 2);
             }
         }
     }
@@ -116,12 +123,24 @@ void Game::DeleteGrid()
     pGrid = nullptr;
 }
 
+void Game::CreatePlayer(const int sX)
+{
+    assert(pPlayer == nullptr); //The pPlayer pointer is pointing at an existing player, why would you make another one?
+    pPlayer = new Player(*pGrid, sX);
+}
+
+void Game::DeletePlayer()
+{
+    delete pPlayer;
+    pPlayer = nullptr;
+}
+
 void Game::ComposeFrame()
 {
     if (hasStarted)
     {
-        pGrid->DrawBlocks(gfx, player.GetCamera());
-        player.Draw(gfx);
+        pGrid->DrawBlocks(gfx, pPlayer->GetCamera());
+        pPlayer->Draw(gfx);
     }
     else
     {
