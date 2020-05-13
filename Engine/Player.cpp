@@ -69,7 +69,7 @@ Player::Player(const Grid& grid, const int x)
 	}
 
 	//Setting position
-	position = Vec2(float(x * Grid::cellWidth), float(BLOCKY * Grid::cellHeight));
+	position = Vec2(float(x * Grid::cellWidth), float((BLOCKY - 2) * Grid::cellHeight)); // - 2 because the player is 2 blocks tall
 	//Setting camera
 	camera = position - Vec2(float(dx), float(dy));
 }
