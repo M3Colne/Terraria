@@ -9,18 +9,24 @@ private:
 	const Texture2D playerTexture;
 	const int dx = Graphics::ScreenWidth / 2 - playerTexture.GetWidth() / 2;
 	const int dy = Graphics::ScreenHeight / 2 - playerTexture.GetHeight() / 2;
+	Grid* cacheGrid;
 	Vec2 position;
 	Vec2 camera;
-	float speed = 10.0f;
-	const char playerRange = 10;
 private:
 	//Functions
 public:
 	//Variables
+	float speed = 10.0f;
+	const char playerRangeX = 10;
+	const char playerRangeY = 10;
 public:
 	//Functions
-	Player(const Grid& grid, const int x);
+	Player(Grid& grid, const int x);
+	Player(const Player& other) = delete;
+	Player operator=(const Player& other) = delete;
+	~Player();
 	void Draw(Graphics& gfx);
-	void ChangePositionAndCam(const float _x, const float _y, const int W, const int H);
+	void ChangePositionAndCam(const float _x, const float _y);
+	Vec2 GetPosition() const;
 	Vec2 GetCamera() const;
 };

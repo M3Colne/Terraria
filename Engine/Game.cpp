@@ -44,10 +44,51 @@ void Game::UpdateModel()
 {
     if (hasStarted)
     {
+        //Delta time
+        const float DT = 1.0f;
+
         //Player
-        pPlayer->Update(wnd.kbd.KeyIsPressed('W'), wnd.kbd.KeyIsPressed('S'),
-            wnd.kbd.KeyIsPressed('A'), wnd.kbd.KeyIsPressed('D'),
-            pGrid->GetWidth() * Grid::cellWidth, pGrid->GetHeight() * Grid::cellHeight, 1.0f);
+        //Destroying and placing blocks
+        if (wnd.mouse.LeftIsPressed())
+        {
+            //Test to see if the block is in the player range
+            const int bX = int((wnd.mouse.GetPosX() + pPlayer->GetCamera().x) / Grid::cellWidth);
+            const int bY = int((wnd.mouse.GetPosY() + pPlayer->GetCamera().y) / Grid::cellHeight);
+            if (abs(bX - pPlayer->GetPosition().x / Grid::cellWidth) <= pPlayer->playerRangeX && 
+                abs(bY - pPlayer->GetPosition().y / Grid::cellHeight + 1) <= pPlayer->playerRangeY)
+            {
+                pGrid->blocks[bX + bY * pGrid->GetWidth()].type = Block::Type::Air;
+            }
+        }
+        else if (wnd.mouse.RightIsPressed())
+        {
+            //Test to see if the block is in the player range
+            const int bX = int((wnd.mouse.GetPosX() + pPlayer->GetCamera().x) / Grid::cellWidth);
+            const int bY = int((wnd.mouse.GetPosY() + pPlayer->GetCamera().y) / Grid::cellHeight);
+            if (abs(bX - pPlayer->GetPosition().x / Grid::cellWidth) <= pPlayer->playerRangeX &&
+                abs(bY - pPlayer->GetPosition().y / Grid::cellHeight - 1) <= pPlayer->playerRangeY)
+            {
+                pGrid->blocks[bX + bY * pGrid->GetWidth()].type = Block::Type::Grass;
+            }
+        }
+
+        //Player movement
+        if (wnd.kbd.KeyIsPressed('W'))
+        {
+            pPlayer->ChangePositionAndCam(0.0f, -pPlayer->speed * DT);
+        }
+        if (wnd.kbd.KeyIsPressed('S'))
+        {
+            pPlayer->ChangePositionAndCam(0.0f, pPlayer->speed * DT);
+        }
+        if (wnd.kbd.KeyIsPressed('A'))
+        {
+            pPlayer->ChangePositionAndCam(-pPlayer->speed * DT, 0.0f);
+        }
+        if (wnd.kbd.KeyIsPressed('D'))
+        {
+            pPlayer->ChangePositionAndCam(pPlayer->speed * DT, 0.0f);
+        }
 
         //World commands
         if (wnd.kbd.KeyIsPressed('4')) //Reseting

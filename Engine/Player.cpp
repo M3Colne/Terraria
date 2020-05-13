@@ -1,11 +1,14 @@
 #include "Player.h"
 
-void Player::ChangePositionAndCam(const float _x, const float _y, const int W, const int H)
+void Player::ChangePositionAndCam(const float _x, const float _y)
 {
 	//Update the player position
 	position.x += _x;
 	position.y += _y;
 	//Fix player to world
+	const int W = cacheGrid->GetWidth() * Grid::cellWidth;
+	const int H = cacheGrid->GetHeight() * Grid::cellHeight;
+
 	if (position.x < 0)
 	{
 		position.x = 0;
@@ -51,9 +54,15 @@ void Player::ChangePositionAndCam(const float _x, const float _y, const int W, c
 	}
 }
 
-Player::Player(const Grid& grid, const int x)
+Vec2 Player::GetPosition() const
+{
+	return position;
+}
+
+Player::Player(Grid& grid, const int x)
 	:
 	playerTexture("./Assets/playerTextureSheet20x40.bmp"),
+	cacheGrid(&grid),
 	position(0.0f, 0.0f),
 	camera(0.0f, 0.0f)
 {
@@ -61,7 +70,7 @@ Player::Player(const Grid& grid, const int x)
 	int BLOCKY = 0;
 	while (true)
 	{
-		if (grid.blocks[x + BLOCKY * grid.GetWidth()].type == Block::Type::Grass)
+		if (cacheGrid->blocks[x + BLOCKY * cacheGrid->GetWidth()].type == Block::Type::Grass)
 		{
 			break;
 		}
@@ -74,37 +83,16 @@ Player::Player(const Grid& grid, const int x)
 	camera = position - Vec2(float(dx), float(dy));
 }
 
+Player::~Player()
+{
+	delete cacheGrid;
+	cacheGrid = nullptr;
+}
+
 void Player::Draw(Graphics& gfx)
 {
 	gfx.DrawTextureChroma(int(position.x - camera.x), int(position.y - camera.y),
 		0, 0, playerTexture.GetWidth(), playerTexture.GetHeight(), playerTexture, Colors::Magenta);
-}
-
-void Player::Update(bool lcP, bool rcP, bool wP, bool sP, bool aP, bool dP, const int W, const int H, float dt)
-{
-	//Destroying and placing blocks
-	if (lcP)
-	{
-		Vei2 blockPosition()
-	}
-
-	//Player movement
-	if (wP)
-	{
-		ChangePositionAndCam(0.0f, -speed * dt, W, H);
-	}
-	if (sP)
-	{
-		ChangePositionAndCam(0.0f, speed * dt, W, H);
-	}
-	if (aP)
-	{
-		ChangePositionAndCam(-speed * dt, 0.0f, W, H);
-	}
-	if (dP)
-	{
-		ChangePositionAndCam(speed * dt, 0.0f, W, H);
-	}
 }
 
 Vec2 Player::GetCamera() const
