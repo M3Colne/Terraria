@@ -25,7 +25,6 @@ public:
 	void DrawBlocks(Graphics& gfx, const Vec2& gPos);
 	int GetHeight() const;
 	int GetWidth() const;
-	Block* GetBlocks() const;
 private:
 	//Variables
 	const Texture2D blockSpriteSheet;
