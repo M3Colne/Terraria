@@ -277,17 +277,17 @@ void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
 	}
 }
 
-int Grid::GetId(int x, int y)
+int Grid::GetId(int x, int y) const
 {
 	return y * Width + x;
 }
 
-int Grid::GetPosX(int id)
+int Grid::GetPosX(int id) const
 {
 	return id % Width;
 }
 
-int Grid::GetPosY(int id)
+int Grid::GetPosY(int id) const
 {
 	return int(id / Width);
 }
