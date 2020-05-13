@@ -80,8 +80,15 @@ void Player::Draw(Graphics& gfx)
 		0, 0, playerTexture.GetWidth(), playerTexture.GetHeight(), playerTexture, Colors::Magenta);
 }
 
-void Player::Update(bool wP, bool sP, bool aP, bool dP, const int W, const int H, float dt)
+void Player::Update(bool lcP, bool rcP, bool wP, bool sP, bool aP, bool dP, const int W, const int H, float dt)
 {
+	//Destroying and placing blocks
+	if (lcP)
+	{
+		Vei2 blockPosition()
+	}
+
+	//Player movement
 	if (wP)
 	{
 		ChangePositionAndCam(0.0f, -speed * dt, W, H);

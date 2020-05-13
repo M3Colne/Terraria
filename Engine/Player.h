@@ -12,15 +12,15 @@ private:
 	Vec2 position;
 	Vec2 camera;
 	float speed = 10.0f;
+	const char playerRange = 10;
 private:
 	//Functions
-	void ChangePositionAndCam(const float _x, const float _y, const int W, const int H);
 public:
 	//Variables
 public:
 	//Functions
 	Player(const Grid& grid, const int x);
 	void Draw(Graphics& gfx);
-	void Update(bool wP, bool sP, bool aP, bool dP, const int W, const int H, float dt);
+	void ChangePositionAndCam(const float _x, const float _y, const int W, const int H);
 	Vec2 GetCamera() const;
 };
