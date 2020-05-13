@@ -26,18 +26,18 @@ public:
 	void DrawBlocks(Graphics& gfx, const Vec2& gPos);
 	int GetHeight() const;
 	int GetWidth() const;
+	static int GetId(int x, int y);
+	static int GetPosX(int id);
+	static int GetPosY(int id);
 private:
 	//Variables
 	const Texture2D blockSpriteSheet;
 	int seed = 0;
-	int Width = 0; //In blocks
-	int Height = 0; //In blocks
+	static int Width = 0; //In blocks
+	static int Height = 0; //In blocks
 private:
 	//Functions
 	void DrawCell(Graphics& gfx, int x, int y, Block::Type type);
-	int GetId(int x, int y) const;
-	int GetPosX(int id) const;
-	int GetPosY(int id) const;
 	void GenerateSeed(int min, int max);
 	void GenerateGround(const int surfaceLevel, const int surfaceLevelOffset,const int minDirtLayer, const int maxDirtLayer);
 	void GenerateOres(const float chanceOfSpawn, const float chanceOfCluster, const float chanceDivisor, const int minLevel,
