@@ -66,7 +66,8 @@ void Game::UpdateModel()
             const int bX = int((wnd.mouse.GetPosX() + pPlayer->GetCamera().x) / Grid::cellWidth);
             const int bY = int((wnd.mouse.GetPosY() + pPlayer->GetCamera().y) / Grid::cellHeight);
             if (abs(bX - pPlayer->GetPosition().x / Grid::cellWidth) <= pPlayer->playerRangeX &&
-                abs(bY - pPlayer->GetPosition().y / Grid::cellHeight - 1) <= pPlayer->playerRangeY)
+                abs(bY - pPlayer->GetPosition().y / Grid::cellHeight - 1) <= pPlayer->playerRangeY &&
+                pGrid->blocks[bX + bY * pGrid->GetWidth()].type == Block::Type::Air)
             {
                 pGrid->blocks[bX + bY * pGrid->GetWidth()].type = Block::Type::Grass;
             }
