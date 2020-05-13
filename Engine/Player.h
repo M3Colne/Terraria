@@ -12,6 +12,7 @@ private:
 	Grid* cacheGrid;
 	Vec2 position;
 	Vec2 camera;
+	const float gravitySpeed = 1.0f;
 private:
 	//Functions
 public:
@@ -27,6 +28,7 @@ public:
 	~Player();
 	void Draw(Graphics& gfx);
 	void ChangePositionAndCam(const float _x, const float _y);
+	void Physics(const float dt);
 	Vec2 GetPosition() const;
 	Vec2 GetCamera() const;
 };

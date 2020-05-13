@@ -54,6 +54,16 @@ void Player::ChangePositionAndCam(const float _x, const float _y)
 	}
 }
 
+void Player::Physics(const float dt)
+{
+	//Gravity
+	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type ==
+		Block::Type::Air)
+	{
+		ChangePositionAndCam(0.0f, gravitySpeed * dt);
+	}
+}
+
 Vec2 Player::GetPosition() const
 {
 	return position;

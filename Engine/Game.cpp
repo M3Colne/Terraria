@@ -91,6 +91,8 @@ void Game::UpdateModel()
             pPlayer->ChangePositionAndCam(pPlayer->speed * DT, 0.0f);
         }
 
+        pPlayer->Physics(DT);
+
         //World commands
         if (wnd.kbd.KeyIsPressed('4')) //Reseting
         {
