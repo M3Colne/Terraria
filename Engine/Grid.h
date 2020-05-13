@@ -23,8 +23,8 @@ public:
 	void SaveWorld(char* fileName);
 	void DrawBlocks(Graphics& gfx, int x, int y);
 	void DrawBlocks(Graphics& gfx, const Vec2& gPos);
-	int GetHeight() const;
-	int GetWidth() const;
+	int GetHeight();
+	int GetWidth();
 private:
 	//Variables
 	const Texture2D blockSpriteSheet;

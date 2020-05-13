@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Grid.h"
+#include "Graphics.h"
 
 class Player
 {
@@ -19,7 +19,7 @@ public:
 	//Variables
 public:
 	//Functions
-	Player(const Grid& grid, const int x);
+	Player(const float x, const float y);
 	void Draw(Graphics& gfx);
 	void Update(bool wP, bool sP, bool aP, bool dP, const int W, const int H, float dt);
 	Vec2 GetCamera() const;
