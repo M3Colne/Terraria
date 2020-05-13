@@ -157,6 +157,11 @@ int Grid::GetWidth() const
 	return Width;
 }
 
+Block* Grid::GetBlocks() const
+{
+	return blocks;
+}
+
 void Grid::GenerateGround(const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer)
 {
 	std::mt19937 rng(seed);
