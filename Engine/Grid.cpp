@@ -147,12 +147,12 @@ void Grid::DrawBlocks(Graphics& gfx, const Vec2& gPos)
 	DrawBlocks(gfx, int(gPos.x), int(gPos.y));
 }
 
-int Grid::GetHeight()
+int Grid::GetHeight() const
 {
 	return Height;
 }
 
-int Grid::GetWidth()
+int Grid::GetWidth() const
 {
 	return Width;
 }
