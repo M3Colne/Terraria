@@ -13,17 +13,17 @@ void Player::ChangePositionAndCam(const float _x, const float _y)
 	{
 		position.x = 0;
 	}
-	else if (position.x + playerTexture.GetWidth() > W)
+	else if (position.x + texture.GetWidth() > W)
 	{
-		position.x = float(W - playerTexture.GetWidth());
+		position.x = float(W - texture.GetWidth());
 	}
 	if (position.y < 0)
 	{
 		position.y = 0;
 	}
-	else if (position.y + playerTexture.GetHeight() > H)
+	else if (position.y + texture.GetHeight() > H)
 	{
-		position.y = float(H - playerTexture.GetHeight());
+		position.y = float(H - texture.GetHeight());
 	}
 
 	//Fix camera to world
@@ -31,7 +31,7 @@ void Player::ChangePositionAndCam(const float _x, const float _y)
 	{
 		camera.x = 0.0f;
 	}
-	else if (position.x >= W - playerTexture.GetWidth() - dx)
+	else if (position.x >= W - texture.GetWidth() - dx)
 	{
 		camera.x = float(W - Graphics::ScreenWidth);
 	}
@@ -44,7 +44,7 @@ void Player::ChangePositionAndCam(const float _x, const float _y)
 	{
 		camera.y = 0.0f;
 	}
-	else if (position.y >= H - playerTexture.GetHeight() - dy)
+	else if (position.y >= H - texture.GetHeight() - dy)
 	{
 		camera.y = float(H - Graphics::ScreenHeight);
 	}
@@ -61,7 +61,7 @@ Vec2 Player::GetPosition() const
 
 Player::Player(Grid& grid, const int x)
 	:
-	playerTexture("./Assets/playerTextureSheet20x40.bmp"),
+	texture("./Assets/playerTextureSheet20x40.bmp"),
 	cacheGrid(&grid),
 	position(0.0f, 0.0f),
 	camera(0.0f, 0.0f)
@@ -92,7 +92,7 @@ Player::~Player()
 void Player::Draw(Graphics& gfx)
 {
 	gfx.DrawTextureChroma(int(position.x - camera.x), int(position.y - camera.y),
-		0, 0, playerTexture.GetWidth(), playerTexture.GetHeight(), playerTexture, Colors::Magenta);
+		0, 0, texture.GetWidth(), texture.GetHeight(), texture, Colors::Magenta);
 }
 
 Vec2 Player::GetCamera() const
