@@ -51,12 +51,27 @@ void Player::ChangePositionAndCam(const float _x, const float _y, const int W, c
 	}
 }
 
-Player::Player(const float x, const float y)
+Player::Player(const Grid& grid, const int x)
 	:
 	playerTexture("./Assets/playerTextureSheet20x40.bmp"),
-	position(x, y),
-	camera(position.x - float(dx), position.y - float(dy))
+	position(0.0f, 0.0f),
+	camera(0.0f, 0.0f)
 {
+	//Finding the y position
+	int BLOCKY = 0;
+	while (true)
+	{
+		if (grid.blocks[x + BLOCKY * grid.GetWidth()].type == Block::Type::Grass)
+		{
+			break;
+		}
+		BLOCKY++;
+	}
+
+	//Setting position
+	position = Vec2(float(x * Grid::cellWidth), float(BLOCKY * Grid::cellHeight));
+	//Setting camera
+	camera = position - Vec2(float(dx), float(dy));
 }
 
 void Player::Draw(Graphics& gfx)
