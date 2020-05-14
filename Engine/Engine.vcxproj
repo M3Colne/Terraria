@@ -233,10 +233,15 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\playerCollisionWithBlocks.png" />
+    <Image Include="..\This is how classes connect with each other.png" />
     <Image Include="Assets\blockSpriteSheet20x20.bmp" />
     <Image Include="Assets\menu.bmp" />
     <Image Include="Assets\playerTextureSheet20x40.bmp" />
     <Image Include="Chili.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\ToDo.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -19,6 +19,9 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{d1d57bcc-b01c-4428-87ee-450b8c122bea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Other files">
+      <UniqueIdentifier>{9d2c57bb-32e7-46eb-ae9f-ad4558be911c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliWin.h">
@@ -134,5 +137,16 @@
     <Image Include="Assets\playerTextureSheet20x40.bmp">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="..\This is how classes connect with each other.png">
+      <Filter>Other files</Filter>
+    </Image>
+    <Image Include="..\playerCollisionWithBlocks.png">
+      <Filter>Other files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\ToDo.txt">
+      <Filter>Other files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
