@@ -45,7 +45,7 @@ void Game::UpdateModel()
     if (hasStarted)
     {
         //Delta time
-        const float DT = 1.0f;
+        const float DT = ft.Mark();
 
         pPlayer->Update(wnd.kbd, wnd.mouse, DT);
 

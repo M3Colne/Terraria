@@ -22,6 +22,7 @@
 
 #include "Grid.h"
 #include "Player.h"
+#include "FrameTimer.h"
 
 class Game
 {
@@ -47,6 +48,7 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
+    FrameTimer ft;
     const Texture2D menuScreen;
     const int menuX = 80;
     const int menuY = 80;
