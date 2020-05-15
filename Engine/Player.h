@@ -16,9 +16,9 @@ private:
 	Vec2 camera;
 	Vec2 speed;
 	Vec2 acceleration;
-	const float defaultAcc = 1.0f;
-	const float maxSpeed = 10.0f;
-	const float maxAcceleration = 5.0f;
+	const float defaultAcc = 80.0f;
+	const float maxSpeed = 100.0f;
+	const float maxAcceleration = 100.0f;
 	const float gravity = 1.0f;
 	const char playerRangeX = 10;
 	const char playerRangeY = 10;

@@ -21,18 +21,26 @@ void Player::Move(const float dt)
 	if (position.x < 0)
 	{
 		position.x = 0;
+		acceleration *= 0.0f;
+		speed *= 0.0f;
 	}
 	else if (position.x + texture.GetWidth() > W)
 	{
 		position.x = float(W - texture.GetWidth());
+		acceleration *= 0.0f;
+		speed *= 0.0f;
 	}
 	if (position.y < 0)
 	{
 		position.y = 0;
+		acceleration *= 0.0f;
+		speed *= 0.0f;
 	}
 	else if (position.y + texture.GetHeight() > H)
 	{
 		position.y = float(H - texture.GetHeight());
+		acceleration *= 0.0f;
+		speed *= 0.0f;
 	}
 
 	//Fix camera to world
