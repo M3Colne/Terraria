@@ -17,31 +17,6 @@ void Player::ApplyForce(Vec2 f)
 
 void Player::Collision()
 {
-	//Metoda 1
-	//E in png, nu cred m-ai e nevoie sa explic
-
-
-
-	//Metoda 1 implementata
-
-
-
-
-	//Metoda 2
-	//Testez daca va coincide cu un block in acest pas cu +speed
-	//Obs! Playerul probabil va trece de blocuri de test asa ca voi creea o function care
-	//va teste toate blocurile dintre nextPos si currentPos
-
-	//Daca da atunci teleporteaza playerul langa block ca si cum s-ar fi izbit de el
-	//Si cheama StopForces();
-
-
-
-	//Metoda 2 implementata
-	const int pBX = int(position.x / Grid::cellWidth);
-	const int pBY = int(position.y / Grid::cellHeight);
-
-	//for(int j =)
 }
 
 void Player::StopX()
