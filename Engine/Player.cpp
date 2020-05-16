@@ -1,5 +1,10 @@
 #include "Player.h"
 
+int Player::sgn(float v) const
+{
+	return (v > 0.0f) ? 1 : ((v < 0.0f) ? -1 : 0);
+}
+
 void Player::ApplyForce(const float _x, const float _y)
 {
 	ApplyForce(Vec2(_x, _y));
@@ -10,37 +15,72 @@ void Player::ApplyForce(Vec2 f)
 	acceleration += f;
 }
 
-void Player::Move(const float dt)
+void Player::Collision()
 {
-	//Update the player position
-	position += speed * dt;
+	//Metoda 1
+	//E in png, nu cred m-ai e nevoie sa explic
+
+
+
+	//Metoda 1 implementata
+
+
+
+
+	//Metoda 2
+	//Testez daca va coincide cu un block in acest pas cu +speed
+	//Obs! Playerul probabil va trece de blocuri de test asa ca voi creea o function care
+	//va teste toate blocurile dintre nextPos si currentPos
+
+	//Daca da atunci teleporteaza playerul langa block ca si cum s-ar fi izbit de el
+	//Si cheama StopForces();
+
+
+
+	//Metoda 2 implementata
+	const int pBX = int(position.x / Grid::cellWidth);
+	const int pBY = int(position.y / Grid::cellHeight);
+
+	//for(int j =)
+}
+
+void Player::StopX()
+{
+	acceleration.x = 0.0f;
+	speed.x = 0.0f;
+}
+
+void Player::StopY()
+{
+	acceleration.y = 0.0f;
+	speed.y = 0.0f;
+}
+
+void Player::Fix(float dt)
+{
 	//Fix player to world
 	const int W = cacheGrid->GetWidth() * Grid::cellWidth;
 	const int H = cacheGrid->GetHeight() * Grid::cellHeight;
 
 	if (position.x < 0)
 	{
-		position.x = 0;
-		acceleration *= 0.0f;
-		speed *= 0.0f;
+		position.x = 0.0f;
+		StopX();
 	}
 	else if (position.x + texture.GetWidth() > W)
 	{
 		position.x = float(W - texture.GetWidth());
-		acceleration *= 0.0f;
-		speed *= 0.0f;
+		StopX();
 	}
 	if (position.y < 0)
 	{
 		position.y = 0;
-		acceleration *= 0.0f;
-		speed *= 0.0f;
+		StopY();
 	}
 	else if (position.y + texture.GetHeight() > H)
 	{
 		position.y = float(H - texture.GetHeight());
-		acceleration *= 0.0f;
-		speed *= 0.0f;
+		StopY();
 	}
 
 	//Fix camera to world
@@ -68,42 +108,6 @@ void Player::Move(const float dt)
 	else
 	{
 		camera.y += speed.y * dt;
-	}
-}
-
-void Player::Physics(const float dt)
-{
-	//F1 = a1, F2 = a2, F3 = a3;
-	//R = F1 + F2 + F3 + ...
-	//acceleration = R;
-	//speed = acceleration * dt;
-	//ChangePositionAndCam(speed * dt);
-
-	//Applying forces
-	Vec2 R(acceleration);
-
-
-
-	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type ==
-		Block::Type::Air)
-	{
-		//ChangePositionAndCam(0.0f, );
-	}
-}
-
-void Player::MaxAcc()
-{
-	if (acceleration.GetLengthSq() > maxAcceleration * maxAcceleration)
-	{
-		acceleration.NormalizeTo(maxAcceleration);
-	}
-}
-
-void Player::MaxSpeed()
-{
-	if (speed.GetLengthSq() > maxSpeed * maxSpeed)
-	{
-		speed.GetNormalizedTo(maxSpeed);
 	}
 }
 
@@ -175,14 +179,10 @@ void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
 		}
 	}
 
-	//Player movement
+	//Forces
 	if (kbd.KeyIsPressed('W'))
 	{
 		ApplyForce(0.0f, -defaultAcc);
-	}
-	if (kbd.KeyIsPressed('S'))
-	{
-		ApplyForce(0.0f, defaultAcc);
 	}
 	if (kbd.KeyIsPressed('A'))
 	{
@@ -192,11 +192,39 @@ void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
 	{
 		ApplyForce(defaultAcc, 0.0f);
 	}
+	//Gravity
+	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type ==
+		Block::Type::Air)
+	{
+		ApplyForce(0.0f, gravity);
+	}
+	//Friction
+	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type !=
+		Block::Type::Air)
+	{
+		ApplyForce(frictionForce * sgn(speed.x), 0.0f);
+	}
 
-	MaxAcc();
+
+	//Max acceleration
+	if (acceleration.GetLengthSq() > maxAcceleration * maxAcceleration)
+	{
+		acceleration.NormalizeTo(maxAcceleration);
+	}
+
+	//Collision detection and response
+	//This function just test if the player WILL collide with a block. If yes, teleport it near it and
+	//Call StopForces();
+	Collision();
 	speed += acceleration * dt;
-	MaxSpeed();
-	Move(dt);
+	//Max speed
+	if (speed.GetLengthSq() > maxSpeed * maxSpeed)
+	{
+		speed.GetNormalizedTo(maxSpeed);
+	}
+	position += speed * dt;
+	Fix(dt);
+
 	//Reset acceleration
 	acceleration *= 0.0f;
 }

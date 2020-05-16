@@ -16,20 +16,22 @@ private:
 	Vec2 camera;
 	Vec2 speed;
 	Vec2 acceleration;
-	const float defaultAcc = 80.0f;
 	const float maxSpeed = 100.0f;
+	const float defaultAcc = 100.0f;
 	const float maxAcceleration = 100.0f;
-	const float gravity = 1.0f;
+	const float gravity = 35.0f;
+	const float frictionForce = 10.0f;
 	const char playerRangeX = 10;
 	const char playerRangeY = 10;
 private:
 	//Functions
+	int sgn(float d) const; //Wow, I'm surprised C++ doesn't have this function
 	void ApplyForce(const float _x, const float _y);
 	void ApplyForce(Vec2 f);
-	void Move(const float dt);
-	void Physics(const float dt);
-	void MaxAcc();
-	void MaxSpeed();
+	void Collision();
+	void StopX();
+	void StopY();
+	void Fix(float dt);
 public:
 	//Variables
 public:
