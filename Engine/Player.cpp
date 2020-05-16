@@ -200,9 +200,9 @@ void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
 	}
 	//Friction
 	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type !=
-		Block::Type::Air)
+		Block::Type::Air && !(speed.x > -0.1f && speed.x < 0.1f))
 	{
-		ApplyForce(frictionForce * sgn(speed.x), 0.0f);
+		ApplyForce(frictionForce * -sgn(speed.x), 0.0f);
 	}
 
 
