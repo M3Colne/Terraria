@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Rect.h"
 
 int Player::sgn(float v) const
 {
@@ -15,20 +16,16 @@ void Player::ApplyForce(Vec2 f)
 	acceleration += f;
 }
 
-void Player::Collision()
-{
-}
-
 void Player::StopX()
 {
 	acceleration.x = 0.0f;
-	speed.x = 0.0f;
+	velocity.x = 0.0f;
 }
 
 void Player::StopY()
 {
 	acceleration.y = 0.0f;
-	speed.y = 0.0f;
+	velocity.y = 0.0f;
 }
 
 void Player::Fix(float dt)
@@ -69,7 +66,7 @@ void Player::Fix(float dt)
 	}
 	else
 	{
-		camera.x += speed.x * dt;
+		camera.x += velocity.x * dt;
 	}
 
 	if (position.y <= dy)
@@ -82,7 +79,7 @@ void Player::Fix(float dt)
 	}
 	else
 	{
-		camera.y += speed.y * dt;
+		camera.y += velocity.y * dt;
 	}
 }
 
@@ -97,7 +94,7 @@ Player::Player(Grid& grid, const int x)
 	cacheGrid(&grid),
 	position(0.0f, 0.0f),
 	camera(0.0f, 0.0f),
-	speed(0.0f, 0.0f),
+	velocity(0.0f, 0.0f),
 	acceleration(0.0f, 0.0f)
 {
 	//Finding the y position
@@ -161,11 +158,25 @@ void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
 	}
 	if (kbd.KeyIsPressed('A'))
 	{
-		ApplyForce(-defaultAcc, 0.0f);
+		if (velocity.x > 0.0f)
+		{
+			ApplyForce(-defaultDeacc, 0.0f);
+		}
+		else
+		{
+			ApplyForce(-defaultAcc, 0.0f);
+		}
 	}
 	if (kbd.KeyIsPressed('D'))
 	{
-		ApplyForce(defaultAcc, 0.0f);
+		if (velocity.x < 0.0f)
+		{
+			ApplyForce(defaultDeacc, 0.0f);
+		}
+		else
+		{
+			ApplyForce(defaultAcc, 0.0f);
+		}
 	}
 	//Gravity
 	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type ==
@@ -175,31 +186,31 @@ void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
 	}
 	//Friction
 	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type !=
-		Block::Type::Air && !(speed.x > -0.1f && speed.x < 0.1f))
+		Block::Type::Air && !(velocity.x > -0.1f && velocity.x < 0.1f))
 	{
-		ApplyForce(frictionForce * -sgn(speed.x), 0.0f);
+		ApplyForce(frictionForce * -sgn(velocity.x), 0.0f);
 	}
-
 
 	//Max acceleration
 	if (acceleration.GetLengthSq() > maxAcceleration * maxAcceleration)
 	{
 		acceleration.NormalizeTo(maxAcceleration);
 	}
-
-	//Collision detection and response
-	//This function just test if the player WILL collide with a block. If yes, teleport it near it and
-	//Call StopForces();
-	Collision();
-	speed += acceleration * dt;
+	velocity += acceleration * dt;
 	//Max speed
-	if (speed.GetLengthSq() > maxSpeed * maxSpeed)
+	/*if (velocity.GetLengthSq() > maxSpeed * maxSpeed)
 	{
-		speed.GetNormalizedTo(maxSpeed);
+		velocity.GetNormalizedTo(maxSpeed);
 	}
-	position += speed * dt;
-	Fix(dt);
+	if (CollisionDetection())
+	{
 
+	}
+	else
+	{*/
+		position += velocity * dt;
+		Fix(dt);
+	//}
 	//Reset acceleration
 	acceleration *= 0.0f;
 }

@@ -14,13 +14,14 @@ private:
 	Grid* cacheGrid;
 	Vec2 position;
 	Vec2 camera;
-	Vec2 speed;
+	Vec2 velocity;
 	Vec2 acceleration;
 	const float maxSpeed = 100.0f;
-	const float defaultAcc = 100.0f;
-	const float maxAcceleration = 100.0f;
+	const float defaultAcc = 85.0f;
+	const float defaultDeacc = 90.0f; //Bigger than the acceleartion
+	const float maxAcceleration = 85.0f;
 	const float gravity = 35.0f;
-	const float frictionForce = 10.0f;
+	const float frictionForce = 85.0f;
 	const char playerRangeX = 10;
 	const char playerRangeY = 10;
 private:
@@ -28,7 +29,6 @@ private:
 	int sgn(float d) const; //Wow, I'm surprised C++ doesn't have this function
 	void ApplyForce(const float _x, const float _y);
 	void ApplyForce(Vec2 f);
-	void Collision();
 	void StopX();
 	void StopY();
 	void Fix(float dt);
