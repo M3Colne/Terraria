@@ -11,18 +11,18 @@ struct Rect
 
 	Rect(Vec2 pos, int w, int h)
 		:
-		left(pos.x),
-		right(pos.x + w),
-		top(pos.y),
-		bottom(pos.y + h)
+		left(int(pos.x)),
+		right(int(pos.x) + w),
+		top(int(pos.y)),
+		bottom(int(pos.y) + h)
 	{
 	}
 	Rect(Vec2 p0, Vec2 p1)
 		:
-		left(p0.x),
-		right(p1.x),
-		top(p0.y),
-		bottom(p1.y)
+		left(int(p0.x)),
+		right(int(p1.x)),
+		top(int(p0.y)),
+		bottom(int(p1.y))
 	{
 	}
 	int GetWidth() const
