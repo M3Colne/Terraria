@@ -26,12 +26,14 @@ private:
 	const char playerRangeY = 10;
 private:
 	//Functions
-	int sgn(float d) const; //Wow, I'm surprised C++ doesn't have this function
+	int sgn(const float d) const; //Wow, I'm surprised C++ doesn't have this function
 	void ApplyForce(const float _x, const float _y);
 	void ApplyForce(Vec2 f);
 	void StopX();
 	void StopY();
-	void Fix(float dt);
+	void Fix(const float dt);
+	float SweptAABB(const float dt) const;
+	bool BroadphasingCollision() const;
 public:
 	//Variables
 public:
@@ -41,7 +43,7 @@ public:
 	Player operator=(const Player& other) = delete;
 	~Player();
 	void Draw(Graphics& gfx);
-	void Update(Keyboard& kbd, Mouse& micky, float dt);
+	void Update(Keyboard& kbd, Mouse& micky, const float dt);
 	Vec2 GetPosition() const;
 	Vec2 GetCamera() const;
 };

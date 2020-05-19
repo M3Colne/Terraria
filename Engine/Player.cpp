@@ -1,5 +1,4 @@
 #include "Player.h"
-#include "Rect.h"
 
 int Player::sgn(float v) const
 {
@@ -28,7 +27,7 @@ void Player::StopY()
 	velocity.y = 0.0f;
 }
 
-void Player::Fix(float dt)
+void Player::Fix(const float dt)
 {
 	//Fix player to world
 	const int W = cacheGrid->GetWidth() * Grid::cellWidth;
@@ -83,6 +82,15 @@ void Player::Fix(float dt)
 	}
 }
 
+float Player::SweptAABB(const float dt) const
+{
+	
+}
+
+bool Player::BroadphasingCollision() const
+{
+}
+
 Vec2 Player::GetPosition() const
 {
 	return position;
@@ -126,7 +134,7 @@ void Player::Draw(Graphics& gfx)
 		0, 0, texture.GetWidth(), texture.GetHeight(), texture, Colors::Magenta);
 }
 
-void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
+void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 {
 	//Destroying and placing blocks
 	if (micky.LeftIsPressed())
@@ -185,10 +193,13 @@ void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
 		ApplyForce(0.0f, gravity);
 	}
 	//Friction
-	if (cacheGrid->blocks[cacheGrid->GetId(int(position.x / Grid::cellWidth), int(position.y / Grid::cellHeight) + texture.GetHeight() / Grid::cellHeight)].type !=
-		Block::Type::Air && !(velocity.x > -0.1f && velocity.x < 0.1f))
+	if (velocity.x < -1.0f && velocity.x > 1.0f)
 	{
 		ApplyForce(frictionForce * -sgn(velocity.x), 0.0f);
+	}
+	else
+	{
+		velocity *= 0.0f;
 	}
 
 	//Max acceleration
@@ -198,19 +209,31 @@ void Player::Update(Keyboard& kbd, Mouse& micky, float dt)
 	}
 	velocity += acceleration * dt;
 	//Max speed
-	/*if (velocity.GetLengthSq() > maxSpeed * maxSpeed)
+	if (velocity.GetLengthSq() > maxSpeed * maxSpeed)
 	{
 		velocity.GetNormalizedTo(maxSpeed);
 	}
-	if (CollisionDetection())
-	{
 
+	if (BroadphasingCollision())
+	{
+		//Collision detection
+		const float collisionTime = SweptAABB(dt);
+		position += velocity * dt * collisionTime;
+
+		//Collision reponse
+		if (collisionTime != 1.0f)
+		{
+			const float remainingTime = 1.0f - collisionTime;
+
+			//Sliding or maybe push, I will see which is better
+		}
 	}
 	else
-	{*/
+	{
 		position += velocity * dt;
-		Fix(dt);
-	//}
+	}
+	Fix(dt);
+
 	//Reset acceleration
 	acceleration *= 0.0f;
 }
