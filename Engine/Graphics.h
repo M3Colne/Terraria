@@ -286,10 +286,6 @@ public:
 			{
 				if (t.GetPixel(i, j) != chroma)
 				{
-					PutPixel(i + x - x0, j + y - y0, t.GetPixel(i, j));
-				}
-				else if (t.GetPixel(i, j) == color)
-				{
 					PutPixel(i + x - x0, j + y - y0, color);
 				}
 			}
