@@ -7,6 +7,7 @@ Sound?
 Inventory
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter
 Use textSprite instead of a entire sprite for the menu
+Improve player collision by minimizing the broadphase zone and fix the camera bug
 Caves generation?
 Biomes
 Flora?

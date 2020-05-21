@@ -85,6 +85,9 @@ void Player::Fix(const float dt)
 void Player::Collisions(bool& COLL, const float dt)
 {
 	//Check for collision in the broadphase area (the broadphasing zone is the entire screen, sadly)
+	//I want the minimum collisionTime from every block(that's the closest block that the player collied)
+	float collisionTime = 1.0f;
+	Vec2 normal(0.0f, 0.0f);
 	for (int j = 0; j < Grid::cellsV; j++)
 	{
 		for (int i = 0; i < Grid::cellsH; i++)
@@ -92,28 +95,33 @@ void Player::Collisions(bool& COLL, const float dt)
 			const int id = cacheGrid->GetId(i + int(camera.x / Grid::cellWidth), j + int(camera.y / Grid::cellHeight));
 			if (cacheGrid->blocks[id].type != Block::Type::Air)
 			{
-				Vec2 normal(0.0f, 0.0f);
-				const float collisionTime = SweptAABB(id, normal, dt);
-				if (collisionTime != 1.0f)
+				const float t = SweptAABB(id, normal, dt);
+				
+				if (t < collisionTime)
 				{
-					//I use this variable just in case the player didn't collided with anything
-					COLL = true;
-
-					//Collision response
-					position += velocity * dt * collisionTime;
-
-					//sliding
-					/*const float dotp = (1.0f - collisionTime) * (velocity.x * normal.y + velocity.y * normal.x);
-					position.x += velocity.x * dt * dotp * normal.y;
-					position.y += velocity.y * dt * dotp * normal.x;*/
-					break;
-				}
-				else
-				{
-					continue;
+					collisionTime = t;
 				}
 			}
 		}
+	}
+
+	if (collisionTime != 1.0f)
+	{
+		//I use this variable just in case the player didn't collided with anything
+		COLL = true;
+
+		//Collision response
+		position += velocity * dt * collisionTime;
+
+		//Stop the players forces when he collides with a wall
+		/*if (normal.x != 0.0f)
+		{
+			StopX();
+		}
+		else if (normal.y != 0.0f)
+		{
+			StopY();
+		}*/
 	}
 }
 
@@ -122,9 +130,9 @@ float Player::SweptAABB(const int id, Vec2& n, const float dt) const
 	const Vec2 tempV(velocity * dt);
 	float entryDistX, entryDistY, exitDistX, exitDistY;
 	{
-		const int left = id % Grid::cellWidth;
+		const int left = cacheGrid->GetPosX(id) * Grid::cellWidth;
 		const int right = left + Grid::cellWidth;
-		const int top = int(id / Grid::cellHeight);
+		const int top = cacheGrid->GetPosY(id) * Grid::cellHeight;
 		const int bottom = top + Grid::cellHeight;
 		//Get distance
 		if (tempV.x > 0.0f)
