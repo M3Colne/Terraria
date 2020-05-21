@@ -23,6 +23,7 @@
 #include "Grid.h"
 #include "Player.h"
 #include "FrameTimer.h"
+#include "Text.h"
 
 class Game
 {
@@ -49,11 +50,13 @@ private:
 	/********************************/
 	/*  User Variables              */
     FrameTimer ft;
+    Text textSprite;
     const Texture2D menuScreen;
     const int menuX = 80;
     const int menuY = 80;
     Grid* pGrid;
     Player* pPlayer;
     bool hasStarted = false;
+    bool debuging = false;
 	/********************************/
 };

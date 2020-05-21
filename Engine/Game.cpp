@@ -27,6 +27,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
     menuScreen("./Assets/menu.bmp"),
+    textSprite("./Assets/monospaceFontSheet.bmp"),
     pGrid(nullptr),
     pPlayer(nullptr)
 {
@@ -62,6 +63,10 @@ void Game::UpdateModel()
             SaveGrid("./Worlds/world1.txt");
             DeleteGrid();
             DeletePlayer();
+        }
+        else if (wnd.kbd.KeyIsPressed('6'))
+        {
+            debuging = true;
         }
     }
     else
@@ -141,6 +146,8 @@ void Game::ComposeFrame()
     {
         pGrid->DrawBlocks(gfx, pPlayer->GetCamera());
         pPlayer->Draw(gfx);
+        textSprite.Draw("Block X: " + std::to_string(int((wnd.mouse.GetPosX() + pPlayer->GetCamera().x) / Grid::cellWidth)) +
+            "\n" + "Block Y: " + std::to_string(int((wnd.mouse.GetPosY() + pPlayer->GetCamera().y) / Grid::cellHeight)), { 0, 0 }, Colors::Red, gfx);
     }
     else
     {
