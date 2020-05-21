@@ -6,6 +6,7 @@ Use text sprites(I13) instead of a sprite for the menu
 Sound?
 Inventory
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter
+Use textSprite instead of a entire sprite for the menu
 Caves generation?
 Biomes
 Flora?
