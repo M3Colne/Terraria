@@ -1,7 +1,9 @@
 Important links:
 Everything: https://gamedev.stackexchange.com/questions/29691/2d-tile-based-collision-detection
 Collision: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
-Player(+ Collision + Doar ia std::min din toate blockurile din broadphase)
+
+
+
 Use text sprites(I13) instead of a sprite for the menu
 Sound?
 Inventory
