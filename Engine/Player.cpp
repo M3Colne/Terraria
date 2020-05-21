@@ -82,13 +82,130 @@ void Player::Fix(const float dt)
 	}
 }
 
-float Player::SweptAABB(const float dt) const
+void Player::Collisions(bool& COLL, const float dt)
 {
-	
+	//Check for collision in the broadphase area (the broadphasing zone is the entire screen, sadly)
+	for (int j = 0; j < Grid::cellsV; j++)
+	{
+		for (int i = 0; i < Grid::cellsH; i++)
+		{
+			const int id = cacheGrid->GetId(i + int(camera.x / Grid::cellWidth), j + int(camera.y / Grid::cellHeight));
+			if (cacheGrid->blocks[id].type != Block::Type::Air)
+			{
+				Vec2 normal(0.0f, 0.0f);
+				const float collisionTime = SweptAABB(id, normal, dt);
+				if (collisionTime != 1.0f)
+				{
+					//I use this variable just in case the player didn't collided with anything
+					COLL = true;
+
+					//Collision response
+					position += velocity * dt * collisionTime;
+
+					//sliding
+					/*const float dotp = (1.0f - collisionTime) * (velocity.x * normal.y + velocity.y * normal.x);
+					position.x += velocity.x * dt * dotp * normal.y;
+					position.y += velocity.y * dt * dotp * normal.x;*/
+					break;
+				}
+				else
+				{
+					continue;
+				}
+			}
+		}
+	}
 }
 
-bool Player::BroadphasingCollision() const
+float Player::SweptAABB(const int id, Vec2& n, const float dt) const
 {
+	const Vec2 tempV(velocity * dt);
+	float entryDistX, entryDistY, exitDistX, exitDistY;
+	{
+		const int left = id % Grid::cellWidth;
+		const int right = left + Grid::cellWidth;
+		const int top = int(id / Grid::cellHeight);
+		const int bottom = top + Grid::cellHeight;
+		//Get distance
+		if (tempV.x > 0.0f)
+		{
+			entryDistX = left - (position.x + texture.GetWidth());
+			exitDistX = right - position.x;
+		}
+		else
+		{
+			entryDistX = right - position.x;
+			exitDistX = left - (position.x + texture.GetWidth());
+		}
+		if (tempV.y > 0.0f)
+		{
+			entryDistY = top - (position.y + texture.GetHeight());
+			exitDistY = bottom - position.y;
+		}
+		else
+		{
+			entryDistY = bottom - position.y;
+			exitDistY = top - (position.y + texture.GetHeight());
+		}
+	}
+
+	//Get time on each axis
+	float entryTimeX, entryTimeY, exitTimeX, exitTimeY;
+	if (tempV.x == 0.0f)
+	{
+		entryTimeX = -std::numeric_limits<float>::infinity();
+		exitTimeX = std::numeric_limits<float>::infinity();
+	}
+	else
+	{
+		entryTimeX = entryDistX / tempV.x;
+		exitTimeX = exitDistX / tempV.x;
+	}
+	if (tempV.y == 0.0f)
+	{
+		entryTimeY = -std::numeric_limits<float>::infinity();
+		exitTimeY = std::numeric_limits<float>::infinity();
+	}
+	else
+	{
+		entryTimeY = entryDistY / tempV.y;
+		exitTimeY = exitDistY / tempV.y;
+	}
+
+	//Get time first and last time
+	const float entryTime = std::max<float>(entryTimeX, entryTimeY);
+	const float exitTime = std::min<float>(exitTimeX, exitTimeY);
+
+	//Collision detection
+	if (entryTime > exitTime || entryTimeX < 0.0f && entryTimeY < 0.0f || entryTimeX > 1.0f || entryTimeY > 1.0f)
+	{
+		return 1.0f;
+	}
+
+	if (entryTimeX > entryTimeY)
+	{
+		if (entryDistX < 0.0f)
+		{
+			n = { 1.0f, 0.0f };
+		}
+		else
+		{
+			n = { -1.0f, 0.0f };
+		}
+	}
+	else
+	{
+		if (entryDistY < 0.0f)
+		{
+			n = { 0.0f, 1.0f };
+		}
+		else
+		{
+			n = { 0.0f, -1.0f };
+		}
+	}
+
+	return entryTime;
 }
 
 Vec2 Player::GetPosition() const
@@ -193,14 +310,14 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		ApplyForce(0.0f, gravity);
 	}
 	//Friction
-	if (velocity.x < -1.0f && velocity.x > 1.0f)
+	/*if (velocity.x < -1.0f && velocity.x > 1.0f)
 	{
 		ApplyForce(frictionForce * -sgn(velocity.x), 0.0f);
 	}
 	else
 	{
 		velocity *= 0.0f;
-	}
+	}*/
 
 	//Max acceleration
 	if (acceleration.GetLengthSq() > maxAcceleration * maxAcceleration)
@@ -214,24 +331,16 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		velocity.GetNormalizedTo(maxSpeed);
 	}
 
-	if (BroadphasingCollision())
-	{
-		//Collision detection
-		const float collisionTime = SweptAABB(dt);
-		position += velocity * dt * collisionTime;
-
-		//Collision reponse
-		if (collisionTime != 1.0f)
-		{
-			const float remainingTime = 1.0f - collisionTime;
-
-			//Sliding or maybe push, I will see which is better
-		}
-	}
-	else
+	//Check for collision in the broadphase area
+	bool collided = false;
+	Collisions(collided, dt);
+	
+	//I use this variable just so I don't update 2 times in the same frame
+	if (!collided)
 	{
 		position += velocity * dt;
 	}
+
 	Fix(dt);
 
 	//Reset acceleration

@@ -32,8 +32,8 @@ private:
 	void StopX();
 	void StopY();
 	void Fix(const float dt);
-	float SweptAABB(const float dt) const;
-	bool BroadphasingCollision() const;
+	void Collisions(bool& COLL, const float dt);
+	float SweptAABB(const int id, Vec2& n, const float dt) const;
 public:
 	//Variables
 public:
