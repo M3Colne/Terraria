@@ -171,8 +171,5 @@
     <Media Include="Audio\gameBeat.wav">
       <Filter>Audio</Filter>
     </Media>
-    <Media Include="Audio\click.wav">
-      <Filter>Audio</Filter>
-    </Media>
   </ItemGroup>
 </Project>
