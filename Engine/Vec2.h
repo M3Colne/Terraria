@@ -12,6 +12,10 @@ public:
 		y(y_in)
 	{
 	}
+	Vec2_ operator()(const Vec2& rhs) const
+	{
+		return Vec2_(T(rhs.x), T(rhs.y));
+	}
 	Vec2_& operator=(const Vec2_& rhs)
 	{
 		x = rhs.x;
@@ -51,11 +55,11 @@ public:
 	{
 		return *this = *this - rhs;
 	}
-	T GetLength() const
+	float GetLength() const
 	{
 		return T(std::sqrt(GetLengthSq()));
 	}
-	T GetLengthSq() const
+	float GetLengthSq() const
 	{
 		return x * x + y * y;
 	}

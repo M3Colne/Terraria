@@ -249,6 +249,7 @@
     <Text Include="..\ToDo.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Media Include="Audio\click.wav" />
     <Media Include="Audio\gameBeat.wav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
