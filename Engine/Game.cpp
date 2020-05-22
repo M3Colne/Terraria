@@ -160,8 +160,16 @@ void Game::ComposeFrame()
     {
         pGrid->DrawBlocks(gfx, pPlayer->GetCamera());
         pPlayer->Draw(gfx);
-        textSprite.Draw("Block X: " + std::to_string(int((wnd.mouse.GetPosX() + pPlayer->GetCamera().x) / Grid::cellWidth)) +
-            "\n" + "Block Y: " + std::to_string(int((wnd.mouse.GetPosY() + pPlayer->GetCamera().y) / Grid::cellHeight)), { 0, 0 }, Colors::Red, gfx);
+        const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCamera().x) / Grid::cellWidth),
+            int((wnd.mouse.GetPosY() + pPlayer->GetCamera().y) / Grid::cellHeight));
+        std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
+            "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
+            "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
+        const int sID = int(wnd.mouse.GetPosX() / Grid::cellWidth) + Grid::cellsH * int(wnd.mouse.GetPosY() / Grid::cellHeight);
+        std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
+            "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
+            "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
+        textSprite.Draw(WdebuggingInfo + SdebuggingInfo, { 0, 0 }, Colors::Red, gfx);
     }
     else
     {
