@@ -27,7 +27,7 @@ Game::Game( MainWindow& wnd )
 	wnd( wnd ),
 	gfx( wnd ),
     textSprite("./Assets/monospaceFontSheet.bmp"),
-    menuMusic(L"./Audio/gameBeat.wav"),
+    backgroundMusic(L"./Audio/gameBeat.wav"),
     menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
     pPlayer(nullptr)
@@ -71,11 +71,11 @@ void Game::UpdateModel()
         }
 
         //Audio
-        menuMusicLoopTimer += DT;
-        if (menuMusicLoopTimer >= 4.1f)
+        backgroundMusicLoopTimer += DT;
+        if (backgroundMusicLoopTimer >= 4.1f)
         {
-            menuMusicLoopTimer = 0.0f;
-            menuMusic.Play();
+            backgroundMusicLoopTimer = 0.0f;
+            backgroundMusic.Play();
         }
     }
     else

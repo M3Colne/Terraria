@@ -52,8 +52,8 @@ private:
 	/*  User Variables              */
     FrameTimer ft;
     Text textSprite;
-    Sound menuMusic;
-    float menuMusicLoopTimer = 0.0f;
+    Sound backgroundMusic;
+    float backgroundMusicLoopTimer = 4.1f;
     const Texture2D menuScreen;
     const int menuX = 80;
     const int menuY = 80;
