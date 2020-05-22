@@ -4,11 +4,10 @@ Collision: https://www.gamedev.net/articles/programming/general-and-gameplay-pro
 
 
 
-Sound?
-Inventory
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter
 Improve player collision by minimizing the broadphase zone and fix the camera bug
 Use text sprites(I13) instead of a sprite for the menu?
+Inventory
 Caves generation?
 Biomes
 Flora?
