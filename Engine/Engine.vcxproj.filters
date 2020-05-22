@@ -22,6 +22,9 @@
     <Filter Include="Other files">
       <UniqueIdentifier>{9d2c57bb-32e7-46eb-ae9f-ad4558be911c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{8369f615-caee-4650-8f17-5beaebf461be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChiliWin.h">
@@ -163,5 +166,10 @@
     <Text Include="..\ToDo.txt">
       <Filter>Other files</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Audio\gameBeat.wav">
+      <Filter>Audio</Filter>
+    </Media>
   </ItemGroup>
 </Project>

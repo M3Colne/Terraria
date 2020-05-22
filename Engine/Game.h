@@ -24,6 +24,7 @@
 #include "Player.h"
 #include "FrameTimer.h"
 #include "Text.h"
+#include "Sound.h"
 
 class Game
 {
@@ -51,6 +52,8 @@ private:
 	/*  User Variables              */
     FrameTimer ft;
     Text textSprite;
+    Sound menuMusic;
+    float menuMusicLoopTimer = 0.0f;
     const Texture2D menuScreen;
     const int menuX = 80;
     const int menuY = 80;

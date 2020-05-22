@@ -26,8 +26,9 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-    menuScreen("./Assets/menu.bmp"),
     textSprite("./Assets/monospaceFontSheet.bmp"),
+    menuMusic(L"./Audio/gameBeat.wav"),
+    menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
     pPlayer(nullptr)
 {
@@ -67,6 +68,14 @@ void Game::UpdateModel()
         else if (wnd.kbd.KeyIsPressed('6'))
         {
             debuging = true;
+        }
+
+        //Audio
+        menuMusicLoopTimer += DT;
+        if (menuMusicLoopTimer >= 4.1f)
+        {
+            menuMusicLoopTimer = 0.0f;
+            menuMusic.Play();
         }
     }
     else
