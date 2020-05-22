@@ -53,6 +53,7 @@ private:
     FrameTimer ft;
     Text textSprite;
     Sound backgroundMusic;
+    Sound clickSound;
     float backgroundMusicLoopTimer = 4.1f;
     const Texture2D menuScreen;
     const int menuX = 80;

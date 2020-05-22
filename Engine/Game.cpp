@@ -28,6 +28,7 @@ Game::Game( MainWindow& wnd )
 	gfx( wnd ),
     textSprite("./Assets/monospaceFontSheet.bmp"),
     backgroundMusic(L"./Audio/gameBeat.wav"),
+    clickSound(L"./Audio/click.wav"),
     menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
     pPlayer(nullptr)
@@ -75,7 +76,7 @@ void Game::UpdateModel()
         if (backgroundMusicLoopTimer >= 4.1f)
         {
             backgroundMusicLoopTimer = 0.0f;
-            backgroundMusic.Play();
+            backgroundMusic.Play(1.0f, 0.3333f);
         }
     }
     else
@@ -87,24 +88,28 @@ void Game::UpdateModel()
             if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 154 && y - menuY <= 207)
             {
                 hasStarted = true;
+                clickSound.Play(1.0f, 0.5f);
                 CreateGrid(4200, 1200, 40, 20, 7, 10);
                 CreatePlayer(pGrid->GetWidth() / 2);
             }
             if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 208 && y - menuY <= 271)
             {
                 hasStarted = true;
+                clickSound.Play(1.0f, 0.5f);
                 CreateGrid(6400, 1800, 40, 20, 7, 10);
                 CreatePlayer(pGrid->GetWidth() / 2);
             }
             if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 272 && y - menuY <= 318)
             {
                 hasStarted = true;
+                clickSound.Play(1.0f, 0.5f);
                 CreateGrid(8400, 2400, 40, 20, 7, 10);
                 CreatePlayer(pGrid->GetWidth() / 2);
             }
             if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 319 && y - menuY <= 363)
             {
                 hasStarted = true;
+                clickSound.Play(1.0f, 0.5f);
                 LoadGrid("./Worlds/world1.txt");
                 CreatePlayer(pGrid->GetWidth() / 2);
             }
