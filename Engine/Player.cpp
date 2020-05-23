@@ -88,11 +88,25 @@ void Player::Collisions(bool& COLL, const float dt)
 	//I want the minimum collisionTime from every block(that's the closest block that the player collied)
 	float collisionTime = 1.0f;
 	Vec2 normal(0.0f, 0.0f);
-	for (int j = 0; j < Grid::cellsV; j++)
+
+	//Calculating the broadphase zone
+	const int left = int((position.x + (velocity.x >= 0.0f ? 0.0f : velocity.x * dt)) / Grid::cellWidth);
+	const int right = int((position.x + texture.GetWidth() + (velocity.x >= 0.0f ? velocity.x * dt : 0.0f)) / Grid::cellWidth);
+	const int top = int((position.y + (velocity.y >= 0.0f ? 0.0f : velocity.y * dt)) / Grid::cellHeight);
+	const int bottom = int((position.y + texture.GetHeight() + (velocity.y >= 0.0f ? velocity.y * dt : 0.0f)) / Grid::cellHeight);
+
+	assert(left >= 0 && left < cacheGrid->GetWidth());
+	assert(right >= 0 && right < cacheGrid->GetWidth());
+	assert(left <= right);
+	assert(top >= 0 && top < cacheGrid->GetHeight());
+	assert(bottom >= 0 && bottom < cacheGrid->GetHeight());
+	assert(top <= bottom);
+
+	for (int j = top; j < bottom; j++)
 	{
-		for (int i = 0; i < Grid::cellsH; i++)
+		for (int i = left; i < right; i++)
 		{
-			const int id = cacheGrid->GetId(i + int(camera.x / Grid::cellWidth), j + int(camera.y / Grid::cellHeight));
+			const int id = cacheGrid->GetId(i, j);
 			if (cacheGrid->blocks[id].type != Block::Type::Air)
 			{
 				const float t = SweptAABB(id, normal, dt);
@@ -114,14 +128,14 @@ void Player::Collisions(bool& COLL, const float dt)
 		position += velocity * dt * collisionTime;
 
 		//Stop the players forces when he collides with a wall
-		/*if (normal.x != 0.0f)
+		if (normal.x != 0.0f)
 		{
 			StopX();
 		}
 		else if (normal.y != 0.0f)
 		{
 			StopY();
-		}*/
+		}
 	}
 }
 
