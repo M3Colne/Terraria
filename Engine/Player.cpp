@@ -90,17 +90,17 @@ void Player::Collisions(bool& COLL, const float dt)
 	Vec2 normal(0.0f, 0.0f);
 
 	//Calculating the broadphase zone
-	const int left = int((position.x + (velocity.x >= 0.0f ? 0.0f : velocity.x * dt)) / Grid::cellWidth);
-	const int right = int((position.x + texture.GetWidth() + (velocity.x >= 0.0f ? velocity.x * dt : 0.0f)) / Grid::cellWidth);
-	const int top = int((position.y + (velocity.y >= 0.0f ? 0.0f : velocity.y * dt)) / Grid::cellHeight);
-	const int bottom = int((position.y + texture.GetHeight() + (velocity.y >= 0.0f ? velocity.y * dt : 0.0f)) / Grid::cellHeight);
+	const int left = int((position.x + (velocity.x >= 0.0f ? 0.0f : velocity.x)) / Grid::cellWidth);
+	const int right = int((position.x + texture.GetWidth() + (velocity.x > 0.0f ? velocity.x + Grid::cellWidth : 0.0f)) / Grid::cellWidth);
+	const int top = int((position.y + (velocity.y >= 0.0f ? 0.0f : velocity.y)) / Grid::cellHeight);
+	const int bottom = int((position.y + texture.GetHeight() + (velocity.y > 0.0f ? velocity.y + Grid::cellHeight : 0.0f)) / Grid::cellHeight);
 
 	assert(left >= 0 && left < cacheGrid->GetWidth());
 	assert(right >= 0 && right < cacheGrid->GetWidth());
-	assert(left <= right);
+	assert(left < right);
 	assert(top >= 0 && top < cacheGrid->GetHeight());
 	assert(bottom >= 0 && bottom < cacheGrid->GetHeight());
-	assert(top <= bottom);
+	assert(top < bottom);
 
 	for (int j = top; j < bottom; j++)
 	{
@@ -126,6 +126,14 @@ void Player::Collisions(bool& COLL, const float dt)
 
 		//Collision response
 		position += velocity * dt * collisionTime;
+
+		// slide
+		const float remainingTime = 1.0f - collisionTime;
+		const float dotprod = (velocity.x * normal.y + velocity.y * normal.x) * remainingTime;
+		velocity.x = dotprod * normal.y;
+		velocity.y = dotprod * normal.x;
+
+		position += velocity * dt * remainingTime;
 
 		//Stop the players forces when he collides with a wall
 		if (normal.x != 0.0f)
