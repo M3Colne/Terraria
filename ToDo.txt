@@ -4,7 +4,7 @@ Collision: https://www.gamedev.net/articles/programming/general-and-gameplay-pro
 
 
 
-Improve player collision by minimizing the broadphase zone and fix the camera bug
+Improve player collision by minimizing the broadphase zone and fix the camera bug(Possible solutions to bugs is the finish the normal collision response(that should fix the camera still moving bug) and the other bug where the algorithm gives wrong times may be fixed by creating a broadphase(I mean, not the entire screen broadphase but a normal(not vector normal) broadphase))
 Use text sprites(I13) instead of a sprite for the menu?
 Inventory
 Caves generation?
