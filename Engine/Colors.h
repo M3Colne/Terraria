@@ -51,6 +51,13 @@ public:
 		dword = color.dword;
 		return *this;
 	}
+	Color operator+(Color color)
+	{
+		SetR(this->GetR() + color.GetR());
+		SetG(this->GetG() + color.GetG());
+		SetB(this->GetB() + color.GetB());
+		return *this;
+	}
 	bool operator==(Color other)
 	{
 		return dword == other.dword;
