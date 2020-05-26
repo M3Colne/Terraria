@@ -1,6 +1,7 @@
 #include "Grid.h"
 #include "PerlinNoise.h"
 #include <random>
+#include "SpriteEffects.h"
 
 Grid::Grid(int width, int height, const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer)
 	:
@@ -251,27 +252,27 @@ void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
 	{
 	case Block::Type::Air:
 	{
-		gfx.DrawTexture(x, y, 0, 0, 20, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 0, 0, 20, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
 		break;
 	}
 	case Block::Type::Dirt:
 	{
-		gfx.DrawTexture(x, y, 20, 0, 40, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 20, 0, 40, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
 		break;
 	}
 	case Block::Type::Grass:
 	{
-		gfx.DrawTexture(x, y, 40, 0, 60, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 40, 0, 60, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
 		break;
 	}
 	case Block::Type::Stone:
 	{
-		gfx.DrawTexture(x, y, 60, 0, 80, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 60, 0, 80, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
 		break;
 	}
 	case Block::Type::Copper:
 	{
-		gfx.DrawTexture(x, y, 80, 0, 100, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet);
+		gfx.DrawTexture(x, y, 80, 0, 100, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
 		break;
 	}
 	}

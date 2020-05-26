@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "SpriteEffects.h"
 
 int Player::sgn(float v) const
 {
@@ -277,8 +278,8 @@ Player::~Player()
 
 void Player::Draw(Graphics& gfx)
 {
-	gfx.DrawTextureChroma(int(position.x - camera.x), int(position.y - camera.y),
-		0, 0, texture.GetWidth(), texture.GetHeight(), texture, Colors::Magenta);
+	gfx.DrawTexture(int(position.x - camera.x), int(position.y - camera.y),
+		0, 0, texture.GetWidth(), texture.GetHeight(), texture, SpriteEffects::Chroma(Colors::Magenta));
 }
 
 void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)

@@ -1,5 +1,6 @@
 #include "Text.h"
 #include <cassert>
+#include "SpriteEffects.h"
 
 Text::Text(const std::string& filename, Color chroma)
 	:
@@ -42,8 +43,8 @@ void Text::Draw(const std::string& text, const Vei2& pos, Color color, Graphics&
 			// map 1d glyphIndex to 2D coordinates
 			const int yGlyph = glyphIndex / nColumns;
 			const int xGlyph = glyphIndex % nColumns;
-			gfx.DrawTextureSubstitute(curPos.x, curPos.y, color, xGlyph * glyphWidth, yGlyph * glyphHeight,
-				(xGlyph + 1) * glyphWidth, (yGlyph + 1) * glyphHeight, surface, chroma);
+			gfx.DrawTexture(curPos.x, curPos.y, xGlyph * glyphWidth, yGlyph * glyphHeight,
+				(xGlyph + 1) * glyphWidth, (yGlyph + 1) * glyphHeight, surface, SpriteEffects::Substitute(chroma, color));
 		}
 		// advance screen pos for next character
 		curPos.x += glyphWidth;

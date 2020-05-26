@@ -316,6 +316,11 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+Color Graphics::GetPixel(int x, int y) const
+{
+	return pSysBuffer[Graphics::ScreenWidth * y + x];
+}
+
 
 //////////////////////////////////////////////////
 //           Graphics Exception

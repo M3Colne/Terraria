@@ -21,6 +21,7 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include <assert.h>
+#include "SpriteEffects.h"
 
 Game::Game( MainWindow& wnd )
 	:
@@ -173,6 +174,6 @@ void Game::ComposeFrame()
     }
     else
     {
-        gfx.DrawTexture(80, 80, menuScreen);
+        gfx.DrawTexture(80, 80, menuScreen, SpriteEffects::NoEffect());
     }
 }
