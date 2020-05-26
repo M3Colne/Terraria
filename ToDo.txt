@@ -4,14 +4,12 @@ Collision: https://www.gamedev.net/articles/programming/general-and-gameplay-pro
 
 
 
-Fix collisions(Test for each direction, with both axis, with slow speed, sliding)
 Make friction
-Improve player collision by minimizing the broadphase zone and fix the camera bug(may be fixed by creating a broadphase(I mean, not the entire screen broadphase but a normal(not vector normal) broadphase))
 Use text sprites(I13) instead of a sprite for the menu?
 Inventory
-Caves generation?
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter
-Biomes
+Fix collisions(Test for each direction, with both axis, with slow speed, sliding)
+Biomes + Caves generation
 Flora?
 Mobs
 Maybe use chunks?
