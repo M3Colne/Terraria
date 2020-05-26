@@ -17,9 +17,9 @@ private:
 	Vec2 velocity;
 	Vec2 acceleration;
 	const float maxSpeed = 100.0f;
-	const float defaultAcc = 85.0f;
-	const float defaultDeacc = 90.0f; //Bigger than the acceleartion
-	const float maxAcceleration = 85.0f;
+	const float defaultAcc = 90.0f;
+	const float defaultDeacc = 125.0f; //Bigger than the acceleartion
+	const float maxAcceleration = 150.0f;
 	const float gravity = 35.0f;
 	const float frictionForce = 85.0f;
 	const char playerRangeX = 10;

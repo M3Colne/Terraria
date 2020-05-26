@@ -308,30 +308,44 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	}
 
 	//Forces
-	if (kbd.KeyIsPressed('W'))
+	//Horizontal and vertica forces
 	{
-		ApplyForce(0.0f, -defaultAcc);
-	}
-	if (kbd.KeyIsPressed('A'))
-	{
-		if (velocity.x > 0.0f)
+		if (kbd.KeyIsPressed('W'))
 		{
-			ApplyForce(-defaultDeacc, 0.0f);
+			ApplyForce(0.0f, -defaultAcc);
 		}
-		else
+
+		bool l = kbd.KeyIsPressed('A');
+		bool r = kbd.KeyIsPressed('D');
+		if (r)
 		{
-			ApplyForce(-defaultAcc, 0.0f);
+			if (velocity.x < 0.0f)
+			{
+				ApplyForce(defaultDeacc, 0.0f);
+				if (velocity.x + acceleration.x * dt > 0.0f)
+				{
+					velocity.x = 0.0f;
+				}
+			}
+			else
+			{
+				ApplyForce(defaultAcc, 0.0f);
+			}
 		}
-	}
-	if (kbd.KeyIsPressed('D'))
-	{
-		if (velocity.x < 0.0f)
+		if (l)
 		{
-			ApplyForce(defaultDeacc, 0.0f);
-		}
-		else
-		{
-			ApplyForce(defaultAcc, 0.0f);
+			if (velocity.x > 0.0f)
+			{
+				ApplyForce(-defaultDeacc, 0.0f);
+				if (velocity.x - defaultDeacc * dt < 0.0f)
+				{
+					velocity.x = 0.0f;
+				}
+			}
+			else
+			{
+				ApplyForce(-defaultAcc, 0.0f);
+			}
 		}
 	}
 	//Gravity
@@ -340,15 +354,6 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	{
 		ApplyForce(0.0f, gravity);
 	}
-	//Friction
-	/*if (velocity.x < -1.0f && velocity.x > 1.0f)
-	{
-		ApplyForce(frictionForce * -sgn(velocity.x), 0.0f);
-	}
-	else
-	{
-		velocity *= 0.0f;
-	}*/
 
 	//Max acceleration
 	if (acceleration.GetLengthSq() > maxAcceleration * maxAcceleration)
