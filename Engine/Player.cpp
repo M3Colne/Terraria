@@ -87,21 +87,32 @@ void Player::Collisions(bool& COLL, const float dt)
 {
 	//Check for collision in the broadphase area (the broadphasing zone is the entire screen, sadly)
 	//I want the minimum collisionTime from every block(that's the closest block that the player collied)
-	float collisionTime = 1.0f;
-	Vec2 normal(0.0f, 0.0f);
 
 	//Calculating the broadphase zone
-	const int left = int((position.x + (velocity.x >= 0.0f ? 0.0f : velocity.x)) / Grid::cellWidth);
-	const int right = int((position.x + texture.GetWidth() + (velocity.x > 0.0f ? velocity.x + Grid::cellWidth : 0.0f)) / Grid::cellWidth);
-	const int top = int((position.y + (velocity.y >= 0.0f ? 0.0f : velocity.y)) / Grid::cellHeight);
-	const int bottom = int((position.y + texture.GetHeight() + (velocity.y > 0.0f ? velocity.y + Grid::cellHeight : 0.0f)) / Grid::cellHeight);
+	int left = int((position.x + (velocity.x >= 0.0f ? 0.0f : velocity.x)) / Grid::cellWidth);
+	int right = int((position.x + texture.GetWidth() + (velocity.x > 0.0f ? velocity.x + Grid::cellWidth : 0.0f)) / Grid::cellWidth);
+	int top = int((position.y + (velocity.y >= 0.0f ? 0.0f : velocity.y)) / Grid::cellHeight);
+	int bottom = int((position.y + texture.GetHeight() + (velocity.y > 0.0f ? velocity.y + Grid::cellHeight : 0.0f)) / Grid::cellHeight);
 
-	assert(left >= 0 && left < cacheGrid->GetWidth());
-	assert(right >= 0 && right < cacheGrid->GetWidth());
-	assert(left < right);
-	assert(top >= 0 && top < cacheGrid->GetHeight());
-	assert(bottom >= 0 && bottom < cacheGrid->GetHeight());
-	assert(top < bottom);
+	if (left < 0)
+	{
+		left = 0;
+	}
+	if (right >= cacheGrid->GetWidth())
+	{
+		right = cacheGrid->GetWidth() - 1;
+	}
+	if (top < 0)
+	{
+		top = 0;
+	}
+	if (bottom >= cacheGrid->GetHeight())
+	{
+		bottom = cacheGrid->GetHeight() - 1;
+	}
+
+	float collisionTime = 1.0f;
+	Vec2 normal(0.0f, 0.0f);
 
 	for (int j = top; j < bottom; j++)
 	{
