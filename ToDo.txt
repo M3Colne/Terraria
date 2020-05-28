@@ -4,7 +4,7 @@ Collision: https://www.gamedev.net/articles/programming/general-and-gameplay-pro
 
 
 
-Player jump
+Player jump(uitate la imaginea din folder)
 Use text sprites(I13) instead of a sprite for the menu?
 Inventory
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter

@@ -135,6 +135,11 @@ void Player::Collisions(bool& COLL, const float dt)
 	{
 		//I use this variable just in case the player didn't collided with anything
 		COLL = true;
+		
+		if (normal.y == -1.0f)
+		{
+			onGround = true;
+		}
 
 		//Collision response
 		position += velocity * dt * collisionTime;
@@ -323,7 +328,8 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	{
 		if (kbd.KeyIsPressed('W'))
 		{
-			ApplyForce(0.0f, -defaultAcc);
+			onGround = false;
+			velocity.y -= (jumpImpulse - framesInAir) * cacheGrid->GetHeight() * dt;
 		}
 
 		bool l = kbd.KeyIsPressed('A');
