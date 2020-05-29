@@ -25,6 +25,8 @@ private:
 	const float frictionForce = 85.0f;
 	const char playerRangeX = 10;
 	const char playerRangeY = 10;
+	const float initialJumpImpulse = 100.0f;
+	unsigned framesInAir = 0;
 	bool onGround = true;
 private:
 	//Functions

@@ -325,7 +325,7 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		if (kbd.KeyIsPressed('W'))
 		{
 			onGround = false;
-			//velocity.y -= (jumpImpulse - framesInAir) * cacheGrid->GetHeight() * dt;
+			position.y -= (initialJumpImpulse - framesInAir) * cacheGrid->cellHeight * dt;
 		}
 
 		bool l = kbd.KeyIsPressed('A');
