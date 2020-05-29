@@ -85,9 +85,6 @@ void Player::Fix(const float dt)
 
 void Player::Collisions(bool& COLL, const float dt)
 {
-	//Check for collision in the broadphase area (the broadphasing zone is the entire screen, sadly)
-	//I want the minimum collisionTime from every block(that's the closest block that the player collied)
-
 	//Calculating the broadphase zone
 	int left = int((position.x + (velocity.x >= 0.0f ? 0.0f : velocity.x)) / Grid::cellWidth);
 	int right = int((position.x + texture.GetWidth() + (velocity.x > 0.0f ? velocity.x + Grid::cellWidth : 0.0f)) / Grid::cellWidth);
@@ -323,13 +320,12 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		}
 	}
 
-	//Forces
 	//Horizontal and vertica forces
 	{
 		if (kbd.KeyIsPressed('W'))
 		{
 			onGround = false;
-			velocity.y -= (jumpImpulse - framesInAir) * cacheGrid->GetHeight() * dt;
+			//velocity.y -= (jumpImpulse - framesInAir) * cacheGrid->GetHeight() * dt;
 		}
 
 		bool l = kbd.KeyIsPressed('A');
@@ -379,9 +375,17 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	}
 	velocity += acceleration * dt;
 	//Max speed
-	if (velocity.GetLengthSq() > maxSpeed * maxSpeed)
 	{
-		velocity.GetNormalizedTo(maxSpeed);
+		const float vx = abs(velocity.x);
+		if (vx > maxSpeedX)
+		{
+			velocity.x = (velocity.x / vx) * maxSpeedX;
+		}
+		const float vy = abs(velocity.y);
+		if (vy > maxSpeedY)
+		{
+			velocity.y = (velocity.y / vy) * maxSpeedY;
+		}
 	}
 
 	//Check for collision in the broadphase area
