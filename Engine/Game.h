@@ -51,6 +51,7 @@ private:
 	/********************************/
 	/*  User Variables              */
     FrameTimer ft;
+    float DT = 0.0f;
     Text textSprite;
     Sound backgroundMusic;
     Sound clickSound;

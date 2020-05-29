@@ -49,7 +49,7 @@ void Game::UpdateModel()
     if (hasStarted)
     {
         //Delta time
-        const float DT = ft.Mark();
+        DT = ft.Mark();
 
         pPlayer->Update(wnd.kbd, wnd.mouse, DT);
 
@@ -170,7 +170,9 @@ void Game::ComposeFrame()
         std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
             "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
             "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
-        textSprite.Draw(WdebuggingInfo + SdebuggingInfo, { 0, 0 }, Colors::Red, gfx);
+        const float fps = 1 / DT;
+        std::string FPS = "FPS: " + std::to_string(fps) + "n";
+        textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
     }
     else
     {
