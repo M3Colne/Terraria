@@ -9,8 +9,6 @@ class Player
 private:
 	//Variables
 	const Texture2D texture;
-	const int dx = Graphics::ScreenWidth / 2 - texture.GetWidth() / 2;
-	const int dy = Graphics::ScreenHeight / 2 - texture.GetHeight() / 2;
 	Grid* cacheGrid;
 	Vec2 position;
 	Vec2 camera;
@@ -35,9 +33,9 @@ private:
 	void ApplyForce(Vec2 f);
 	void StopX();
 	void StopY();
-	void Fix(const float dt);
 	void Collisions(bool& COLL, const float dt);
 	float SweptAABB(const int id, Vec2& n, const float dt) const;
+	void Move(Vec2 v);
 public:
 	//Variables
 public:
