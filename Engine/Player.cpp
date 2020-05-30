@@ -84,7 +84,7 @@ void Player::Collisions(bool& COLL, const float dt)
 		}
 
 		//Collision response
-		Move(velocity * dt * collisionTime);
+		position += velocity * dt * collisionTime;
 
 		// slide
 		const float remainingTime = 1.0f - collisionTime;
@@ -92,7 +92,7 @@ void Player::Collisions(bool& COLL, const float dt)
 		velocity.x = dotprod * normal.y;
 		velocity.y = dotprod * normal.x;
 
-		Move(velocity * dt * remainingTime);
+		position += velocity * dt * remainingTime;
 
 		//Stop the players forces when he collides with a wall
 		if (normal.x != 0.0f)
@@ -197,12 +197,6 @@ float Player::SweptAABB(const int id, Vec2& n, const float dt) const
 	return entryTime;
 }
 
-void Player::Move(Vec2 v)
-{
-	position += v;
-	camera += v;
-}
-
 Vec2 Player::GetPosition() const
 {
 	return position;
@@ -213,7 +207,6 @@ Player::Player(Grid& grid, const int x)
 	texture("./Assets/playerTextureSheet20x40.bmp"),
 	cacheGrid(&grid),
 	position(0.0f, 0.0f),
-	camera(0.0f, 0.0f),
 	velocity(0.0f, 0.0f),
 	acceleration(0.0f, 0.0f)
 {
@@ -240,7 +233,7 @@ Player::~Player()
 
 void Player::Draw(Graphics& gfx)
 {
-	gfx.DrawTexture(int(position.x - camera.x), int(position.y - camera.y),
+	gfx.DrawTexture(int(position.x - GetCameraX()), int(position.y - GetCameraY()),
 		0, 0, texture.GetWidth(), texture.GetHeight(), texture, SpriteEffects::Chroma(Colors::Magenta));
 }
 
@@ -250,8 +243,8 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	if (micky.LeftIsPressed())
 	{
 		//Test to see if the block is in the player range
-		const int bX = int((micky.GetPosX() + camera.x) / Grid::cellWidth);
-		const int bY = int((micky.GetPosY() + camera.y) / Grid::cellHeight);
+		const int bX = int((micky.GetPosX() + GetCameraX()) / Grid::cellWidth);
+		const int bY = int((micky.GetPosY() + GetCameraY()) / Grid::cellHeight);
 		if (abs(bX - position.x / Grid::cellWidth) <= playerRangeX && abs(bY - position.y / Grid::cellHeight) <= playerRangeY)
 		{
 			cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type = Block::Type::Air;
@@ -260,8 +253,8 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	else if (micky.RightIsPressed())
 	{
 		//Test to see if the block is in the player range
-		const int bX = int((micky.GetPosX() + camera.x) / Grid::cellWidth);
-		const int bY = int((micky.GetPosY() + camera.y) / Grid::cellHeight);
+		const int bX = int((micky.GetPosX() + GetCameraX()) / Grid::cellWidth);
+		const int bY = int((micky.GetPosY() + GetCameraY()) / Grid::cellHeight);
 		if (abs(bX - position.x / Grid::cellWidth) <= playerRangeX && abs(bY - position.y / Grid::cellHeight) <= playerRangeY &&
 			cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type == Block::Type::Air)
 		{
@@ -335,7 +328,7 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	//I use this variable just so I don't update 2 times in the same frame
 	if (!collided)
 	{
-		Move(velocity * dt);
+		position += velocity * dt;
 	}
 
 	//Fix the player to the world
@@ -362,29 +355,42 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		StopY();
 	}
 
-	//Fix camera to world
-	if (camera.x < 0.0f)
-	{
-		camera.x = 0.0f;
-	}
-	else if (camera.x + Graphics::ScreenWidth >= W)
-	{
-		camera.x = float(W - Graphics::ScreenWidth);
-	}
-	if (camera.y < 0.0f)
-	{
-		camera.y = 0.0f;
-	}
-	else if (camera.y + Graphics::ScreenHeight >= H)
-	{
-		camera.y = float(H - Graphics::ScreenHeight);
-	}
-
 	//Reset acceleration
 	acceleration *= 0.0f;
 }
 
-Vec2 Player::GetCamera() const
+int Player::GetCameraX() const
 {
-	return camera;
+	const int x = int(position.x) - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2;
+	const int W = cacheGrid->cellWidth * cacheGrid->GetWidth() - Graphics::ScreenWidth;
+	if (x < 0.0f)
+	{
+		return 0;
+	}
+	else if (x >= W)
+	{
+		return W;
+	}
+	/*if (c.y < 0.0f)
+	{
+		c.y = 0.0f;
+	}
+	else if (c.y + Graphics::ScreenHeight >= H)
+	{
+		c.y = float(H - Graphics::ScreenHeight);
+	}*/
+}
+
+int Player::GetCameraY() const
+{
+	const int y = int(position.y) - Graphics::ScreenHeight/ 2 - texture.GetHeight() / 2;
+	const int H = cacheGrid->cellHeight* cacheGrid->GetHeight() - Graphics::ScreenHeight;
+	if (y < 0.0f)
+	{
+		return 0;
+	}
+	else if (y >= H)
+	{
+		return H;
+	}
 }
