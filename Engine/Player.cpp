@@ -223,8 +223,6 @@ Player::Player(Grid& grid, const int x)
 
 	//Setting position
 	position = Vec2(float(x * Grid::cellWidth), float(BLOCKY * Grid::cellHeight - texture.GetHeight()));
-	camera = Vec2(float(position.x - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2),
-		float(position.y - Graphics::ScreenHeight/ 2 - texture.GetHeight() / 2));
 }
 
 Player::~Player()
@@ -361,7 +359,7 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	acceleration *= 0.0f;
 }
 
-int Player::GetCameraX() const
+float Player::GetCameraX() const
 {
 	const int x = int(position.x) - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2;
 	const int W = cacheGrid->cellWidth * cacheGrid->GetWidth() - Graphics::ScreenWidth;
@@ -373,17 +371,13 @@ int Player::GetCameraX() const
 	{
 		return W;
 	}
-	/*if (c.y < 0.0f)
+	else
 	{
-		c.y = 0.0f;
+		return position.x - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2;
 	}
-	else if (c.y + Graphics::ScreenHeight >= H)
-	{
-		c.y = float(H - Graphics::ScreenHeight);
-	}*/
 }
 
-int Player::GetCameraY() const
+float Player::GetCameraY() const
 {
 	const int y = int(position.y) - Graphics::ScreenHeight/ 2 - texture.GetHeight() / 2;
 	const int H = cacheGrid->cellHeight* cacheGrid->GetHeight() - Graphics::ScreenHeight;
@@ -394,5 +388,9 @@ int Player::GetCameraY() const
 	else if (y >= H)
 	{
 		return H;
+	}
+	else
+	{
+		return position.y - Graphics::ScreenHeight / 2 - texture.GetHeight() / 2;
 	}
 }
