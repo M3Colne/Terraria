@@ -11,7 +11,6 @@ private:
 	const Texture2D texture;
 	Grid* cacheGrid;
 	Vec2 position;
-	Vec2 camera;
 	Vec2 velocity;
 	Vec2 acceleration;
 	const float maxSpeedX = 100.0f;
@@ -35,7 +34,6 @@ private:
 	void StopY();
 	void Collisions(bool& COLL, const float dt);
 	float SweptAABB(const int id, Vec2& n, const float dt) const;
-	void Move(Vec2 v);
 public:
 	//Variables
 public:
@@ -47,5 +45,6 @@ public:
 	void Draw(Graphics& gfx);
 	void Update(Keyboard& kbd, Mouse& micky, const float dt);
 	Vec2 GetPosition() const;
-	Vec2 GetCamera() const;
+	int GetCameraX() const;
+	int GetCameraY() const;
 };

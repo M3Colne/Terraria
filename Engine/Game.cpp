@@ -159,10 +159,10 @@ void Game::ComposeFrame()
 {
     if (hasStarted)
     {
-        pGrid->DrawBlocks(gfx, pPlayer->GetCamera());
+        pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
         pPlayer->Draw(gfx);
-        const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCamera().x) / Grid::cellWidth),
-            int((wnd.mouse.GetPosY() + pPlayer->GetCamera().y) / Grid::cellHeight));
+        const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
+            int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
         std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
             "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
             "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
