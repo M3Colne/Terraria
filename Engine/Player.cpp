@@ -230,6 +230,8 @@ Player::Player(Grid& grid, const int x)
 
 	//Setting position
 	position = Vec2(float(x * Grid::cellWidth), float(BLOCKY * Grid::cellHeight - texture.GetHeight()));
+	camera = Vec2(float(position.x - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2),
+		float(position.y - Graphics::ScreenHeight/ 2 - texture.GetHeight() / 2));
 }
 
 Player::~Player()
