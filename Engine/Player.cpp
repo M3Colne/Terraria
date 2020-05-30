@@ -270,44 +270,39 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	}
 
 	//Horizontal and vertica forces
+	if (kbd.KeyIsPressed('W'))
 	{
-		if (kbd.KeyIsPressed('W'))
+		onGround = false;
+		position.y -= (initialJumpImpulse - framesInAir) * cacheGrid->cellHeight * dt;
+	}
+	if (kbd.KeyIsPressed('D'))
+	{
+		if (velocity.x < 0.0f)
 		{
-			onGround = false;
-			position.y -= (initialJumpImpulse - framesInAir) * cacheGrid->cellHeight * dt;
-		}
-
-		bool l = kbd.KeyIsPressed('A');
-		bool r = kbd.KeyIsPressed('D');
-		if (r)
-		{
-			if (velocity.x < 0.0f)
+			ApplyForce(defaultDeacc, 0.0f);
+			if (velocity.x + acceleration.x * dt > 0.0f)
 			{
-				ApplyForce(defaultDeacc, 0.0f);
-				if (velocity.x + acceleration.x * dt > 0.0f)
-				{
-					velocity.x = 0.0f;
-				}
-			}
-			else
-			{
-				ApplyForce(defaultAcc, 0.0f);
+				velocity.x = 0.0f;
 			}
 		}
-		if (l)
+		else
 		{
-			if (velocity.x > 0.0f)
+			ApplyForce(defaultAcc, 0.0f);
+		}
+	}
+	if (kbd.KeyIsPressed('A'))
+	{
+		if (velocity.x > 0.0f)
+		{
+			ApplyForce(-defaultDeacc, 0.0f);
+			if (velocity.x - defaultDeacc * dt < 0.0f)
 			{
-				ApplyForce(-defaultDeacc, 0.0f);
-				if (velocity.x - defaultDeacc * dt < 0.0f)
-				{
-					velocity.x = 0.0f;
-				}
+				velocity.x = 0.0f;
 			}
-			else
-			{
-				ApplyForce(-defaultAcc, 0.0f);
-			}
+		}
+		else
+		{
+			ApplyForce(-defaultAcc, 0.0f);
 		}
 	}
 	//Gravity
