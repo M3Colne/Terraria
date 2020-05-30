@@ -28,61 +28,6 @@ void Player::StopY()
 	velocity.y = 0.0f;
 }
 
-void Player::Fix(const float dt)
-{
-	//Fix player to world
-	const int W = cacheGrid->GetWidth() * Grid::cellWidth;
-	const int H = cacheGrid->GetHeight() * Grid::cellHeight;
-
-	if (position.x < 0)
-	{
-		position.x = 0.0f;
-		StopX();
-	}
-	else if (position.x + texture.GetWidth() > W)
-	{
-		position.x = float(W - texture.GetWidth());
-		StopX();
-	}
-	if (position.y < 0)
-	{
-		position.y = 0;
-		StopY();
-	}
-	else if (position.y + texture.GetHeight() > H)
-	{
-		position.y = float(H - texture.GetHeight());
-		StopY();
-	}
-
-	//Fix camera to world
-	if (position.x <= dx)
-	{
-		camera.x = 0.0f;
-	}
-	else if (position.x >= W - texture.GetWidth() - dx)
-	{
-		camera.x = float(W - Graphics::ScreenWidth);
-	}
-	else
-	{
-		camera.x += velocity.x * dt;
-	}
-
-	if (position.y <= dy)
-	{
-		camera.y = 0.0f;
-	}
-	else if (position.y >= H - texture.GetHeight() - dy)
-	{
-		camera.y = float(H - Graphics::ScreenHeight);
-	}
-	else
-	{
-		camera.y += velocity.y * dt;
-	}
-}
-
 void Player::Collisions(bool& COLL, const float dt)
 {
 	//Calculating the broadphase zone
@@ -139,7 +84,7 @@ void Player::Collisions(bool& COLL, const float dt)
 		}
 
 		//Collision response
-		position += velocity * dt * collisionTime;
+		Move(velocity * dt * collisionTime);
 
 		// slide
 		const float remainingTime = 1.0f - collisionTime;
@@ -147,7 +92,7 @@ void Player::Collisions(bool& COLL, const float dt)
 		velocity.x = dotprod * normal.y;
 		velocity.y = dotprod * normal.x;
 
-		position += velocity * dt * remainingTime;
+		Move(velocity * dt * remainingTime);
 
 		//Stop the players forces when he collides with a wall
 		if (normal.x != 0.0f)
@@ -252,6 +197,12 @@ float Player::SweptAABB(const int id, Vec2& n, const float dt) const
 	return entryTime;
 }
 
+void Player::Move(Vec2 v)
+{
+	position += v;
+	camera += v;
+}
+
 Vec2 Player::GetPosition() const
 {
 	return position;
@@ -278,9 +229,7 @@ Player::Player(Grid& grid, const int x)
 	}
 
 	//Setting position
-	position = Vec2(float(x * Grid::cellWidth), float((BLOCKY - 2) * Grid::cellHeight)); // - 2 because the player is 2 blocks tall
-	//Setting camera
-	camera = position - Vec2(float(dx), float(dy));
+	position = Vec2(float(x * Grid::cellWidth), float(BLOCKY * Grid::cellHeight - texture.GetHeight()));
 }
 
 Player::~Player()
@@ -375,30 +324,66 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	}
 	velocity += acceleration * dt;
 	//Max speed
+	if (abs(velocity.x) > maxSpeedX)
 	{
-		const float vx = abs(velocity.x);
-		if (vx > maxSpeedX)
-		{
-			velocity.x = (velocity.x / vx) * maxSpeedX;
-		}
-		const float vy = abs(velocity.y);
-		if (vy > maxSpeedY)
-		{
-			velocity.y = (velocity.y / vy) * maxSpeedY;
-		}
+		velocity.x = (velocity.x / abs(velocity.x)) * maxSpeedX;
+	}
+	if (abs(velocity.y) > maxSpeedY)
+	{
+		velocity.y = (velocity.y / abs(velocity.y)) * maxSpeedY;
 	}
 
 	//Check for collision in the broadphase area
 	bool collided = false;
 	Collisions(collided, dt);
-	
+
 	//I use this variable just so I don't update 2 times in the same frame
 	if (!collided)
 	{
-		position += velocity * dt;
+		Move(velocity * dt);
 	}
 
-	Fix(dt);
+	//Fix the player to the world
+	const int W = cacheGrid->GetWidth() * Grid::cellWidth;
+	const int H = cacheGrid->GetHeight() * Grid::cellHeight;
+	if (position.x < 0)
+	{
+		position.x = 0.0f;
+		StopX();
+	}
+	else if (position.x + texture.GetWidth() > W)
+	{
+		position.x = float(W - texture.GetWidth());
+		StopX();
+	}
+	if (position.y < 0)
+	{
+		position.y = 0;
+		StopY();
+	}
+	else if (position.y + texture.GetHeight() > H)
+	{
+		position.y = float(H - texture.GetHeight());
+		StopY();
+	}
+
+	//Fix camera to world
+	if (camera.x < 0.0f)
+	{
+		camera.x = 0.0f;
+	}
+	else if (camera.x + Graphics::ScreenWidth >= W)
+	{
+		camera.x = float(W - Graphics::ScreenWidth);
+	}
+	if (camera.y < 0.0f)
+	{
+		camera.y = 0.0f;
+	}
+	else if (camera.y + Graphics::ScreenHeight >= H)
+	{
+		camera.y = float(H - Graphics::ScreenHeight);
+	}
 
 	//Reset acceleration
 	acceleration *= 0.0f;
