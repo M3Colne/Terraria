@@ -49,6 +49,20 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR pArgs,INT )
 				L"\n\nException caught at Windows message loop.";
 			wnd.ShowMessageBox( L"Unhandled STL Exception",eMsg );
 		}
+		catch(int e)
+		{
+			switch (e)
+			{
+			case 0:
+				wnd.ShowMessageBox(L"Exception caught at saving the world", L"Trying to save the world failed!");
+			case 1:
+				wnd.ShowMessageBox(L"Exception caught at loading the world", L"Trying to load the world failed!");
+			case 2:
+				wnd.ShowMessageBox(L"Exception caught at saving the player", L"Trying to save the player failed!");
+			case 3:
+				wnd.ShowMessageBox(L"Exception caught at loading the player", L"Trying to load the player failed!");
+			}
+		}
 		catch( ... )
 		{
 			wnd.ShowMessageBox( L"Unhandled Non-STL Exception",
