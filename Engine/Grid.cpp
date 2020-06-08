@@ -25,7 +25,7 @@ Grid::Grid(int width, int height, const int surfaceLevel, const int surfaceLevel
 		surfaceLevel + surfaceLevelOffset + maxDirtLayer + 150, Block::Type::Copper);
 }
 
-Grid::Grid(char* fileName)
+Grid::Grid(const char* fileName)
 	:
 	blockSpriteSheet("./Assets/blockSpriteSheet20x20.bmp")
 {
@@ -61,6 +61,10 @@ Grid::Grid(char* fileName)
 
 		//Player location or other things will go after this comment
 	}
+	else
+	{
+		throw 1;
+	}
 }
 
 Grid::~Grid()
@@ -77,51 +81,51 @@ void Grid::SaveWorld(char* fileName)
 	if (savingStream.good())
 	{
 		//World and compressed block data
+
+		//This is a variable that is used when loading. I am writing it at the start with 0 but Im going to come back and change it
+		//with the real number because I can't know in advance how many block data compressions will be
+		//So I just keep this 4 bytes with the number 0 but I will return here and change it with the real number
+		int ncomp = 0;
+
+		//Writing the width and the height of the world
+		savingStream.write(reinterpret_cast<char*>(&ncomp), sizeof(ncomp));
+		savingStream.write(reinterpret_cast<char*>(&seed), sizeof(seed));
+		savingStream.write(reinterpret_cast<char*>(&Width), sizeof(Width));
+		savingStream.write(reinterpret_cast<char*>(&Height), sizeof(Height));
+		//Writing compressed block data
+		int n = 0;
+		const int size = Width * Height - 1;
+		for (int i = 0; i < size; i++)
 		{
-			//This is a variable that is used when loading. I am writing it at the start with 0 but Im going to come back and change it
-			//with the real number because I can't know in advance how many block data compressions will be
-			//So I just keep this 4 bytes with the number 0 but I will return here and change it with the real number
-			int ncomp = 0;
-
-			//Writing the width and the height of the world
-			savingStream.write(reinterpret_cast<char*>(&ncomp), sizeof(ncomp));
-			savingStream.write(reinterpret_cast<char*>(&seed), sizeof(seed));
-			savingStream.write(reinterpret_cast<char*>(&Width), sizeof(Width));
-			savingStream.write(reinterpret_cast<char*>(&Height), sizeof(Height));
-			//Writing compressed block data
-			int n = 0;
-			const int size = Width * Height - 1;
-			for (int i = 0; i < size; i++)
+			if (blocks[i + 1].type == blocks[i].type)
 			{
-				if (blocks[i + 1].type == blocks[i].type)
-				{
-					n++;
-				}
-				else
-				{
-					savingStream.write(reinterpret_cast<char*>(&n), sizeof(n));
-					savingStream.write(reinterpret_cast<char*>(&blocks[i].type), sizeof(blocks[i].type));
-					n = 1;
-					ncomp++;
-				}
+				n++;
 			}
-			n = 1;
-			//Write the last block manually because the algorithm doesn't work with the last i
-			savingStream.write(reinterpret_cast<char*>(&n), sizeof(n));
-			savingStream.write(reinterpret_cast<char*>(&blocks[size].type), sizeof(blocks[size].type));
-			ncomp++;
-
-			//Write how many compressions have been made
+			else
 			{
-				const auto k = savingStream.tellp();
-				savingStream.seekp(0);
-				savingStream.write(reinterpret_cast<char*>(&ncomp), sizeof(ncomp)); //Overwrite the 0 with the actual number
-				savingStream.seekp(k);
+				savingStream.write(reinterpret_cast<char*>(&n), sizeof(n));
+				savingStream.write(reinterpret_cast<char*>(&blocks[i].type), sizeof(blocks[i].type));
+				n = 1;
+				ncomp++;
 			}
 		}
+		n = 1;
+		//Write the last block manually because the algorithm doesn't work with the last i
+		savingStream.write(reinterpret_cast<char*>(&n), sizeof(n));
+		savingStream.write(reinterpret_cast<char*>(&blocks[size].type), sizeof(blocks[size].type));
+		ncomp++;
 
-		//Any other data like the player or time or space or anything goes below this comment
-		//If it's a repetitive data like the block types then you should the same algorithm
+		//Write how many compressions have been made
+		{
+			const auto k = savingStream.tellp();
+			savingStream.seekp(0);
+			savingStream.write(reinterpret_cast<char*>(&ncomp), sizeof(ncomp)); //Overwrite the 0 with the actual number
+			savingStream.seekp(k);
+		}
+	}
+	else
+	{
+		throw 0;
 	}
 }
 

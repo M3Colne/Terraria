@@ -17,7 +17,7 @@ public:
 	//Functions
 	Grid() = default;
 	Grid(int width, int height, const int surfaceLevel, const int surfaceLevelOffset, const int minDirtLayer, const int maxDirtLayer);
-	Grid(char* fileName);
+	Grid(const char* fileName);
 	Grid(const Grid& other) = delete;
 	Grid& operator=(const Grid& other) = delete;
 	~Grid();

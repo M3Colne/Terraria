@@ -197,6 +197,31 @@ float Player::SweptAABB(const int id, Vec2& n, const float dt) const
 	return entryTime;
 }
 
+void Player::SavePlayer(const char* fileName) const
+{
+	std::ofstream out(fileName, std::ios::binary);
+
+	if (out.good())
+	{
+		out.write((PCHAR)&position, sizeof(position));
+		out.write((PCHAR)&velocity, sizeof(velocity));
+		out.write((PCHAR)&acceleration, sizeof(acceleration));
+		out.write((PCHAR)&framesInAir, sizeof(framesInAir));
+		if (onGround)
+		{
+			out.put(1);
+		}
+		else
+		{
+			out.put(0);
+		}
+	}
+	else
+	{
+		throw 2;
+	}
+}
+
 Vec2 Player::GetPosition() const
 {
 	return position;
@@ -225,10 +250,39 @@ Player::Player(Grid& grid, const int x)
 	position = Vec2(float(x * Grid::cellWidth), float(BLOCKY * Grid::cellHeight - texture.GetHeight()));
 }
 
+Player::Player(const char* fileName, Grid& grid)
+	:
+	texture("./Assets/playerTextureSheet20x40.bmp"),
+	cacheGrid(&grid),
+	position(0.0f, 0.0f),
+	velocity(0.0f, 0.0f),
+	acceleration(0.0f, 0.0f)
+{
+	std::ifstream in(fileName, std::ios::binary);
+	if (in.good())
+	{
+		in.read((PCHAR)&position, sizeof(position));
+		in.read((PCHAR)&velocity, sizeof(velocity));
+		in.read((PCHAR)&acceleration, sizeof(acceleration));
+		in.read((PCHAR)&framesInAir, sizeof(framesInAir));
+		if (in.get() == 1)
+		{
+			onGround = true;
+		}
+		else
+		{
+			onGround = false;
+		}
+	}
+	else
+	{
+		throw 3;
+	}
+}
+
 Player::~Player()
 {
-	delete cacheGrid;
-	cacheGrid = nullptr;
+	//There is no need to delete the cacheGrid data here because its deleted in from game.cpp
 }
 
 void Player::Draw(Graphics& gfx)

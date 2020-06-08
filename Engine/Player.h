@@ -39,6 +39,7 @@ public:
 public:
 	//Functions
 	Player(Grid& grid, const int x);
+	Player(const char* fileName, Grid& grid);
 	Player(const Player& other) = delete;
 	Player operator=(const Player& other) = delete;
 	~Player();
@@ -47,4 +48,5 @@ public:
 	Vec2 GetPosition() const;
 	float GetCameraX() const;
 	float GetCameraY() const;
+	void SavePlayer(const char* fileName) const;
 };

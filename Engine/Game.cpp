@@ -54,22 +54,19 @@ void Game::UpdateModel()
         pPlayer->Update(wnd.kbd, wnd.mouse, DT);
 
         //World commands
-        if (wnd.kbd.KeyIsPressed('4')) //Reseting
-        {
-            hasStarted = false;
-            DeleteGrid();
-            DeletePlayer();
-        }
-        else if (wnd.kbd.KeyIsPressed('5')) //Saving
+        bool reseting = wnd.kbd.KeyIsPressed('4');
+        if (wnd.kbd.KeyIsPressed('5')) //Saving
         {
             hasStarted = false;
             SaveGrid("./Worlds/world1.txt");
+            SavePlayer("./Players/player1.txt");
+            reseting = true;
+        }
+        if (reseting) //Reseting
+        {
+            hasStarted = false;
             DeleteGrid();
             DeletePlayer();
-        }
-        else if (wnd.kbd.KeyIsPressed('6'))
-        {
-            debuging = true;
         }
 
         //Audio
@@ -112,7 +109,7 @@ void Game::UpdateModel()
                 hasStarted = true;
                 clickSound.Play(1.0f, 0.5f);
                 LoadGrid("./Worlds/world1.txt");
-                CreatePlayer(pGrid->GetWidth() / 2);
+                LoadPlayer("./Players/player1.txt");
             }
         }
     }
@@ -128,7 +125,6 @@ void Game::SaveGrid(char* fileName)
 {
     assert(pGrid != nullptr); //You can't save what doesn't exist, dummy
     pGrid->SaveWorld(fileName);
-    DeleteGrid();
 }
 
 void Game::LoadGrid(char* fileName)
@@ -149,6 +145,18 @@ void Game::CreatePlayer(const int sX)
     pPlayer = new Player(*pGrid, sX);
 }
 
+void Game::SavePlayer(char* fileName)
+{
+    assert(pPlayer != nullptr); //You can't save what doesn't exist, dummy
+    pPlayer->SavePlayer(fileName); //Idk why this warning is still showing up...
+}
+
+void Game::LoadPlayer(char* fileName)
+{
+    assert(pPlayer == nullptr); //The pPlayer pointer is poiting at an existing player, why would you make another one?
+    pPlayer = new Player(fileName, *pGrid);
+}
+
 void Game::DeletePlayer()
 {
     delete pPlayer;
@@ -159,7 +167,7 @@ void Game::ComposeFrame()
 {
     if (hasStarted)
     {
-        pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
+        pGrid->DrawBlocks(gfx, int(pPlayer->GetCameraX()), int(pPlayer->GetCameraY()));
         pPlayer->Draw(gfx);
         const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
             int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));

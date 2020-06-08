@@ -43,6 +43,8 @@ private:
     void LoadGrid(char* fileName);
     void DeleteGrid();
     void CreatePlayer(const int sX);
+    void SavePlayer(char* fileName);
+    void LoadPlayer(char* fileName);
     void DeletePlayer();
 	/********************************/
 private:
@@ -62,6 +64,5 @@ private:
     Grid* pGrid;
     Player* pPlayer;
     bool hasStarted = false;
-    bool debuging = false;
 	/********************************/
 };
