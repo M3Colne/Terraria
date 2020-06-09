@@ -185,7 +185,7 @@ public:
 			}
 		}
 	}
-	void DrawCircle(Vec2 center, int radius, bool filled, Color c)
+	void DrawCircle(Vei2 center, int radius, bool filled, Color c)
 	{
 		DrawCirce(center.x, center.y, radius, filled, c);
 	}

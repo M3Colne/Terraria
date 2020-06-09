@@ -34,6 +34,13 @@ Game::Game( MainWindow& wnd )
     pGrid(nullptr),
     pPlayer(nullptr)
 {
+    //Intializing the cboxes
+    std::ifstream menuCBoxesPoints("MenuPoints.txt", std::ios::binary);
+    for (int i = 0; i < cboxes; i++)
+    {
+        menuCBoxesPoints.read((char*)&menuBoxes[i].p0, sizeof(int));
+        menuCBoxesPoints.read((char*)&menuBoxes[i].p1, sizeof(int));
+    }
 }
 
 void Game::Go()
@@ -46,70 +53,120 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-    if (hasStarted)
+    //Editor mode
+    if (wnd.kbd.KeyIsPressed('7'))
     {
-        //Delta time
-        DT = ft.Mark();
+         editorMode = true;
+    }
 
-        pPlayer->Update(wnd.kbd, wnd.mouse, DT);
-
-        //World commands
-        bool reseting = wnd.kbd.KeyIsPressed('4');
-        if (wnd.kbd.KeyIsPressed('5')) //Saving
+    if (editorMode)
+    {
+        const Vei2 m(wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
+        if (wnd.mouse.LeftIsPressed())
         {
-            hasStarted = false;
-            SaveGrid("./Worlds/world1.txt");
-            SavePlayer("./Players/player1.txt");
-            reseting = true;
+            for (int i = 0; i < cboxes; i++)
+            {
+                Vei2 dist0(menuBoxes[i].p0 - m);
+                Vei2 dist1(menuBoxes[i].p1 - m);
+                if (dist0.GetLengthSq <= pRadius * pRadius)
+                {
+                    menuBoxes[i].p0 = m;
+                    if (menuBoxes[i].p0.x >= menuBoxes[i].p1.x)
+                    {
+                        std::swap<Vei2>(menuBoxes[i].p0, menuBoxes[i].p1);
+                    }
+                    break;
+                }
+                else if (dist1.GetLengthSq <= pRadius * pRadius)
+                {
+                    menuBoxes[i].p1 = m;
+                    if (menuBoxes[i].p0.x >= menuBoxes[i].p1.x)
+                    {
+                        std::swap<Vei2>(menuBoxes[i].p0, menuBoxes[i].p1);
+                    }
+                    break;
+                }
+            }
         }
-        if (reseting) //Reseting
-        {
-            hasStarted = false;
-            DeleteGrid();
-            DeletePlayer();
-        }
 
-        //Audio
-        backgroundMusicLoopTimer += DT;
-        if (backgroundMusicLoopTimer >= 4.1f)
+        //Saving the points
+        if (wnd.kbd.KeyIsPressed('S'))
         {
-            backgroundMusicLoopTimer = 0.0f;
-            backgroundMusic.Play(1.0f, 0.3333f);
+            std::ofstream out("MenuPoints.txt", std::ios::binary);
+            for (int i = 0; i < cboxes; i++)
+            {
+                out.write((char*)&menuBoxes[i].p0, sizeof(int));
+                out.write((char*)&menuBoxes[i].p1, sizeof(int));
+            }
         }
     }
     else
     {
-        if (wnd.mouse.LeftIsPressed())
+        if (hasStarted)
         {
-            const int x = wnd.mouse.GetPosX();
-            const int y = wnd.mouse.GetPosY();
-            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 154 && y - menuY <= 207)
+            //Delta time
+            DT = ft.Mark();
+
+            pPlayer->Update(wnd.kbd, wnd.mouse, DT);
+
+            //World commands
+            bool reseting = wnd.kbd.KeyIsPressed('4');
+            if (wnd.kbd.KeyIsPressed('5')) //Saving
             {
-                hasStarted = true;
-                clickSound.Play(1.0f, 0.5f);
-                CreateGrid(4200, 1200, 40, 20, 7, 10);
-                CreatePlayer(pGrid->GetWidth() / 2);
+                hasStarted = false;
+                SaveGrid("./Worlds/world1.txt");
+                SavePlayer("./Players/player1.txt");
+                reseting = true;
             }
-            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 208 && y - menuY <= 271)
+            if (reseting) //Reseting
             {
-                hasStarted = true;
-                clickSound.Play(1.0f, 0.5f);
-                CreateGrid(6400, 1800, 40, 20, 7, 10);
-                CreatePlayer(pGrid->GetWidth() / 2);
+                hasStarted = false;
+                DeleteGrid();
+                DeletePlayer();
             }
-            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 272 && y - menuY <= 318)
+
+            //Audio
+            backgroundMusicLoopTimer += DT;
+            if (backgroundMusicLoopTimer >= 4.1f)
             {
-                hasStarted = true;
-                clickSound.Play(1.0f, 0.5f);
-                CreateGrid(8400, 2400, 40, 20, 7, 10);
-                CreatePlayer(pGrid->GetWidth() / 2);
+                backgroundMusicLoopTimer = 0.0f;
+                backgroundMusic.Play(1.0f, 0.3333f);
             }
-            if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 319 && y - menuY <= 363)
+        }
+        else
+        {
+            if (wnd.mouse.LeftIsPressed())
             {
-                hasStarted = true;
-                clickSound.Play(1.0f, 0.5f);
-                LoadGrid("./Worlds/world1.txt");
-                LoadPlayer("./Players/player1.txt");
+                const int x = wnd.mouse.GetPosX();
+                const int y = wnd.mouse.GetPosY();
+                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 154 && y - menuY <= 207)
+                {
+                    hasStarted = true;
+                    clickSound.Play(1.0f, 0.5f);
+                    CreateGrid(4200, 1200, 40, 20, 7, 10);
+                    CreatePlayer(pGrid->GetWidth() / 2);
+                }
+                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 208 && y - menuY <= 271)
+                {
+                    hasStarted = true;
+                    clickSound.Play(1.0f, 0.5f);
+                    CreateGrid(6400, 1800, 40, 20, 7, 10);
+                    CreatePlayer(pGrid->GetWidth() / 2);
+                }
+                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 272 && y - menuY <= 318)
+                {
+                    hasStarted = true;
+                    clickSound.Play(1.0f, 0.5f);
+                    CreateGrid(8400, 2400, 40, 20, 7, 10);
+                    CreatePlayer(pGrid->GetWidth() / 2);
+                }
+                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 319 && y - menuY <= 363)
+                {
+                    hasStarted = true;
+                    clickSound.Play(1.0f, 0.5f);
+                    LoadGrid("./Worlds/world1.txt");
+                    LoadPlayer("./Players/player1.txt");
+                }
             }
         }
     }
@@ -165,25 +222,49 @@ void Game::DeletePlayer()
 
 void Game::ComposeFrame()
 {
-    if (hasStarted)
+    if (editorMode)
     {
-        pGrid->DrawBlocks(gfx, int(pPlayer->GetCameraX()), int(pPlayer->GetCameraY()));
-        pPlayer->Draw(gfx);
-        const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
-            int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
-        std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
-            "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
-            "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
-        const int sID = int(wnd.mouse.GetPosX() / Grid::cellWidth) + Grid::cellsH * int(wnd.mouse.GetPosY() / Grid::cellHeight);
-        std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
-            "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
-            "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
-        const float fps = 1 / DT;
-        std::string FPS = "FPS: " + std::to_string(fps) + "n";
-        textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
+        //circles drawn at the points of the boxes
+        for (int i = 0; i < cboxes; i++)
+        {
+            gfx.DrawCircle(menuBoxes[i].p0, pRadius, );
+        }
+
+        //menuBoxes drawing
+        for (int i = 0; i < cboxes; i++)
+        {
+            //Top 
+            gfx.DrawLine(menuBoxes[i].p0.x, menuBoxes[i].p0.y, menuBoxes[i].p1.x, menuBoxes[i].p0.y, Colors::White);
+            //Bottom
+            gfx.DrawLine(menuBoxes[i].p0.x, menuBoxes[i].p1.y, menuBoxes[i].p1.x, menuBoxes[i].p1.y, Colors::White);
+            //Left
+            gfx.DrawLine(menuBoxes[i].p0.x, menuBoxes[i].p0.y, menuBoxes[i].p0.x, menuBoxes[i].p1.y, Colors::White);
+            //Right
+            gfx.DrawLine(menuBoxes[i].p1.x, menuBoxes[i].p0.y, menuBoxes[i].p1.x, menuBoxes[i].p1.y, Colors::White);
+        }
     }
     else
     {
-        gfx.DrawTexture(80, 80, menuScreen, SpriteEffects::NoEffect());
+        if (hasStarted)
+        {
+            pGrid->DrawBlocks(gfx, int(pPlayer->GetCameraX()), int(pPlayer->GetCameraY()));
+            pPlayer->Draw(gfx);
+            const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
+                int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
+            std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
+                "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
+                "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
+            const int sID = int(wnd.mouse.GetPosX() / Grid::cellWidth) + Grid::cellsH * int(wnd.mouse.GetPosY() / Grid::cellHeight);
+            std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
+                "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
+                "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
+            const float fps = 1 / DT;
+            std::string FPS = "FPS: " + std::to_string(fps) + "n";
+            textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
+        }
+        else
+        {
+            //This is drawing the menu
+        }
     }
 }

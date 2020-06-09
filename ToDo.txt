@@ -4,8 +4,8 @@ Collision: https://www.gamedev.net/articles/programming/general-and-gameplay-pro
 
 
 
-Player jump(uitate la imaginea din folder)
 Use text sprites(I13) instead of a sprite for the menu?
+Player jump(uitate la imaginea din folder)
 Inventory
 Increase performance with the AddOre function to be in the 'Fill underground' loop in GenerateGround() and just pass as argument a vector with the oresCenter
 Fix collisions(Test for each direction, with both axis, with slow speed, sliding) and also fix a bug when there is a collision sometimes the player get tp-ed a pixel above the block

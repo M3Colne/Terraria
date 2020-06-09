@@ -26,6 +26,12 @@
 #include "Text.h"
 #include "Sound.h"
 
+struct CBox
+{
+    Vei2 p0 = {0, 0};
+    Vei2 p1 = {0, 0};
+};
+
 class Game
 {
 public:
@@ -55,6 +61,8 @@ private:
     FrameTimer ft;
     float DT = 0.0f;
     Text textSprite;
+    static constexpr int cboxes = 4;
+    CBox menuBoxes[cboxes];
     Sound backgroundMusic;
     Sound clickSound;
     float backgroundMusicLoopTimer = 4.1f;
@@ -64,5 +72,7 @@ private:
     Grid* pGrid;
     Player* pPlayer;
     bool hasStarted = false;
+    bool editorMode = false;
+    const int pRadius = 10;
 	/********************************/
 };
