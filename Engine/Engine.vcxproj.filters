@@ -90,6 +90,9 @@
     <ClInclude Include="SpriteEffects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">

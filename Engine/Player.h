@@ -46,7 +46,7 @@ public:
 	void Draw(Graphics& gfx);
 	void Update(Keyboard& kbd, Mouse& micky, const float dt);
 	Vec2 GetPosition() const;
-	float GetCameraX() const;
-	float GetCameraY() const;
+	int GetCameraX() const;
+	int GetCameraY() const;
 	void SavePlayer(const char* fileName) const;
 };

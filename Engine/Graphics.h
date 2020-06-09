@@ -141,7 +141,7 @@ public:
 			}
 		}
 	}
-	void DrawRectangle(int x0, int y0, int x1, int y1, Color c)
+	void DrawRectangle(int x0, int y0, int x1, int y1, bool filled, Color c)
 	{
 		if (x0 > x1)
 		{
@@ -152,67 +152,46 @@ public:
 			std::swap(y0, y1);
 		}
 
-		for (int j = y0; j < y1; j++)
+		if (filled)
 		{
+			for (int j = y0; j < y1; j++)
+			{
+				for (int i = x0; i < x1; i++)
+				{
+					if (i >= 0 && i < ScreenWidth && j >= 0 && j < ScreenHeight)
+					{
+						PutPixel(i, j, c);
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int j = y0; j < y1; j++)
+			{
+				PutPixel(x0, j, c);
+				PutPixel(x1, j, c);
+			}
 			for (int i = x0; i < x1; i++)
 			{
-				if (i >= 0 && i < ScreenWidth && j >= 0 && j < ScreenHeight)
-				{
-					PutPixel(i, j, c);
-				}
+				PutPixel(i, y0, c);
+				PutPixel(i, y1, c);
 			}
 		}
 	}
-	void DrawRectangle(Vec2 p0, Vec2 p1, Color c)
+	void DrawRectangle(Vec2 p0, Vec2 p1, bool filled, Color c)
 	{
-		if (p0.x > p1.x)
-		{
-			std::swap(p0, p1);
-		}
-		if (p0.y > p1.y)
-		{
-			std::swap(p0, p1);
-		}
-
-		for (int j = int(p0.y); j < int(p1.y); j++)
-		{
-			for (int i = int(p0.x); i < int(p1.x); i++)
-			{
-				if (i >= 0 && i < ScreenWidth && j >= 0 && j < ScreenHeight)
-				{
-					PutPixel(i, j, c);
-				}
-			}
-		}
+		DrawRectangle(int(p0.x), int(p0.y), int(p1.x), int(p1.y), filled, c);
 	}
-	void DrawCircle(Vei2 center, int radius, bool filled, Color c)
+	void DrawCircle(Vei2 center, int radius, Color c)
 	{
-		DrawCirce(center.x, center.y, radius, filled, c);
+		DrawCirce(center.x, center.y, radius, c);
 	}
-	void DrawCirce(int x, int y, int radius, bool filled, Color c)
+	void DrawCirce(int x, int y, int radius, Color c)
 	{
-		Vei2 center(x, y);
-		Vei2 s(x - radius, y - radius);
-		for (int j = 0; j <= 2 * radius; j++)
+		for (float theta = 0; theta < 6.28318530f; theta += 0.01f)
 		{
-			for (int i = 0; i <= 2 * radius; i++)
-			{
-				if (filled)
-				{
-					if ((s - center).GetLengthSq() <= radius * radius)
-					{
-						PutPixel(s.x, s.y, c);
-					}
-				}
-				else
-				{
-					if ((s - center).GetLengthSq() == radius * radius)
-					{
-						PutPixel(s.x, s.y, c);
-					}
-				}
-			}
-			s.x -= 2 * radius;
+			PutPixel(x + int(radius * cos(theta)), y + int(radius * sin(theta)), c);
 		}
 	}
 	template <typename E>

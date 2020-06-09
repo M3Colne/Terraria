@@ -68,22 +68,14 @@ void Game::UpdateModel()
             {
                 Vei2 dist0(menuBoxes[i].p0 - m);
                 Vei2 dist1(menuBoxes[i].p1 - m);
-                if (dist0.GetLengthSq <= pRadius * pRadius)
+                if (dist0.GetLengthSq() <= pRadius * pRadius)
                 {
                     menuBoxes[i].p0 = m;
-                    if (menuBoxes[i].p0.x >= menuBoxes[i].p1.x)
-                    {
-                        std::swap<Vei2>(menuBoxes[i].p0, menuBoxes[i].p1);
-                    }
                     break;
                 }
-                else if (dist1.GetLengthSq <= pRadius * pRadius)
+                else if (dist1.GetLengthSq() <= pRadius * pRadius)
                 {
                     menuBoxes[i].p1 = m;
-                    if (menuBoxes[i].p0.x >= menuBoxes[i].p1.x)
-                    {
-                        std::swap<Vei2>(menuBoxes[i].p0, menuBoxes[i].p1);
-                    }
                     break;
                 }
             }
@@ -227,27 +219,21 @@ void Game::ComposeFrame()
         //circles drawn at the points of the boxes
         for (int i = 0; i < cboxes; i++)
         {
-            gfx.DrawCircle(menuBoxes[i].p0, pRadius, );
+            gfx.DrawCircle(menuBoxes[i].p0, pRadius, Colors::Red);
+            gfx.DrawCircle(menuBoxes[i].p1, pRadius, Colors::Red);
         }
 
         //menuBoxes drawing
         for (int i = 0; i < cboxes; i++)
         {
-            //Top 
-            gfx.DrawLine(menuBoxes[i].p0.x, menuBoxes[i].p0.y, menuBoxes[i].p1.x, menuBoxes[i].p0.y, Colors::White);
-            //Bottom
-            gfx.DrawLine(menuBoxes[i].p0.x, menuBoxes[i].p1.y, menuBoxes[i].p1.x, menuBoxes[i].p1.y, Colors::White);
-            //Left
-            gfx.DrawLine(menuBoxes[i].p0.x, menuBoxes[i].p0.y, menuBoxes[i].p0.x, menuBoxes[i].p1.y, Colors::White);
-            //Right
-            gfx.DrawLine(menuBoxes[i].p1.x, menuBoxes[i].p0.y, menuBoxes[i].p1.x, menuBoxes[i].p1.y, Colors::White);
+            gfx.DrawRectangle(menuBoxes[i].p0.x, menuBoxes[i].p0.y, menuBoxes[i].p1.x, menuBoxes[i].p1.y, false, Colors::Yellow);
         }
     }
     else
     {
         if (hasStarted)
         {
-            pGrid->DrawBlocks(gfx, int(pPlayer->GetCameraX()), int(pPlayer->GetCameraY()));
+            pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
             pPlayer->Draw(gfx);
             const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
                 int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));

@@ -413,7 +413,7 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 	acceleration *= 0.0f;
 }
 
-float Player::GetCameraX() const
+int Player::GetCameraX() const
 {
 	const int x = int(position.x) - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2;
 	const int W = cacheGrid->cellWidth * cacheGrid->GetWidth() - Graphics::ScreenWidth;
@@ -427,11 +427,11 @@ float Player::GetCameraX() const
 	}
 	else
 	{
-		return position.x - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2;
+		return int(position.x) - Graphics::ScreenWidth / 2 - texture.GetWidth() / 2;
 	}
 }
 
-float Player::GetCameraY() const
+int Player::GetCameraY() const
 {
 	const int y = int(position.y) - Graphics::ScreenHeight/ 2 - texture.GetHeight() / 2;
 	const int H = cacheGrid->cellHeight* cacheGrid->GetHeight() - Graphics::ScreenHeight;
@@ -445,6 +445,6 @@ float Player::GetCameraY() const
 	}
 	else
 	{
-		return position.y - Graphics::ScreenHeight / 2 - texture.GetHeight() / 2;
+		return int(position.y) - Graphics::ScreenHeight / 2 - texture.GetHeight() / 2;
 	}
 }
