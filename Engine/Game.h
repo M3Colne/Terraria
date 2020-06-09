@@ -25,12 +25,7 @@
 #include "FrameTimer.h"
 #include "Text.h"
 #include "Sound.h"
-
-struct CBox
-{
-    Vei2 p0 = {0, 0};
-    Vei2 p1 = {0, 0};
-};
+#include "CBox.h"
 
 class Game
 {
