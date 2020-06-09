@@ -199,14 +199,14 @@ public:
 			{
 				if (filled)
 				{
-					if ((s - center).GetLengthSq <= radius * radius)
+					if ((s - center).GetLengthSq() <= radius * radius)
 					{
 						PutPixel(s.x, s.y, c);
 					}
 				}
 				else
 				{
-					if ((s - center).GetLengthSq == radius * radius)
+					if ((s - center).GetLengthSq() == radius * radius)
 					{
 						PutPixel(s.x, s.y, c);
 					}
