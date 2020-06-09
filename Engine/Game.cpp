@@ -35,11 +35,20 @@ Game::Game( MainWindow& wnd )
     pPlayer(nullptr)
 {
     //Intializing the cboxes
-    std::ifstream menuCBoxesPoints("MenuPoints.txt", std::ios::binary);
-    for (int i = 0; i < cboxes; i++)
+    std::ifstream in("./Assets/MenuPoints.txt", std::ios::binary);
+    if (in.good())
     {
-        menuCBoxesPoints.read((char*)&menuBoxes[i].p0, sizeof(int));
-        menuCBoxesPoints.read((char*)&menuBoxes[i].p1, sizeof(int));
+        for (int i = 0; i < cboxes; i++)
+        {
+            in.read((char*)&menuBoxes[i].p0.x, sizeof(int));
+            in.read((char*)&menuBoxes[i].p0.y, sizeof(int));
+            in.read((char*)&menuBoxes[i].p1.x, sizeof(int));
+            in.read((char*)&menuBoxes[i].p1.y, sizeof(int));
+        }
+    }
+    else
+    {
+        throw 5;
     }
 }
 
@@ -84,11 +93,20 @@ void Game::UpdateModel()
         //Saving the points
         if (wnd.kbd.KeyIsPressed('S'))
         {
-            std::ofstream out("MenuPoints.txt", std::ios::binary);
-            for (int i = 0; i < cboxes; i++)
+            std::ofstream out("./Assets/MenuPoints.txt", std::ios::binary);
+            if (out.good())
             {
-                out.write((char*)&menuBoxes[i].p0, sizeof(int));
-                out.write((char*)&menuBoxes[i].p1, sizeof(int));
+                for (int i = 0; i < cboxes; i++)
+                {
+                    out.write((char*)&menuBoxes[i].p0.x, sizeof(int));
+                    out.write((char*)&menuBoxes[i].p0.y, sizeof(int));
+                    out.write((char*)&menuBoxes[i].p1.x, sizeof(int));
+                    out.write((char*)&menuBoxes[i].p1.y, sizeof(int));
+                }
+            }
+            else
+            {
+                throw 4;
             }
         }
     }

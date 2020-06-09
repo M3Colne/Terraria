@@ -55,12 +55,22 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR pArgs,INT )
 			{
 			case 0:
 				wnd.ShowMessageBox(L"Exception caught at saving the world", L"Trying to save the world failed!");
+				break;
 			case 1:
 				wnd.ShowMessageBox(L"Exception caught at loading the world", L"Trying to load the world failed!");
+				break;
 			case 2:
 				wnd.ShowMessageBox(L"Exception caught at saving the player", L"Trying to save the player failed!");
+				break;
 			case 3:
 				wnd.ShowMessageBox(L"Exception caught at loading the player", L"Trying to load the player failed!");
+				break;
+			case 4:
+				wnd.ShowMessageBox(L"Exception caught at saving in editor mode", L"Trying to save the editor changes failed!");
+				break;
+			case 5:
+				wnd.ShowMessageBox(L"Exception caught at loading in editor mode", L"Trying to load the editor changes failed!");
+				break;
 			}
 		}
 		catch( ... )
