@@ -185,6 +185,36 @@ public:
 			}
 		}
 	}
+	void DrawCircle(Vec2 center, int radius, bool filled, Color c)
+	{
+		DrawCirce(center.x, center.y, radius, filled, c);
+	}
+	void DrawCirce(int x, int y, int radius, bool filled, Color c)
+	{
+		Vei2 center(x, y);
+		Vei2 s(x - radius, y - radius);
+		for (int j = 0; j <= 2 * radius; j++)
+		{
+			for (int i = 0; i <= 2 * radius; i++)
+			{
+				if (filled)
+				{
+					if ((s - center).GetLengthSq <= radius * radius)
+					{
+						PutPixel(s.x, s.y, c);
+					}
+				}
+				else
+				{
+					if ((s - center).GetLengthSq == radius * radius)
+					{
+						PutPixel(s.x, s.y, c);
+					}
+				}
+			}
+			s.x -= 2 * radius;
+		}
+	}
 	template <typename E>
 	void DrawTexture(int x, int y, const Texture2D& t, E effect)
 	{
