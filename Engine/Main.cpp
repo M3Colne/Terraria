@@ -71,6 +71,9 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR pArgs,INT )
 			case 5:
 				wnd.ShowMessageBox(L"Exception caught at loading in editor mode", L"Trying to load the editor changes failed!");
 				break;
+			case 6:
+				wnd.ShowMessageBox(L"Exception caught at loading in editor mode", L"Trying to load the editor changes failed!");
+				break;
 			}
 		}
 		catch( ... )
