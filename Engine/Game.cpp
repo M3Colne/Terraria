@@ -350,8 +350,11 @@ void Game::ComposeFrame()
 
     if (scenes[3].isShown)
     {
+        //Drawing the world and the player
         pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
         pPlayer->Draw(gfx);
+
+        //Debugging info
         const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
             int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
         std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
