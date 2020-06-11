@@ -25,7 +25,7 @@
 #include "FrameTimer.h"
 #include "Text.h"
 #include "Sound.h"
-#include "CBox.h"
+#include "Scene.h"
 
 class Game
 {
@@ -39,14 +39,9 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-    void CreateGrid(int _width, int _height, int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer);
-    void SaveGrid(char* fileName);
-    void LoadGrid(char* fileName);
-    void DeleteGrid();
-    void CreatePlayer(const int sX);
-    void SavePlayer(char* fileName);
-    void LoadPlayer(char* fileName);
-    void DeletePlayer();
+    void ChangeScene(int l);
+    void AddScene(int l);
+    void RemoveScene(int l);
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -56,18 +51,21 @@ private:
     FrameTimer ft;
     float DT = 0.0f;
     Text textSprite;
-    static constexpr int cboxes = 4;
-    CBox menuBoxes[cboxes];
     Sound backgroundMusic;
     Sound clickSound;
     float backgroundMusicLoopTimer = 4.1f;
-    const Texture2D menuScreen;
-    const int menuX = 80;
-    const int menuY = 80;
     Grid* pGrid;
     Player* pPlayer;
-    bool hasStarted = false;
-    bool editorMode = false;
-    const int pRadius = 10;
+
+    //Scenes
+    static constexpr int menucboxes = 5;
+    static constexpr int settingcboxes = 2;
+    CBox menuBoxes[menucboxes];
+    CBox settingsBoxes[settingcboxes];
+    static constexpr int nScenes = 4;
+    Scene scenes[nScenes];
+    bool editorInhib = true;
+    bool editorExit = false;
+    const int pRadius = 15;
 	/********************************/
 };

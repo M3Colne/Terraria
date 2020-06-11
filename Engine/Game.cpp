@@ -30,26 +30,66 @@ Game::Game( MainWindow& wnd )
     textSprite("./Assets/monospaceFontSheet.bmp"),
     backgroundMusic(L"./Audio/gameBeat.wav"),
     clickSound(L"./Audio/click.wav"),
-    menuScreen("./Assets/menu.bmp"),
     pGrid(nullptr),
     pPlayer(nullptr)
 {
-    //Intializing the cboxes
-    std::ifstream in("./Assets/MenuPoints.txt", std::ios::binary);
-    if (in.good())
+    //Intializing the menucboxes
     {
-        for (int i = 0; i < cboxes; i++)
+        std::ifstream in("./Assets/MenuPoints.txt", std::ios::binary);
+        if (in.good())
         {
-            in.read((char*)&menuBoxes[i].p0.x, sizeof(int));
-            in.read((char*)&menuBoxes[i].p0.y, sizeof(int));
-            in.read((char*)&menuBoxes[i].p1.x, sizeof(int));
-            in.read((char*)&menuBoxes[i].p1.y, sizeof(int));
+            for (int i = 0; i < menucboxes; i++)
+            {
+                in.read((char*)&menuBoxes[i].p0.x, sizeof(int));
+                in.read((char*)&menuBoxes[i].p0.y, sizeof(int));
+                in.read((char*)&menuBoxes[i].p1.x, sizeof(int));
+                in.read((char*)&menuBoxes[i].p1.y, sizeof(int));
+            }
         }
+        else
+        {
+            throw 5;
+        }
+        in.close();
     }
-    else
+
+    //Initializing the settingscboxes
     {
-        throw 5;
+        std::ifstream in("./Assets/SettingsPoints.txt", std::ios::binary);
+        if (in.good())
+        {
+            for (int i = 0; i < settingcboxes; i++)
+            {
+                in.read((char*)&settingsBoxes[i].p0.x, sizeof(int));
+                in.read((char*)&settingsBoxes[i].p0.y, sizeof(int));
+                in.read((char*)&settingsBoxes[i].p1.x, sizeof(int));
+                in.read((char*)&settingsBoxes[i].p1.y, sizeof(int));
+            }
+        }
+        else
+        {
+            throw 6;
+        }
+        in.close();
     }
+
+    //Initializing the scenes
+    //0 = Editor mode, 1 = Main menu, 2 = Settings, 3 = Game
+    scenes[0].boxes = nullptr;
+    scenes[0].nBoxes = NULL;
+    scenes[1].texture = Texture2D("./Assets/menu.bmp");
+    scenes[1].boxes = menuBoxes;
+    scenes[1].nBoxes = menucboxes;
+    //scenes[2].texture = Texture2D("./Assets/settings.bmp");
+    scenes[2].boxes = settingsBoxes;
+    scenes[2].nBoxes = settingcboxes;
+    scenes[3].boxes = nullptr; //For now, until I create the inventory
+    scenes[3].nBoxes = NULL; //For now, until I create the inventory
+
+
+
+    //First scene to be seen
+    ChangeScene(1);
 }
 
 void Game::Go()
@@ -65,15 +105,33 @@ void Game::UpdateModel()
     //Editor mode
     if (wnd.kbd.KeyIsPressed('7'))
     {
-         editorMode = true;
+        if (editorInhib)
+        {
+            if (!editorExit)
+            {
+                AddScene(0);
+                editorInhib = false;
+                editorExit = true;
+            }
+            else
+            {
+                RemoveScene(0);
+                editorInhib = false;
+                editorExit = false;
+            }
+        }
+    }
+    else
+    {
+        editorInhib = true;
     }
 
-    if (editorMode)
+    if (scenes[0].isShown)
     {
         const Vei2 m(wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
         if (wnd.mouse.LeftIsPressed())
         {
-            for (int i = 0; i < cboxes; i++)
+            for (int i = 0; i < menucboxes; i++)
             {
                 Vei2 dist0(menuBoxes[i].p0 - m);
                 Vei2 dist1(menuBoxes[i].p1 - m);
@@ -93,182 +151,240 @@ void Game::UpdateModel()
         //Saving the points
         if (wnd.kbd.KeyIsPressed('S'))
         {
-            std::ofstream out("./Assets/MenuPoints.txt", std::ios::binary);
-            if (out.good())
+            //Menu points
             {
-                for (int i = 0; i < cboxes; i++)
+                std::ofstream out("./Assets/MenuPoints.txt", std::ios::binary);
+                if (out.good())
                 {
-                    out.write((char*)&menuBoxes[i].p0.x, sizeof(int));
-                    out.write((char*)&menuBoxes[i].p0.y, sizeof(int));
-                    out.write((char*)&menuBoxes[i].p1.x, sizeof(int));
-                    out.write((char*)&menuBoxes[i].p1.y, sizeof(int));
+                    for (int i = 0; i < menucboxes; i++)
+                    {
+                        out.write((char*)&scenes[1].boxes[i].p0.x, sizeof(int));
+                        out.write((char*)&scenes[1].boxes[i].p0.y, sizeof(int));
+                        out.write((char*)&scenes[1].boxes[i].p1.x, sizeof(int));
+                        out.write((char*)&scenes[1].boxes[i].p1.y, sizeof(int));
+                    }
+                }
+                else
+                {
+                    throw 4;
                 }
             }
-            else
+            
+            //Settings points
             {
-                throw 4;
+                std::ofstream out("./Assets/SettingsPoints.txt", std::ios::binary);
+                if (out.good())
+                {
+                    for (int i = 0; i < menucboxes; i++)
+                    {
+                        out.write((char*)&scenes[2].boxes[i].p0.x, sizeof(int));
+                        out.write((char*)&scenes[2].boxes[i].p0.y, sizeof(int));
+                        out.write((char*)&scenes[2].boxes[i].p1.x, sizeof(int));
+                        out.write((char*)&scenes[2].boxes[i].p1.y, sizeof(int));
+                    }
+                }
+                else
+                {
+                    throw 4;
+                }
             }
         }
     }
-    else
+    else if (scenes[1].isShown && !scenes[0].isShown)
     {
-        if (hasStarted)
+        //Legend for main menu buttons:
+        //0 = Create small world button
+        //1 = Create medium world button
+        //2 = Create large world button
+        //3 = Load world button
+        //4 = Settings button
+     
+        const int x = wnd.mouse.GetPosX();
+        const int y = wnd.mouse.GetPosY();
+
+        if (wnd.mouse.LeftIsPressed())
         {
-            //Delta time
-            DT = ft.Mark();
-
-            pPlayer->Update(wnd.kbd, wnd.mouse, DT);
-
-            //World commands
-            bool reseting = wnd.kbd.KeyIsPressed('4');
-            if (wnd.kbd.KeyIsPressed('5')) //Saving
+            if (scenes[1].boxes[0].isCollidingWithMouse(x, y))
             {
-                hasStarted = false;
-                SaveGrid("./Worlds/world1.txt");
-                SavePlayer("./Players/player1.txt");
-                reseting = true;
+                ChangeScene(3);
+                clickSound.Play(1.0f, 0.5f);
+                //Create the grid
+                assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
+                pGrid = new Grid(4200, 1200, 40, 20, 7, 10);
+
+                //Create the player
+                assert(pPlayer == nullptr);//The pPlayer pointer is pointing at an existing player, why would you make another one?
+                pPlayer = new Player(*pGrid, pGrid->GetWidth() / 2);
             }
-            if (reseting) //Reseting
+            if (scenes[1].boxes[1].isCollidingWithMouse(x, y))
             {
-                hasStarted = false;
-                DeleteGrid();
-                DeletePlayer();
-            }
+                ChangeScene(3);
+                clickSound.Play(1.0f, 0.5f);
+                //Create the grid
+                assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
+                pGrid = new Grid(6400, 1800, 40, 20, 7, 10);
 
-            //Audio
-            backgroundMusicLoopTimer += DT;
-            if (backgroundMusicLoopTimer >= 4.1f)
+                //Create the player
+                assert(pPlayer == nullptr);//The pPlayer pointer is pointing at an existing player, why would you make another one?
+                pPlayer = new Player(*pGrid, pGrid->GetWidth() / 2);
+            }
+            if (scenes[1].boxes[2].isCollidingWithMouse(x, y))
             {
-                backgroundMusicLoopTimer = 0.0f;
-                backgroundMusic.Play(1.0f, 0.3333f);
+                ChangeScene(3);
+                clickSound.Play(1.0f, 0.5f);
+                //Create the grid
+                assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
+                pGrid = new Grid(8400, 2400, 40, 20, 7, 10);
+
+                //Create the player
+                assert(pPlayer == nullptr);//The pPlayer pointer is pointing at an existing player, why would you make another one?
+                pPlayer = new Player(*pGrid, pGrid->GetWidth() / 2);
+            }
+            if (scenes[1].boxes[3].isCollidingWithMouse(x, y))
+            {
+                ChangeScene(3);
+                clickSound.Play(1.0f, 0.5f);
+                //Loading the grid
+                assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
+                pGrid = new Grid("./Worlds/world1.txt");
+
+                //Loading the player
+                assert(pPlayer == nullptr); //The pPlayer pointer is poiting at an existing player, why would you make another one?
+                pPlayer = new Player("./Players/player.txt", *pGrid);
+            }
+            if (scenes[1].boxes[4].isCollidingWithMouse(x, y))
+            {
+                ChangeScene(2);
+                clickSound.Play(1.0f, 0.5f);
             }
         }
-        else
+    }
+    else if (scenes[2].isShown && !scenes[0].isShown)
+    {
+        //No logic yet
+    }
+    else if (scenes[3].isShown && !scenes[0].isShown)
+    {
+        //Delta time
+        DT = ft.Mark();
+
+        pPlayer->Update(wnd.kbd, wnd.mouse, DT);
+
+        //World commands
+        if (wnd.kbd.KeyIsPressed('5')) //Saving
         {
-            if (wnd.mouse.LeftIsPressed())
-            {
-                const int x = wnd.mouse.GetPosX();
-                const int y = wnd.mouse.GetPosY();
-                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 154 && y - menuY <= 207)
-                {
-                    hasStarted = true;
-                    clickSound.Play(1.0f, 0.5f);
-                    CreateGrid(4200, 1200, 40, 20, 7, 10);
-                    CreatePlayer(pGrid->GetWidth() / 2);
-                }
-                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 208 && y - menuY <= 271)
-                {
-                    hasStarted = true;
-                    clickSound.Play(1.0f, 0.5f);
-                    CreateGrid(6400, 1800, 40, 20, 7, 10);
-                    CreatePlayer(pGrid->GetWidth() / 2);
-                }
-                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 272 && y - menuY <= 318)
-                {
-                    hasStarted = true;
-                    clickSound.Play(1.0f, 0.5f);
-                    CreateGrid(8400, 2400, 40, 20, 7, 10);
-                    CreatePlayer(pGrid->GetWidth() / 2);
-                }
-                if (x - menuX >= 233 && x - menuX <= 406 && y - menuY >= 319 && y - menuY <= 363)
-                {
-                    hasStarted = true;
-                    clickSound.Play(1.0f, 0.5f);
-                    LoadGrid("./Worlds/world1.txt");
-                    LoadPlayer("./Players/player1.txt");
-                }
-            }
+            ChangeScene(1);
+            //Saving and deleting the world
+            assert(pGrid != nullptr); //You can't save what doesn't exist, dummy
+            pGrid->SaveWorld("./Worlds/world1.txt");
+            delete pGrid;
+            pGrid = nullptr;
+
+            //Saving and deleting the player
+            assert(pPlayer != nullptr); //You can't save what doesn't exist, dummy
+            pPlayer->SavePlayer("./Players/player1.txt");
+            delete pPlayer;
+            pPlayer = nullptr;
+        }
+        if (wnd.kbd.KeyIsPressed('4')) //Reseting
+        {
+            ChangeScene(1);
+            //Saving and deleting the world
+            delete pGrid;
+            pGrid = nullptr;
+
+            //Saving and deleting the player
+            delete pPlayer;
+            pPlayer = nullptr;
+        }
+        if (wnd.kbd.KeyIsPressed(VK_ESCAPE))
+        {
+            ChangeScene(2);
+        }
+
+        //Audio
+        backgroundMusicLoopTimer += DT;
+        if (backgroundMusicLoopTimer >= 4.1f)
+        {
+            backgroundMusicLoopTimer = 0.0f;
+            backgroundMusic.Play(1.0f, 0.3333f);
         }
     }
 }
 
-void Game::CreateGrid(int _width, int _height, int surfaceLevel, int surfaceLevelOffset, int minDirtLayer, int maxDirtLayer)
+void Game::ChangeScene(int l)
 {
-    assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
-    pGrid = new Grid(_width, _height, surfaceLevel, surfaceLevelOffset, minDirtLayer, maxDirtLayer);
+    assert(l < nScenes); //This scene doesn't exist!
+    for (int i = 0; i < nScenes; i++)
+    {
+        scenes[i].isShown = false;
+    }
+
+    scenes[l].isShown = true; //Ignore this warning. The assertion above takes care of any errors before it reaches this line anyway
 }
 
-void Game::SaveGrid(char* fileName)
+void Game::AddScene(int l)
 {
-    assert(pGrid != nullptr); //You can't save what doesn't exist, dummy
-    pGrid->SaveWorld(fileName);
+    assert(l < nScenes);
+    scenes[l].isShown = true;
 }
 
-void Game::LoadGrid(char* fileName)
+void Game::RemoveScene(int l)
 {
-    assert(pGrid == nullptr); //The pGrid pointer is pointing at an existing grid, why would you make another one?
-    pGrid = new Grid(fileName);
-}
-
-void Game::DeleteGrid()
-{
-    delete pGrid;
-    pGrid = nullptr;
-}
-
-void Game::CreatePlayer(const int sX)
-{
-    assert(pPlayer == nullptr); //The pPlayer pointer is pointing at an existing player, why would you make another one?
-    pPlayer = new Player(*pGrid, sX);
-}
-
-void Game::SavePlayer(char* fileName)
-{
-    assert(pPlayer != nullptr); //You can't save what doesn't exist, dummy
-    pPlayer->SavePlayer(fileName); //Idk why this warning is still showing up...
-}
-
-void Game::LoadPlayer(char* fileName)
-{
-    assert(pPlayer == nullptr); //The pPlayer pointer is poiting at an existing player, why would you make another one?
-    pPlayer = new Player(fileName, *pGrid);
-}
-
-void Game::DeletePlayer()
-{
-    delete pPlayer;
-    pPlayer = nullptr;
+    assert(l < nScenes);
+    scenes[l].isShown = false;
 }
 
 void Game::ComposeFrame()
 {
-    if (editorMode)
+    //0 = EditorMode, 1 = Main menu, 2 = Settings, 3 = Game
+    if (scenes[1].isShown)
     {
-        //circles drawn at the points of the boxes
-        for (int i = 0; i < cboxes; i++)
-        {
-            gfx.DrawCircle(menuBoxes[i].p0, pRadius, Colors::Red);
-            gfx.DrawCircle(menuBoxes[i].p1, pRadius, Colors::Red);
-        }
-
-        //menuBoxes drawing
-        for (int i = 0; i < cboxes; i++)
-        {
-            gfx.DrawRectangle(menuBoxes[i].p0.x, menuBoxes[i].p0.y, menuBoxes[i].p1.x, menuBoxes[i].p1.y, false, Colors::Yellow);
-        }
+        gfx.DrawTexture(75, 50, scenes[1].texture, SpriteEffects::NoEffect{});
     }
-    else
+
+    if (scenes[2].isShown)
     {
-        if (hasStarted)
+        gfx.DrawTexture(0, 0, scenes[2].texture, SpriteEffects::NoEffect{});
+    }
+
+    if (scenes[3].isShown)
+    {
+        pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
+        pPlayer->Draw(gfx);
+        const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
+            int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
+        std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
+            "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
+            "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
+        const int sID = int(wnd.mouse.GetPosX() / Grid::cellWidth) + Grid::cellsH * int(wnd.mouse.GetPosY() / Grid::cellHeight);
+        std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
+            "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
+            "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
+        const float fps = 1 / DT;
+        std::string FPS = "FPS: " + std::to_string(fps) + "n";
+        textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
+    }
+
+    //I put it here because I want it to be drawn on top of all the scenes
+    if (scenes[0].isShown)
+    {
+        for (int j = 1; j < nScenes; j++)
         {
-            pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
-            pPlayer->Draw(gfx);
-            const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
-                int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
-            std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
-                "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
-                "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
-            const int sID = int(wnd.mouse.GetPosX() / Grid::cellWidth) + Grid::cellsH * int(wnd.mouse.GetPosY() / Grid::cellHeight);
-            std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
-                "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
-                "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
-            const float fps = 1 / DT;
-            std::string FPS = "FPS: " + std::to_string(fps) + "n";
-            textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
-        }
-        else
-        {
-            //This is drawing the menu
+            if (scenes[j].isShown)
+            {
+                for (int i = 0; i < scenes[j].nBoxes; i++)
+                {
+                    //circles drawn at the points of the boxes
+                    gfx.DrawCircle(scenes[j].boxes[i].p0, pRadius, Colors::Green);
+                    gfx.DrawCircle(scenes[j].boxes[i].p1, pRadius, Colors::Red);
+
+                    //cboxes drawing
+                    gfx.DrawRectangle(scenes[j].boxes[i].p0.x, scenes[j].boxes[i].p0.y, 
+                        scenes[j].boxes[i].p1.x, scenes[j].boxes[i].p1.y, false, Colors::Yellow);
+                }
+                break;
+            }
         }
     }
 }
