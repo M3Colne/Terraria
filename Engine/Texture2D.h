@@ -17,6 +17,7 @@ public:
 	//Variables
 public:
 	//Functions
+	Texture2D() = default;
 	Texture2D(const char* fileName)
 	{
 		std::ifstream bmpStream(fileName, std::ios::binary);
