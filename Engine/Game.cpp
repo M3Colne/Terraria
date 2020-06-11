@@ -80,7 +80,7 @@ Game::Game( MainWindow& wnd )
     scenes[1].texture = Texture2D("./Assets/menu.bmp");
     scenes[1].boxes = menuBoxes;
     scenes[1].nBoxes = menucboxes;
-    //scenes[2].texture = Texture2D("./Assets/settings.bmp");
+    scenes[2].texture = Texture2D("./Assets/settings.bmp");
     scenes[2].boxes = settingsBoxes;
     scenes[2].nBoxes = settingcboxes;
     scenes[3].boxes = nullptr; //For now, until I create the inventory
@@ -131,19 +131,26 @@ void Game::UpdateModel()
         const Vei2 m(wnd.mouse.GetPosX(), wnd.mouse.GetPosY());
         if (wnd.mouse.LeftIsPressed())
         {
-            for (int i = 0; i < menucboxes; i++)
+            //Find the scenes we should work on
+            for (int j = 1; j < nScenes; j++)
             {
-                Vei2 dist0(menuBoxes[i].p0 - m);
-                Vei2 dist1(menuBoxes[i].p1 - m);
-                if (dist0.GetLengthSq() <= pRadius * pRadius)
+                if (scenes[j].isShown)
                 {
-                    menuBoxes[i].p0 = m;
-                    break;
-                }
-                else if (dist1.GetLengthSq() <= pRadius * pRadius)
-                {
-                    menuBoxes[i].p1 = m;
-                    break;
+                    for (int i = 0; i < scenes[j].nBoxes; i++)
+                    {
+                        Vei2 dist0(scenes[j].boxes[i].p0 - m);
+                        Vei2 dist1(scenes[j].boxes[i].p1 - m);
+                        if (dist0.GetLengthSq() <= pRadius * pRadius)
+                        {
+                            scenes[j].boxes[i].p0 = m;
+                            break;
+                        }
+                        else if (dist1.GetLengthSq() <= pRadius * pRadius)
+                        {
+                            scenes[j].boxes[i].p1 = m;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -216,7 +223,7 @@ void Game::UpdateModel()
                 assert(pPlayer == nullptr);//The pPlayer pointer is pointing at an existing player, why would you make another one?
                 pPlayer = new Player(*pGrid, pGrid->GetWidth() / 2);
             }
-            if (scenes[1].boxes[1].isCollidingWithMouse(x, y))
+            else if (scenes[1].boxes[1].isCollidingWithMouse(x, y))
             {
                 ChangeScene(3);
                 clickSound.Play(1.0f, 0.5f);
@@ -228,7 +235,7 @@ void Game::UpdateModel()
                 assert(pPlayer == nullptr);//The pPlayer pointer is pointing at an existing player, why would you make another one?
                 pPlayer = new Player(*pGrid, pGrid->GetWidth() / 2);
             }
-            if (scenes[1].boxes[2].isCollidingWithMouse(x, y))
+            else if (scenes[1].boxes[2].isCollidingWithMouse(x, y))
             {
                 ChangeScene(3);
                 clickSound.Play(1.0f, 0.5f);
@@ -240,7 +247,7 @@ void Game::UpdateModel()
                 assert(pPlayer == nullptr);//The pPlayer pointer is pointing at an existing player, why would you make another one?
                 pPlayer = new Player(*pGrid, pGrid->GetWidth() / 2);
             }
-            if (scenes[1].boxes[3].isCollidingWithMouse(x, y))
+            else if (scenes[1].boxes[3].isCollidingWithMouse(x, y))
             {
                 ChangeScene(3);
                 clickSound.Play(1.0f, 0.5f);
@@ -252,7 +259,7 @@ void Game::UpdateModel()
                 assert(pPlayer == nullptr); //The pPlayer pointer is poiting at an existing player, why would you make another one?
                 pPlayer = new Player("./Players/player.txt", *pGrid);
             }
-            if (scenes[1].boxes[4].isCollidingWithMouse(x, y))
+            else if (scenes[1].boxes[4].isCollidingWithMouse(x, y))
             {
                 ChangeScene(2);
                 clickSound.Play(1.0f, 0.5f);
@@ -261,7 +268,28 @@ void Game::UpdateModel()
     }
     else if (scenes[2].isShown && !scenes[0].isShown)
     {
-        //No logic yet
+        //Legend for settings menu buttons:
+        //0 = Save and exit button
+        //1 = No sound button
+
+        const int x = wnd.mouse.GetPosX();
+        const int y = wnd.mouse.GetPosY();
+
+        if (wnd.mouse.LeftIsPressed())
+        {
+            if (scenes[2].boxes[0].isCollidingWithMouse(x, y))
+            {
+                ChangeScene(1);
+                clickSound.Play(1.0f, 0.5f);
+
+            }
+            if (scenes[2].boxes[1].isCollidingWithMouse(x, y))
+            {
+                ChangeScene(1);
+                clickSound.Play(1.0f, 0.5f);
+
+            }
+        }
     }
     else if (scenes[3].isShown && !scenes[0].isShown)
     {
@@ -386,7 +414,6 @@ void Game::ComposeFrame()
                     gfx.DrawRectangle(scenes[j].boxes[i].p0.x, scenes[j].boxes[i].p0.y, 
                         scenes[j].boxes[i].p1.x, scenes[j].boxes[i].p1.y, false, Colors::Yellow);
                 }
-                break;
             }
         }
     }
