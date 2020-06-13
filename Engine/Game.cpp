@@ -73,8 +73,28 @@ Game::Game( MainWindow& wnd )
         in.close();
     }
 
+    //Initializing the optioncboxes
+    {
+        std::ifstream in("./Assets/OptionsPoints.txt", std::ios::binary);
+        if (in.good())
+        {
+            for (int i = 0; i < optioncboxes; i++)
+            {
+                in.read((char*)&optionBoxes[i].p0.x, sizeof(int));
+                in.read((char*)&optionBoxes[i].p0.y, sizeof(int));
+                in.read((char*)&optionBoxes[i].p1.x, sizeof(int));
+                in.read((char*)&optionBoxes[i].p1.y, sizeof(int));
+            }
+        }
+        else
+        {
+            throw 7;
+        }
+        in.close();
+    }
+
     //Initializing the scenes
-    //0 = Editor mode, 1 = Main menu, 2 = Settings, 3 = Game
+    //0 = Editor mode, 1 = Main menu, 2 = Settings, 3 = Game, 4 = Options
     scenes[0].boxes = nullptr;
     scenes[0].nBoxes = NULL;
     scenes[1].texture = Texture2D("./Assets/menu.bmp");
@@ -85,6 +105,9 @@ Game::Game( MainWindow& wnd )
     scenes[2].nBoxes = settingcboxes;
     scenes[3].boxes = nullptr; //For now, until I create the inventory
     scenes[3].nBoxes = NULL; //For now, until I create the inventory
+    scenes[4].boxes = optionBoxes;
+    scenes[4].nBoxes = optioncboxes;
+    scenes[4].texture = Texture2D("./Assets/options.bmp");
 
 
 
@@ -195,6 +218,25 @@ void Game::UpdateModel()
                     throw 4;
                 }
             }
+
+            //Options points
+            {
+                std::ofstream out("./Assets/OptionsPoints.txt", std::ios::binary);
+                if (out.good())
+                {
+                    for (int i = 0; i < menucboxes; i++)
+                    {
+                        out.write((char*)&scenes[4].boxes[i].p0.x, sizeof(int));
+                        out.write((char*)&scenes[4].boxes[i].p0.y, sizeof(int));
+                        out.write((char*)&scenes[4].boxes[i].p1.x, sizeof(int));
+                        out.write((char*)&scenes[4].boxes[i].p1.y, sizeof(int));
+                    }
+                }
+                else
+                {
+                    throw 4;
+                }
+            }
         }
     }
     else if (scenes[1].isShown && !scenes[0].isShown)
@@ -257,11 +299,12 @@ void Game::UpdateModel()
 
                 //Loading the player
                 assert(pPlayer == nullptr); //The pPlayer pointer is poiting at an existing player, why would you make another one?
-                pPlayer = new Player("./Players/player.txt", *pGrid);
+                pPlayer = new Player("./Players/player1.txt", *pGrid);
             }
             else if (scenes[1].boxes[4].isCollidingWithMouse(x, y))
             {
                 ChangeScene(2);
+                lastScene = 1;
                 clickSound.Play(1.0f, 0.5f);
             }
         }
@@ -269,7 +312,7 @@ void Game::UpdateModel()
     else if (scenes[2].isShown && !scenes[0].isShown)
     {
         //Legend for settings menu buttons:
-        //0 = Save and exit button
+        //0 = Exit button
         //1 = No sound button
 
         const int x = wnd.mouse.GetPosX();
@@ -279,15 +322,21 @@ void Game::UpdateModel()
         {
             if (scenes[2].boxes[0].isCollidingWithMouse(x, y))
             {
-                ChangeScene(1);
+                ChangeScene(lastScene);
                 clickSound.Play(1.0f, 0.5f);
-
+                lastScene = -1;
             }
             if (scenes[2].boxes[1].isCollidingWithMouse(x, y))
             {
-                ChangeScene(1);
                 clickSound.Play(1.0f, 0.5f);
-
+                if (!noSound)
+                {
+                    noSound = true;
+                }
+                else
+                {
+                    noSound = false;
+                }
             }
         }
     }
@@ -299,43 +348,78 @@ void Game::UpdateModel()
         pPlayer->Update(wnd.kbd, wnd.mouse, DT);
 
         //World commands
-        if (wnd.kbd.KeyIsPressed('5')) //Saving
-        {
-            ChangeScene(1);
-            //Saving and deleting the world
-            assert(pGrid != nullptr); //You can't save what doesn't exist, dummy
-            pGrid->SaveWorld("./Worlds/world1.txt");
-            delete pGrid;
-            pGrid = nullptr;
-
-            //Saving and deleting the player
-            assert(pPlayer != nullptr); //You can't save what doesn't exist, dummy
-            pPlayer->SavePlayer("./Players/player1.txt");
-            delete pPlayer;
-            pPlayer = nullptr;
-        }
-        if (wnd.kbd.KeyIsPressed('4')) //Reseting
-        {
-            ChangeScene(1);
-            //Saving and deleting the world
-            delete pGrid;
-            pGrid = nullptr;
-
-            //Saving and deleting the player
-            delete pPlayer;
-            pPlayer = nullptr;
-        }
         if (wnd.kbd.KeyIsPressed(VK_ESCAPE))
         {
-            ChangeScene(2);
+            if (optionsInhib)
+            {
+                if (scenes[4].isShown)
+                {
+                    RemoveScene(4);
+                }
+                else
+                {
+                    ChangeScene(4);
+                }
+                optionsInhib = false;
+            }
+        }
+        else
+        {
+            optionsInhib = true;
         }
 
         //Audio
-        backgroundMusicLoopTimer += DT;
-        if (backgroundMusicLoopTimer >= 4.1f)
+        if (!noSound)
         {
-            backgroundMusicLoopTimer = 0.0f;
-            backgroundMusic.Play(1.0f, 0.3333f);
+            backgroundMusicLoopTimer += DT;
+            if (backgroundMusicLoopTimer >= 4.1f)
+            {
+                backgroundMusicLoopTimer = 0.0f;
+                backgroundMusic.Play(1.0f, 0.3333f);
+            }
+        }
+    }
+    else if (scenes[4].isShown && !scenes[0].isShown)
+    {
+        //Legend for options menu buttons:
+        //0 = Resume
+        //1 = Settings
+        //2 = Save and exit the game
+
+        const int x = wnd.mouse.GetPosX();
+        const int y = wnd.mouse.GetPosY();
+
+        if (wnd.mouse.LeftIsPressed())
+        {
+            if (scenes[4].boxes[0].isCollidingWithMouse(x, y))
+            {
+                lastScene = 4;
+                ChangeScene(3);
+                clickSound.Play(1.0f, 0.5f);
+            }
+            if (scenes[4].boxes[1].isCollidingWithMouse(x, y))
+            {
+                lastScene = 4;
+                ChangeScene(2);
+                clickSound.Play(1.0f, 0.5f);
+            }
+            if (scenes[4].boxes[2].isCollidingWithMouse(x, y))
+            {
+                lastScene = 4;
+                ChangeScene(1);
+                clickSound.Play(1.0f, 0.5f);
+                //Saving and deleting the world
+                assert(pGrid != nullptr); //You can't save what doesn't exist, dummy
+                pGrid->SaveWorld("./Worlds/world1.txt");
+                delete pGrid;
+                pGrid = nullptr;
+
+                //Saving and deleting the player
+                assert(pPlayer != nullptr); //You can't save what doesn't exist, dummy
+                pPlayer->SavePlayer("./Players/player1.txt");
+                delete pPlayer;
+                pPlayer = nullptr;
+            }
         }
     }
 }
@@ -365,7 +449,7 @@ void Game::RemoveScene(int l)
 
 void Game::ComposeFrame()
 {
-    //0 = EditorMode, 1 = Main menu, 2 = Settings, 3 = Game
+    //0 = EditorMode, 1 = Main menu, 2 = Settings, 3 = Game, 4 = Options
     if (scenes[1].isShown)
     {
         gfx.DrawTexture(75, 50, scenes[1].texture, SpriteEffects::NoEffect{});
@@ -395,6 +479,11 @@ void Game::ComposeFrame()
         const float fps = 1 / DT;
         std::string FPS = "FPS: " + std::to_string(fps) + "n";
         textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
+    }
+
+    if (scenes[4].isShown)
+    {
+        gfx.DrawTexture(0, 0, scenes[4].texture, SpriteEffects::NoEffect{});
     }
 
     //I put it here because I want it to be drawn on top of all the scenes

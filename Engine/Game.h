@@ -52,20 +52,26 @@ private:
     float DT = 0.0f;
     Text textSprite;
     Sound backgroundMusic;
+    bool noSound = false;
     Sound clickSound;
     float backgroundMusicLoopTimer = 4.1f;
     Grid* pGrid;
     Player* pPlayer;
 
     //Scenes
-    static constexpr int menucboxes = 5;
-    static constexpr int settingcboxes = 2;
+    static constexpr int menucboxes = 5; //The menu buttons
+    static constexpr int settingcboxes = 2; //Exit, No sound
+    static constexpr int optioncboxes = 3; //Resume, settings and save and exit
     CBox menuBoxes[menucboxes];
     CBox settingsBoxes[settingcboxes];
-    static constexpr int nScenes = 4;
+    CBox optionBoxes[optioncboxes];
+    static constexpr int nScenes = 5;
     Scene scenes[nScenes];
+    int lastScene = -1; //Used for the settings
+
     bool editorInhib = true;
     bool editorExit = false;
     const int pRadius = 15;
+    bool optionsInhib = true;
 	/********************************/
 };
