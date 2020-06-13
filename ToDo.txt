@@ -1,21 +1,22 @@
 Important links:
 Everything: https://gamedev.stackexchange.com/questions/29691/2d-tile-based-collision-detection
 Collision: https://www.gamedev.net/articles/programming/general-and-gameplay-programming/swept-aabb-collision-detection-and-response-r3084/
+Networking: https://beej.us/guide/bgnet/html/
 
 
-Settings menu
-Make when I change the pos of a p0 or p1 for a CBox to remain proportional when I change the screen resolution
-Friction
-Player jump(uitate la imaginea din folder)
+
 Inventory
+Player jump(uitate la imaginea din folder)
 Fix collisions(Test for each direction, with both axis, with slow speed, sliding) and also fix a bug when there is a collision sometimes the player get tp-ed a pixel above the block
 Biomes + Caves generation
 Flora?
 Mobs
 Maybe use chunks?
 Light? (Dynamic light even a more maybe)
-Networking? (I need to learn a lot... but would be worth it) (LUA)      https://beginnersbook.com/2019/03/introduction-to-computer-network/
+Networking? 
 Background
 Improve sprites / Animation
 
-Send to friends to play with and get their feedback
+/////////This I will probably will not do because I think the game screen resolution should remain like this definitive, but I will leave it here just in case
+Make when I change the pos of a p0 or p1 for a CBox to remain proportional when I change the screen resolution
+/////////

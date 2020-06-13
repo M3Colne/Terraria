@@ -337,6 +337,15 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 			ApplyForce(defaultAcc, 0.0f);
 		}
 	}
+	else
+	{
+		const int oldS = sgn(velocity.x);
+		velocity.x -= oldS * frictionForce * dt;
+		if (sgn(velocity.x) != oldS)
+		{
+			StopX();
+		}
+	}
 	if (kbd.KeyIsPressed('A'))
 	{
 		if (velocity.x > 0.0f)
@@ -350,6 +359,15 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		else
 		{
 			ApplyForce(-defaultAcc, 0.0f);
+		}
+	}
+	else
+	{
+		const int oldS = sgn(velocity.x);
+		velocity.x -= oldS * frictionForce * dt;
+		if (sgn(velocity.x) != oldS)
+		{
+			StopX();
 		}
 	}
 	//Gravity

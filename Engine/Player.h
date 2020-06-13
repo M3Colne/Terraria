@@ -19,7 +19,7 @@ private:
 	const float defaultDeacc = 135.0f; //Bigger than the acceleartion
 	const float maxAcceleration = 150.0f;
 	const float gravity = 200.0f;
-	const float frictionForce = 85.0f;
+	const float frictionForce = 25.0f;
 	const char playerRangeX = 10;
 	const char playerRangeY = 10;
 	const float initialJumpImpulse = 100.0f;
