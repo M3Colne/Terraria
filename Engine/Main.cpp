@@ -72,7 +72,10 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR pArgs,INT )
 				wnd.ShowMessageBox(L"Exception caught at loading in editor mode", L"Trying to load the editor changes failed!");
 				break;
 			case 6:
-				wnd.ShowMessageBox(L"Exception caught at loading in editor mode", L"Trying to load the editor changes failed!");
+				wnd.ShowMessageBox(L"Exception caught at loading the settings points", L"Trying to load the settings changes failed!");
+				break;
+			case 7:
+				wnd.ShowMessageBox(L"Exception caught at loading the option points", L"Trying to load the option changes failed!");
 				break;
 			}
 		}
