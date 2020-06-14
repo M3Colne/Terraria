@@ -77,6 +77,9 @@ int WINAPI wWinMain( HINSTANCE hInst,HINSTANCE,LPWSTR pArgs,INT )
 			case 7:
 				wnd.ShowMessageBox(L"Exception caught at loading the option points", L"Trying to load the option changes failed!");
 				break;
+			case 8:
+				wnd.ShowMessageBox(L"Exception caught at loading the game points", L"Trying to load the game changes failed!");
+				break;
 			}
 		}
 		catch( ... )
