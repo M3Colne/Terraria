@@ -183,15 +183,46 @@ public:
 	{
 		DrawRectangle(int(p0.x), int(p0.y), int(p1.x), int(p1.y), filled, c);
 	}
-	void DrawCircle(Vei2 center, int radius, Color c)
+	void DrawCircle(Vei2 center, float radius, bool filled, Color c)
 	{
-		DrawCirce(center.x, center.y, radius, c);
+		DrawCircle(center.x, center.y, radius, filled, c);
 	}
-	void DrawCirce(int x, int y, int radius, Color c)
+	void DrawCircle(int x, int y, float radius, bool filled, Color c)
 	{
-		for (float theta = 0; theta < 6.28318530f; theta += 0.01f)
+		if (filled)
 		{
-			PutPixel(x + int(radius * cos(theta)), y + int(radius * sin(theta)), c);
+			const int radius2 = int(radius) * int(radius);
+			for (int j = y - (int)radius; j <= y + (int)radius; j++)
+			{
+				for (int i = x - (int)radius; i <= x + (int)radius; i++)
+				{
+					const int X = i - x;
+					const int Y = j - y;
+					if (X * X + Y * Y <= radius2)
+					{
+						PutPixel(i, j, c);
+					}
+				}
+			}
+		}
+		else
+		{
+			const float thickness = 0.5f; //I think this is the best thickness for a non filled circle
+			const float radius2n = (radius - thickness) * (radius - thickness);
+			const float radius2p = (radius + thickness) * (radius + thickness);
+			for (int j = y - (int)radius; j <= y + (int)radius; j++)
+			{
+				for (int i = x - (int)radius; i <= x + (int)radius; i++)
+				{
+					const int X = i - x;
+					const int Y = j - y;
+					const int res = X * X + Y * Y;
+					if (res >= radius2n && res <= radius2p)
+					{
+						PutPixel(i, j, c);
+					}
+				}
+			}
 		}
 	}
 	template <typename E>
