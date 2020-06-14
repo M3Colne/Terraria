@@ -387,6 +387,14 @@ void Game::UpdateModel()
         {
             optionsInhib = true;
         }
+        if (wnd.kbd.KeyIsPressed(VK_F3))
+        {
+            debugOpened = !debugOpened;
+        }
+        if (wnd.kbd.KeyIsPressed('E'))
+        {
+            inventoryOpened = !inventoryOpened;
+        }
 
         //Audio
         if (!noSound)
@@ -491,23 +499,26 @@ void Game::ComposeFrame()
         {
             for (int i = 0; i < 10; i++)
             {
-                gfx.DrawRectangle(i * Grid::cellWidth + 35, 0, (i + 1) * Grid::cellWidth + 30, Grid::cellHeight, false, Colors::White);
+                gfx.DrawRectangle(i * Grid::cellWidth, 0, (i + 1) * Grid::cellWidth, Grid::cellHeight, false, Colors::White);
             }
         }
 
         //Debugging info
-        const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
-            int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
-        std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
-            "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
-            "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
-        const int sID = int(wnd.mouse.GetPosX() / Grid::cellWidth) + Grid::cellsH * int(wnd.mouse.GetPosY() / Grid::cellHeight);
-        std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
-            "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
-            "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
-        const float fps = 1 / DT;
-        std::string FPS = "FPS: " + std::to_string(fps) + "n";
-        textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
+        if (debugOpened)
+        {
+            const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
+                int((wnd.mouse.GetPosY() + pPlayer->GetCameraY()) / Grid::cellHeight));
+            std::string WdebuggingInfo = "Block WID: " + std::to_string(wID) + "\n" +
+                "Block WX: " + std::to_string(pGrid->GetPosX(wID)) + "\n" +
+                "Block WY: " + std::to_string(pGrid->GetPosY(wID)) + "\n";
+            const int sID = int(wnd.mouse.GetPosX() / Grid::cellWidth) + Grid::cellsH * int(wnd.mouse.GetPosY() / Grid::cellHeight);
+            std::string SdebuggingInfo = "Block SID: " + std::to_string(sID) + "\n" +
+                "Block WX: " + std::to_string(sID % Grid::cellsH) + "\n" +
+                "Block WY: " + std::to_string(int(sID / Grid::cellsH)) + "\n";
+            const float fps = 1 / DT;
+            std::string FPS = "FPS: " + std::to_string(fps) + "n";
+            textSprite.Draw(WdebuggingInfo + SdebuggingInfo + FPS, { 0, 0 }, Colors::Red, gfx);
+        }
     }
 
     if (scenes[4].isShown)

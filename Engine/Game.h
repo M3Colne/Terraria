@@ -57,7 +57,8 @@ private:
     float backgroundMusicLoopTimer = 4.1f;
     Grid* pGrid;
     Player* pPlayer;
-    bool inventoryOpened = true;
+    bool inventoryOpened = false;
+    bool debugOpened = false;
 
     //Scenes
     static constexpr int menucboxes = 5; //The menu buttons

@@ -167,12 +167,12 @@ public:
 		}
 		else
 		{
-			for (int j = y0; j < y1; j++)
+			for (int j = y0; j <= y1; j++)
 			{
 				PutPixel(x0, j, c);
 				PutPixel(x1, j, c);
 			}
-			for (int i = x0; i < x1; i++)
+			for (int i = x0; i <= x1; i++)
 			{
 				PutPixel(i, y0, c);
 				PutPixel(i, y1, c);
