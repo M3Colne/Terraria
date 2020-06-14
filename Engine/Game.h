@@ -57,11 +57,14 @@ private:
     float backgroundMusicLoopTimer = 4.1f;
     Grid* pGrid;
     Player* pPlayer;
+    bool inventoryOpened = true;
 
     //Scenes
     static constexpr int menucboxes = 5; //The menu buttons
     static constexpr int settingcboxes = 2; //Exit, No sound
     static constexpr int optioncboxes = 3; //Resume, settings and save and exit
+    static constexpr int gamecboxes = 10; //Inventory
+    CBox gameBoxes[gamecboxes];
     CBox menuBoxes[menucboxes];
     CBox settingsBoxes[settingcboxes];
     CBox optionBoxes[optioncboxes];

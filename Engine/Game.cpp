@@ -93,6 +93,26 @@ Game::Game( MainWindow& wnd )
         in.close();
     }
 
+    //Initializing the gamecboxes
+    {
+        std::ifstream in("./Assets/GamePoints.txt", std::ios::binary);
+        if (in.good())
+        {
+            for (int i = 0; i < gamecboxes; i++)
+            {
+                in.read((char*)&gameBoxes[i].p0.x, sizeof(int));
+                in.read((char*)&gameBoxes[i].p0.y, sizeof(int));
+                in.read((char*)&gameBoxes[i].p1.x, sizeof(int));
+                in.read((char*)&gameBoxes[i].p1.y, sizeof(int));
+            }
+        }
+        else
+        {
+            throw 8;
+        }
+        in.close();
+    }
+
     //Initializing the scenes
     //0 = Editor mode, 1 = Main menu, 2 = Settings, 3 = Game, 4 = Options
     scenes[0].boxes = nullptr;
@@ -103,8 +123,8 @@ Game::Game( MainWindow& wnd )
     scenes[2].texture = Texture2D("./Assets/settings.bmp");
     scenes[2].boxes = settingsBoxes;
     scenes[2].nBoxes = settingcboxes;
-    scenes[3].boxes = nullptr; //For now, until I create the inventory
-    scenes[3].nBoxes = NULL; //For now, until I create the inventory
+    scenes[3].boxes = gameBoxes;
+    scenes[3].nBoxes = gamecboxes;
     scenes[4].boxes = optionBoxes;
     scenes[4].nBoxes = optioncboxes;
     scenes[4].texture = Texture2D("./Assets/options.bmp");
@@ -462,9 +482,18 @@ void Game::ComposeFrame()
 
     if (scenes[3].isShown)
     {
-        //Drawing the world and the player
+        //Drawing the game
         pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
         pPlayer->Draw(gfx);
+        
+        //Drawing the inventory
+        if (inventoryOpened)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                gfx.DrawRectangle(i * Grid::cellWidth + 35, 0, (i + 1) * Grid::cellWidth + 30, Grid::cellHeight, false, Colors::White);
+            }
+        }
 
         //Debugging info
         const int wID = pGrid->GetId(int((wnd.mouse.GetPosX() + pPlayer->GetCameraX()) / Grid::cellWidth),
@@ -496,8 +525,8 @@ void Game::ComposeFrame()
                 for (int i = 0; i < scenes[j].nBoxes; i++)
                 {
                     //circles drawn at the points of the boxes
-                    gfx.DrawCircle(scenes[j].boxes[i].p0, pRadius, Colors::Green);
-                    gfx.DrawCircle(scenes[j].boxes[i].p1, pRadius, Colors::Red);
+                    gfx.DrawCircle(scenes[j].boxes[i].p0, (float)pRadius, false, Colors::Green);
+                    gfx.DrawCircle(scenes[j].boxes[i].p1, (float)pRadius, false, Colors::Red);
 
                     //cboxes drawing
                     gfx.DrawRectangle(scenes[j].boxes[i].p0.x, scenes[j].boxes[i].p0.y, 
