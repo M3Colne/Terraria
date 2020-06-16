@@ -12,6 +12,7 @@ public:
 	static constexpr int cellsV = 30;
 	static constexpr int cellWidth = Graphics::ScreenWidth / cellsH;
 	static constexpr int cellHeight = Graphics::ScreenHeight / cellsV;
+	const Texture2D blockSpriteSheet;
 	Block* blocks = nullptr;
 public:
 	//Functions
@@ -30,7 +31,6 @@ public:
 	int GetPosY(int id) const;
 private:
 	//Variables
-	const Texture2D blockSpriteSheet;
 	int seed = 0;
 	int Width = 0; //In blocks
 	int Height = 0; //In blocks
