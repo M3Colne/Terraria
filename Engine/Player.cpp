@@ -287,12 +287,30 @@ Player::~Player()
 
 void Player::Draw(Graphics& gfx)
 {
+	//Player
 	gfx.DrawTexture(int(position.x - GetCameraX()), int(position.y - GetCameraY()),
 		0, 0, texture.GetWidth(), texture.GetHeight(), texture, SpriteEffects::Chroma(Colors::Magenta));
+
+	//Inventory
+	for (int i = 0; i < 10; i++)
+	{
+		gfx.DrawTexture(i * Grid::cellWidth, 0, 
+		gfx.DrawRectangle(i * Grid::cellWidth, 0, (i + 1) * Grid::cellWidth, Grid::cellHeight, false, Colors::White);
+	}
 }
 
 void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 {
+	//Highlighting the slot
+	if (kbd.KeyIsPressed(VK_UP) && highlightedSlot + 1 < hotbarSize)
+	{
+		highlightedSlot++;
+	}
+	if (kbd.KeyIsPressed(VK_DOWN) && highlightedSlot > 0)
+	{
+		highlightedSlot++;
+	}
+
 	//Destroying and placing blocks
 	if (micky.LeftIsPressed())
 	{
@@ -301,7 +319,22 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		const int bY = int((micky.GetPosY() + GetCameraY()) / Grid::cellHeight);
 		if (abs(bX - position.x / Grid::cellWidth) <= playerRangeX && abs(bY - position.y / Grid::cellHeight) <= playerRangeY)
 		{
-			cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type = Block::Type::Air;
+			Block::Type& bT = cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type;
+			//Add the block to the inventory
+			
+			//Find the first slot without anything
+			for (int i = 0; i < hotbarSize; i++)
+			{
+				if (!hotbar[i].amount)
+				{
+					hotbar[i].type = bT;
+					hotbar[i].amount++;
+					break;
+				}
+			}
+
+			//Destroy the block
+			bT = Block::Type::Air;
 		}
 	}
 	else if (micky.RightIsPressed())
@@ -312,7 +345,16 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		if (abs(bX - position.x / Grid::cellWidth) <= playerRangeX && abs(bY - position.y / Grid::cellHeight) <= playerRangeY &&
 			cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type == Block::Type::Air)
 		{
-			cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type = Block::Type::Grass;
+			Block::Type& bT = cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type;
+			//Add the block to the inventory
+
+			//Use the block from the selected slot
+			Slot& sT = hotbar[highlightedSlot];
+			if (sT.amount != 0)
+			{
+				bT = sT.type;
+				sT.amount--;
+			}
 		}
 	}
 

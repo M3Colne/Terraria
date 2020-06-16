@@ -25,6 +25,16 @@ private:
 	const float initialJumpImpulse = 100.0f;
 	unsigned int framesInAir = 0;
 	bool onGround = true;
+
+	struct Slot
+	{
+	public:
+		Block::Type type = Block::Type::Air;
+		char amount = 0;
+	};
+	static constexpr char hotbarSize = 10;
+	Slot hotbar[hotbarSize] = {};
+	char highlightedSlot = 0;
 private:
 	//Functions
 	int sgn(const float d) const; //Wow, I'm surprised C++ doesn't have this function

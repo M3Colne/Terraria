@@ -391,10 +391,6 @@ void Game::UpdateModel()
         {
             debugOpened = !debugOpened;
         }
-        if (wnd.kbd.KeyIsPressed('E'))
-        {
-            inventoryOpened = !inventoryOpened;
-        }
 
         //Audio
         if (!noSound)
@@ -493,15 +489,6 @@ void Game::ComposeFrame()
         //Drawing the game
         pGrid->DrawBlocks(gfx, pPlayer->GetCameraX(), pPlayer->GetCameraY());
         pPlayer->Draw(gfx);
-        
-        //Drawing the inventory
-        if (inventoryOpened)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                gfx.DrawRectangle(i * Grid::cellWidth, 0, (i + 1) * Grid::cellWidth, Grid::cellHeight, false, Colors::White);
-            }
-        }
 
         //Debugging info
         if (debugOpened)

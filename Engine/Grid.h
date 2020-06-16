@@ -28,6 +28,7 @@ public:
 	int GetId(int x, int y) const;
 	int GetPosX(int id) const;
 	int GetPosY(int id) const;
+	void DrawCell(Graphics& gfx, int x, int y, Block::Type type);
 private:
 	//Variables
 	const Texture2D blockSpriteSheet;
@@ -36,7 +37,6 @@ private:
 	int Height = 0; //In blocks
 private:
 	//Functions
-	void DrawCell(Graphics& gfx, int x, int y, Block::Type type);
 	void GenerateSeed(int min, int max);
 	void GenerateGround(const int surfaceLevel, const int surfaceLevelOffset,const int minDirtLayer, const int maxDirtLayer);
 	void GenerateOres(const float chanceOfSpawn, const float chanceOfCluster, const float chanceDivisor, const int minLevel,

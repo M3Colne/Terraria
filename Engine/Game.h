@@ -57,7 +57,6 @@ private:
     float backgroundMusicLoopTimer = 4.1f;
     Grid* pGrid;
     Player* pPlayer;
-    bool inventoryOpened = false;
     bool debugOpened = false;
 
     //Scenes
