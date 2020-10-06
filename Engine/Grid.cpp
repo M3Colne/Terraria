@@ -142,7 +142,7 @@ void Grid::DrawBlocks(Graphics& gfx, int x, int y)
 	{
 		for (int i = 0; i <= cellsH; i++)
 		{
-			DrawCell(gfx, (X + i) * cellWidth - x, (Y + j) * cellHeight - y, blocks[GetId(X + i, Y + j)].type);
+			DrawCell(gfx, (X + i) * cellWidth - x, (Y + j) * cellHeight - y, blocks[GetId(X + i, Y + j)].type, SpriteEffects::NoEffect{});
 		}
 	}
 }
@@ -242,38 +242,6 @@ void Grid::GenerateOres(const float chanceOfSpawn, const float chanceOfCluster, 
 			c /= chanceDivisor;
 		}
 		branchId.clear();
-	}
-}
-
-void Grid::DrawCell(Graphics& gfx, int x, int y, Block::Type type)
-{
-	switch (type)
-	{
-	case Block::Type::Air:
-	{
-		gfx.DrawTexture(x, y, 0, 0, 20, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
-		break;
-	}
-	case Block::Type::Dirt:
-	{
-		gfx.DrawTexture(x, y, 20, 0, 40, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
-		break;
-	}
-	case Block::Type::Grass:
-	{
-		gfx.DrawTexture(x, y, 40, 0, 60, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
-		break;
-	}
-	case Block::Type::Stone:
-	{
-		gfx.DrawTexture(x, y, 60, 0, 80, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
-		break;
-	}
-	case Block::Type::Copper:
-	{
-		gfx.DrawTexture(x, y, 80, 0, 100, 20, 0, 0, Graphics::ScreenWidth, Graphics::ScreenHeight, blockSpriteSheet, SpriteEffects::NoEffect());
-		break;
-	}
 	}
 }
 

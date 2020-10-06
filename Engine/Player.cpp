@@ -294,8 +294,14 @@ void Player::Draw(Graphics& gfx)
 	//Inventory
 	for (int i = 0; i < 10; i++)
 	{
-		gfx.DrawTexture(i * Grid::cellWidth, 0, 
-		gfx.DrawRectangle(i * Grid::cellWidth, 0, (i + 1) * Grid::cellWidth, Grid::cellHeight, false, Colors::White);
+		if (i != highlightedSlot)
+		{
+			cacheGrid->DrawCell(gfx, i * Grid::cellWidth, 0, hotbar[i].type, SpriteEffects::Ghost{Colors::Magenta});
+		}
+		else
+		{
+			cacheGrid->DrawCell(gfx, i * Grid::cellWidth, 0, hotbar[i].type, SpriteEffects::NoEffect{});
+		}
 	}
 }
 
@@ -320,16 +326,29 @@ void Player::Update(Keyboard& kbd, Mouse& micky, const float dt)
 		if (abs(bX - position.x / Grid::cellWidth) <= playerRangeX && abs(bY - position.y / Grid::cellHeight) <= playerRangeY)
 		{
 			Block::Type& bT = cacheGrid->blocks[cacheGrid->GetId(bX, bY)].type;
-			//Add the block to the inventory
-			
-			//Find the first slot without anything
+
+			//Find the first slot without anything or if the block is already in inventory add it in that slot
+			bool NEW = true;
 			for (int i = 0; i < hotbarSize; i++)
 			{
-				if (!hotbar[i].amount)
+				if (bT == hotbar[i].type)
 				{
-					hotbar[i].type = bT;
 					hotbar[i].amount++;
+					NEW = false;
 					break;
+				}
+			}
+
+			if (NEW)
+			{
+				for (int i = 0; i < hotbarSize; i++)
+				{
+					if (!hotbar[i].amount)
+					{
+						hotbar[i].type = bT;
+						hotbar[i].amount++;
+						break;
+					}
 				}
 			}
 
